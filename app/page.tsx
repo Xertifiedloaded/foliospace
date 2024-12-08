@@ -1,101 +1,93 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { ChevronRight, LogIn, UserPlus } from "lucide-react";
+import BrandVideoSection from "@/sections/Description";
+import Features from "@/sections/Features";
+import Profile from "@/sections/Profile";
+
+const navigationItems = [
+  "Links",
+  "Resume",
+  "Skills",
+  "Testimonials",
+  "Hobbies",
+  "Stacks",
+];
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <>
+      <section>
+        <section className="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-12">
+          <div className="max-w-6xl w-full grid md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <div
+                style={{
+                  background: "linear-gradient(to right, #00FFA3, #DC1FFF)",
+                }}
+                className="inline-block w-auto p-0.5 shadow rounded-full animate-gradient animate-fade animate-once animate-delay-100 animate-ease-in-out"
+              >
+                <p className="w-auto h-full px-4 py-2 bg-slate-50 dark:bg-neutral-900 dark:text-white font-medium text-sm tracking-wide text-blue-600 rounded-full text-slate-800/90 uppercase">
+                  Welcome to Creatify
+                </p>
+              </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+              <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
+                Where Your Digital Presence Comes to Life
+              </h1>
+
+              <p className="text-gray-600 text-lg">
+                Creatify is your ultimate platform to effortlessly build and
+                showcase your unique personal brand. Design, customize, and
+                share your professional journey with ease and creativity.
+              </p>
+
+              <div className="flex space-x-5">
+                <Button
+                  variant="outline"
+                  className="flex items-center w-[40%] gap-2 font-semibold"
+                >
+                  <LogIn className="w-5 h-5" />
+                  Login
+                </Button>
+
+                <Button className="flex w-[40%] items-center gap-2 bg-blue-600 hover:bg-blue-700">
+                  <UserPlus className="w-5 h-5" />
+                  Register
+                </Button>
+              </div>
+
+              <div className="flex flex-wrap gap-3 mt-6">
+                {navigationItems.map((item, index) => (
+                  <Button
+                    key={index}
+                    variant="secondary"
+                    className="text-sm font-medium"
+                  >
+                    {item}
+                    <ChevronRight className="ml-2 w-4 h-4" />
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <div className="relative w-full rounded-md max-w-sm">
+                <Image
+                  src="/images/hero.png"
+                  alt="Folllio Digital Showcase"
+                  width={500}
+                  height={500}
+                  className="object-contain drop-shadow-xl"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+        <BrandVideoSection />
+        <Features />
+        <Profile />
+      </section>
+    </>
   );
 }
