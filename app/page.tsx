@@ -1,10 +1,12 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { ChevronRight, LogIn, UserPlus } from "lucide-react";
+import { ChevronRight, Eye, LogIn, UserPlus } from "lucide-react";
 import BrandVideoSection from "@/sections/Description";
 import Features from "@/sections/Features";
 import Profile from "@/sections/Profile";
-
+import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "next/navigation";
 const navigationItems = [
   "Links",
   "Resume",
@@ -15,9 +17,44 @@ const navigationItems = [
 ];
 
 export default function Home() {
+  const router = useRouter();
+  const { user } = useAuth();
   return (
     <>
       <section>
+        {user && (
+          <header className="p-4 bg-gray-100 shadow-sm">
+            <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <img
+                  src={user?.profileImage ?? "/images/user.jpg"}
+                  alt={`${user?.name}'s profile`}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <span className="text-sm font-semibold text-gray-800 hidden sm:block">
+                  Welcome, {user.name}!
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <small
+                  onClick={() => router.push("/profile/dashboard")}
+                  className="text-sm px-4 py-1 text-white bg-blue-600 rounded hover:bg-blue-700"
+                >
+                  View Hub
+                </small>
+                <small
+
+  
+                  className="text-sm px-4 py-1 border border-gray-300 text-gray-700 rounded hover:bg-gray-50"
+                >
+                  Logout
+                </small>
+              </div>
+            </div>
+          </header>
+        )}
+
         <section className="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-12">
           <div className="max-w-6xl w-full grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
@@ -42,19 +79,28 @@ export default function Home() {
                 share your professional journey with ease and creativity.
               </p>
 
-              <div className="flex space-x-5">
-                <Button
-                  variant="outline"
-                  className="flex items-center w-[40%] gap-2 font-semibold"
-                >
-                  <LogIn className="w-5 h-5" />
-                  Login
-                </Button>
-
-                <Button className="flex w-[40%] items-center gap-2 bg-blue-600 hover:bg-blue-700">
-                  <UserPlus className="w-5 h-5" />
-                  Register
-                </Button>
+              <div className="flex flex-col items-center space-y-6 text-center">
+                <div className="flex flex-wrap justify-center gap-4">
+                  {user ? null : (
+                    <>
+                      <Button
+                        onClick={() => router.push("/auth/login")}
+                        className="flex items-center px-6 py-3 gap-2 font-medium text-white bg-blue-600 rounded-lg shadow hover:bg-blue-700 transition"
+                      >
+                        <LogIn className="w-5 h-5" />
+                        Login
+                      </Button>
+                      <Button
+                        onClick={() => router.push("/auth/register")}
+                        variant="outline"
+                        className="flex items-center px-6 py-3 gap-2 font-medium text-gray-700 border-gray-300 rounded-lg shadow-sm hover:border-gray-400 hover:bg-gray-50 transition"
+                      >
+                        <UserPlus className="w-5 h-5" />
+                        Sign Up
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
 
               <div className="flex flex-wrap gap-3 mt-6">
