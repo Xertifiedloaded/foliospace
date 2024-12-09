@@ -51,7 +51,6 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <h1 className="text-xl font-bold text-gray-800">Creatify</h1>
-
           <Menubar className="hidden md:flex">
             {navItems.map((item) => (
               <MenubarMenu key={item.path}>

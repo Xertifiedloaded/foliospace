@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [status, setStatus] = useState(undefined);
   const [error, setError] = useState(null);
   const router = useRouter();
-
+  const [isLoading, setIsLoading] = useState(true)
   const create = useCallback(async (payload) => {
     try {
       const res = await fetch("/api/auth/create", {
@@ -97,19 +97,29 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     async function fetchUser() {
-      const response = await fetch("/api/auth/session");
-      console.log(response);
-      const { decoded } = await response.json();
-      setUser(decoded);
+      try {
+        setIsLoading(true)
+        const response = await fetch("/api/auth/session")
+        const { decoded } = await response.json()
+        setUser(decoded)
+      } catch (error) {
+        console.error('Authentication error:', error)
+      } finally {
+        setIsLoading(false)
+      }
     }
-    fetchUser();
-  }, []);
+    
+    fetchUser()
+  }, [router])
+
+
   return (
     <Context.Provider
       value={{
         user,
         status,
         error,
+        isLoading,
         login,
         create,
         handleLogout,

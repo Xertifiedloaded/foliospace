@@ -13,7 +13,6 @@ interface PageViewItem {
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
 
-
   const pageViews: PageViewItem[] = [
     { period: "Today", views: 0 },
     { period: "Yesterday", views: 0 },
@@ -29,14 +28,16 @@ const Dashboard: React.FC = () => {
     <div>
       <div className="my-3">
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="my-2">Welcome to your dashboard {user && user.username}</p>
+        <p className="my-2">
+          Welcome to your dashboard {user && user.username}
+        </p>
       </div>
       <div className="space-y-6">
         <Card>
-          <CardContent>
+          <CardContent className="py-2">
             <div className="text-gray-700 py-4 space-y-4">
-              <p>
-                Your site:
+              <small className="text-muted-foreground block">
+                Your site: {" "}
                 <a
                   href="https://creatify.com/certifiedolaitan"
                   target="_blank"
@@ -45,9 +46,9 @@ const Dashboard: React.FC = () => {
                 >
                   https://creatify.com/certifiedolaitan
                 </a>
-              </p>
-              <p>
-                Your resume:
+              </small>
+              <small className="text-muted-foreground block">
+                Your resume: {" "}
                 <a
                   href="https://creatify.com/certifiedolaitan"
                   target="_blank"
@@ -56,7 +57,7 @@ const Dashboard: React.FC = () => {
                 >
                   https://creatify.com/certifiedolaitan
                 </a>
-              </p>
+              </small>
             </div>
           </CardContent>
         </Card>
@@ -67,7 +68,7 @@ const Dashboard: React.FC = () => {
               Profile Details
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="">
             <div className="space-y-3 text-gray-700">
               <div>
                 <p className="font-semibold">NickName</p>

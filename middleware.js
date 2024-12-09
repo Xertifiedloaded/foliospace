@@ -7,9 +7,11 @@ export async function middleware(req) {
     .split("; ")
     .find((row) => row.startsWith("token="))
     ?.split("=")[1];
-  console.log(token);
+
+  console.log("Token:", token);
+
   if (!token) {
-    return new NextResponse("Not authenticated", { status: 401 });
+    return NextResponse.redirect(new URL("/unauthorized?from=middleware", req.url));
   }
 
   try {
@@ -17,10 +19,11 @@ export async function middleware(req) {
       token,
       new TextEncoder().encode(process.env.JWT_SECRET)
     );
-    console.log(payload);
+    console.log("Token Payload:", payload);
     return NextResponse.next();
   } catch (error) {
-    return new NextResponse("Not authenticated", { status: 401 });
+    console.error("JWT verification failed:", error);
+    return NextResponse.redirect(new URL("/unauthorized?from=middleware", req.url));
   }
 }
 
@@ -31,6 +34,5 @@ export const config = {
     "/profile/links",
     "/profile/resume",
     "/profile/socials",
-    // "/api/:path*",
   ],
 };

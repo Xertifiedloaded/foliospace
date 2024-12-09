@@ -15,4 +15,78 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  profile    Profile?
+  portfolio  Portfolio?
+}
+
+model Profile {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @unique @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  
+  picture   String?
+  tagline   String?
+  bio       String?
+  hobbies   String[]
+  languages String[]
+}
+
+model Portfolio {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @unique @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  
+  links     Link[]
+  socials   Social[]
+  resume    Resume?
+}
+
+model Link {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  portfolioId  String     @db.ObjectId
+  portfolio    Portfolio  @relation(fields: [portfolioId], references: [id])
+  url          String
+  text         String
+}
+
+model Social {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  portfolioId  String     @db.ObjectId
+  portfolio    Portfolio  @relation(fields: [portfolioId], references: [id])
+  
+  name         String
+  link         String
+  isVisible    Boolean    @default(false)
+}
+
+model Resume {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  portfolioId  String     @unique @db.ObjectId
+  portfolio    Portfolio  @relation(fields: [portfolioId], references: [id])
+  
+  experiences  Experience[]
+  education    Education[]
+  skills       String[]
+}
+
+model Experience {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  resumeId String   @db.ObjectId
+  resume   Resume   @relation(fields: [resumeId], references: [id])
+  company  String
+  position String
+  startDate DateTime
+  endDate  DateTime?
+  description String?
+}
+
+model Education {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  resumeId String   @db.ObjectId
+  resume   Resume   @relation(fields: [resumeId], references: [id])
+  institution String
+  degree     String
+  startDate  DateTime
+  endDate    DateTime?
 }
