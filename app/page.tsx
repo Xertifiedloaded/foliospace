@@ -43,11 +43,7 @@ export default function Home() {
                 >
                   View Hub
                 </small>
-                <small
-
-  
-                  className="text-sm px-4 py-1 border border-gray-300 text-gray-700 rounded hover:bg-gray-50"
-                >
+                <small className="text-sm px-4 py-1 border border-gray-300 text-gray-700 rounded hover:bg-gray-50">
                   Logout
                 </small>
               </div>
@@ -79,13 +75,13 @@ export default function Home() {
                 share your professional journey with ease and creativity.
               </p>
 
-              <div className="flex flex-col items-center space-y-6 text-center">
-                <div className="flex flex-wrap justify-center gap-4">
-                  {user ? null : (
+              <div className="flex flex-col items-start space-y-6 text-start">
+                <div className="flex flex-wrap  gap-4">
+                  {!user && (
                     <>
                       <Button
                         onClick={() => router.push("/auth/login")}
-                        className="flex items-center px-6 py-3 gap-2 font-medium text-white bg-blue-600 rounded-lg shadow hover:bg-blue-700 transition"
+                        className="flex items-center px-10 py-3 gap-2 font-medium text-white bg-blue-600 rounded-lg shadow hover:bg-blue-700 transition"
                       >
                         <LogIn className="w-5 h-5" />
                         Login
@@ -93,7 +89,7 @@ export default function Home() {
                       <Button
                         onClick={() => router.push("/auth/register")}
                         variant="outline"
-                        className="flex items-center px-6 py-3 gap-2 font-medium text-gray-700 border-gray-300 rounded-lg shadow-sm hover:border-gray-400 hover:bg-gray-50 transition"
+                        className="flex items-center px-10 py-3 gap-2 font-medium text-gray-700 border-gray-300 rounded-lg shadow-sm hover:border-gray-400 hover:bg-gray-50 transition"
                       >
                         <UserPlus className="w-5 h-5" />
                         Sign Up
