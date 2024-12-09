@@ -1,13 +1,16 @@
-
+'use client'
 import Header from "@/components/Header";
 import { MobilePreview } from "@/components/Preview";
+
 
 import React, { ReactNode } from "react";
 interface ProfileLayoutProps {
     children: ReactNode;
   }
   
+  
   const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
+    
     return (
       <div className="bg-gray-50 min-h-screen">
         <Header />

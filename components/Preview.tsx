@@ -1,4 +1,8 @@
+
+
 export function MobilePreview() {
+
+
   return (
     <div className="flex justify-center items-center">
       <div className="relative w-[340px] h-[690px] bg-black rounded-[50px] overflow-hidden shadow-2xl">

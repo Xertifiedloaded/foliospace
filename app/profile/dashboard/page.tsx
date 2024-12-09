@@ -1,13 +1,19 @@
+"use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
+import { useAuth } from "@/hooks/use-auth";
+
 interface PageViewItem {
   period: string;
   views: number;
 }
 
 const Dashboard: React.FC = () => {
+  const { user } = useAuth();
+
+
   const pageViews: PageViewItem[] = [
     { period: "Today", views: 0 },
     { period: "Yesterday", views: 0 },
@@ -23,7 +29,7 @@ const Dashboard: React.FC = () => {
     <div>
       <div className="my-3">
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p>Welcome to your dashboard!</p>
+        <p className="my-2">Welcome to your dashboard {user && user.username}</p>
       </div>
       <div className="space-y-6">
         <Card>

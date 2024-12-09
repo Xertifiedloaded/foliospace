@@ -11,8 +11,8 @@ import Link from 'next/link'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useAuth } from '@/hooks/use-auth'
 
-// Login Form Validation Schema
 const LoginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters')
@@ -22,7 +22,7 @@ type LoginFormData = z.infer<typeof LoginSchema>
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
-
+  const { login } = useAuth();
   const { 
     register, 
     handleSubmit, 
@@ -34,11 +34,8 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true)
     try {
-      // Implement login logic
-      console.log('Login Data:', data)
-      // Typically would call an authentication service
+        await login(data); 
     } catch (error) {
-      // Handle login errors
       console.error('Login failed', error)
     } finally {
       setIsLoading(false)
@@ -112,7 +109,7 @@ export default function LoginPage() {
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
               <Link 
-                href="/auth/signup" 
+                href="/auth/register" 
                 className="text-blue-600 hover:underline"
               >
                 Sign Up
