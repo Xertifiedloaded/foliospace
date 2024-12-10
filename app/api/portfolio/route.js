@@ -29,31 +29,6 @@ export async function POST(req) {
 }
 
 
-export async function GET(req) {
-  try {
-    const { searchParams } = new URL(req.url)
-    const username = searchParams.get('username')
-    
-    const portfolio = await prisma.portfolio.findFirst({
-      where: { user: { username } },
-      include: {
-        user: { include: { profile: true } },
-        links: true,
-        socials: true,
-        resume: {
-          include: {
-            experiences: true,
-            education: true
-          }
-        }
-      }
-    })
-    
-    return Response.json(portfolio)
-  } catch (error) {
-    return Response.json({ error: error.message }, { status: 400 })
-  }
-}
 
 export async function PATCH(req) {
   try {
@@ -103,17 +78,3 @@ export async function PATCH(req) {
   }
 }
 
-export async function DELETE(req) {
-  try {
-    const { searchParams } = new URL(req.url)
-    const portfolioId = searchParams.get('id')
-    
-    const deletedPortfolio = await prisma.portfolio.delete({
-      where: { id: portfolioId }
-    })
-    
-    return Response.json(deletedPortfolio)
-  } catch (error) {
-    return Response.json({ error: error.message }, { status: 400 })
-  }
-}

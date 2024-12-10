@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "hooks/use-auth.js"
-, "app/portfolio/[slug]/page.jsx"  ],
+, "app/portfolio/[slug]/page.jsx", "sections/DashBoardHeading.jsx"  ],
   "exclude": [
     "node_modules"
   ]

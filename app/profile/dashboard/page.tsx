@@ -1,67 +1,18 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import { Separator } from "@/components/ui/separator";
 import React from "react";
-import { useAuth } from "@/hooks/use-auth";
-
-interface PageViewItem {
-  period: string;
-  views: number;
-}
+import PageView from "@/sections/PageView";
+import DashBoardHeading from "@/sections/DashBoardHeading";
+import DashBoardSkills from "@/sections/DashBoardSkills";
 
 const Dashboard: React.FC = () => {
-  const { user } = useAuth();
-
-  const pageViews: PageViewItem[] = [
-    { period: "Today", views: 0 },
-    { period: "Yesterday", views: 0 },
-    { period: "This Week", views: 0 },
-    { period: "Last Week", views: 0 },
-    { period: "Last Month", views: 0 },
-    { period: "Total", views: 0 },
-  ];
-
-  const skills: string[] = ["React", "Next.js", "TypeScript", "Node.js"];
 
   return (
     <div>
-      <div className="my-3">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="my-2">
-          Welcome to your dashboard {user && user?.username}
-        </p>
-      </div>
       <div className="space-y-6">
-        <Card>
-          <CardContent className="py-2">
-            <div className="text-gray-700 py-4 space-y-4">
-              <small className="text-muted-foreground block">
-                Your site:{" "}
-                <a
-                  href={`http://localhost:3000/portfolio/${user.username}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 bold hover:text-blue-800 hover:underline"
-                >
-                  http://localhost:3000/portfolio/{user.username}
-                </a>
-              </small>
-              <small className="text-muted-foreground block">
-                Your resume:{" "}
-                <a
-                  href={`http://localhost:3000/portfolio/${user.username}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 bold hover:text-blue-800 hover:underline"
-                >
-                  http://localhost:3000/portfolio/{user.username}
-                </a>
-              </small>
-            </div>
-          </CardContent>
-        </Card>
-
+        <DashBoardHeading />
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-gray-900">
@@ -80,43 +31,11 @@ const Dashboard: React.FC = () => {
                 <p>Innovative Software Developer</p>
               </div>
               <Separator />
-              <div>
-                <p className="font-semibold">Skills</p>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {skills.map((skill) => (
-                    <Badge key={skill} variant="outline">
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
+              <DashBoardSkills />
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-900">
-              Page Views
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {pageViews.map((item) => (
-                <div key={item.period} className="text-center">
-                  <p className="text-sm font-medium text-gray-600">
-                    {item.period}
-                  </p>
-                  <Badge
-                    variant="secondary"
-                    className="text-lg font-bold mt-1 px-4 py-2"
-                  >
-                    {item.views}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <PageView />
       </div>
     </div>
   );

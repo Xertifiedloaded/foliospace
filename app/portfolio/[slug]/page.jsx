@@ -1,90 +1,199 @@
-
 import { fetchUserPortfolio } from '@/hooks/use-api';
 import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { 
+  Accordion, 
+  AccordionContent, 
+  AccordionItem, 
+  AccordionTrigger 
+} from "@/components/ui/accordion";
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
+import { 
+  ExternalLink, 
+  MapPin, 
+  Briefcase, 
+  GraduationCap 
+} from "lucide-react";
 
-
-export default async function PortfolioPage({ params }) {
-  const username = (await params).slug
-  const portfolio = await fetchUserPortfolio(username);
+export default async function PortfolioPage({ params }) {  
+  const username = (await params).slug  
+  const portfolio = await fetchUserPortfolio(username); 
 
   if (!portfolio) {
     return (
-      <div className="text-center mt-10">
-        <h1 className="text-2xl font-bold">Portfolio Not Found</h1>
-        <p>We couldn't find any data for the user "{username}".</p>
+      <div className="flex min-h-screen items-center justify-center">
+        <Card className="w-[400px] text-center">
+          <CardHeader>
+            <CardTitle>Portfolio Not Found</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>We couldn't find any data for the user "{username}".</p>
+            <Button variant="outline" className="mt-4">Go Back</Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className=" wrapper p-6">
-      <h1 className="text-3xl font-bold mb-4">{portfolio?.name || 'User Portfolio'}</h1>
-      <p className=" font-bold mb-4">{portfolio?.email || 'User Portfolio'}</p>
-      <p className=" font-bold mb-4">{portfolio?.username || 'User Portfolio'}</p>
-
-      <section className="mb-6">
-        <h2 className="text-xl font-semibold">Links</h2>
-        {portfolio.portfolio?.links.length > 0 ? (
-          <ul>
-            {portfolio.portfolio.links.map((link) => (
-              <li key={link.id}>
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
-                  {link.url}
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No links available</p>
-        )}
-      </section>
-
-      <section className="mb-6">
-        <h2 className="text-xl font-semibold">Socials</h2>
-        {portfolio.portfolio?.socials.length > 0 ? (
-          <ul>
-            {portfolio.portfolio.socials.map((social) => (
-              <li key={social.id}>
-                <a href={social.url} target="_blank" rel="noopener noreferrer">
-                  {social.platform}
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No socials available</p>
-        )}
-      </section>
-
-      <section>
-        <h2 className="text-xl font-semibold">Resume</h2>
-        {portfolio.portfolio?.resume ? (
+    <div className="container mx-auto px-4 py-8 space-y-6">
+      {/* Profile Header */}
+      <Card>
+        <CardHeader className="flex flex-row items-center space-x-4">
           <div>
-            <h3 className="text-lg font-semibold">Experiences</h3>
-            <ul>
-              {portfolio.portfolio.resume.experiences.map((exp) => (
-                <li key={exp.id}>
-                  {exp.role} at {exp.company} ({exp.startDate} - {exp.endDate || 'Present'})
-                </li>
-              ))}
-            </ul>
-
-            <h3 className="text-lg font-semibold">Education</h3>
-            <ul>
-              {portfolio.portfolio.resume.education.map((edu) => (
-                <li key={edu.id}>
-                  {edu.degree} at {edu.school} ({edu.startDate} - {edu.endDate || 'Present'})
-                </li>
-              ))}
-            </ul>
+            <h1 className="text-3xl font-bold">{portfolio.name}</h1>
+            <p className="text-muted-foreground">{portfolio.email}</p>
+            <Badge variant="secondary" className="mt-2">@{portfolio.username}</Badge>
           </div>
-        ) : (
-          <p>No resume available</p>
-        )}
-      </section>
+        </CardHeader>
+      </Card>
+
+      {/* Links and Socials */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ExternalLink className="w-5 h-5" /> Links & Socials
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="links">
+              <AccordionTrigger>Links</AccordionTrigger>
+              <AccordionContent>
+                {portfolio.portfolio?.links.length > 0 ? (
+                  <ul className="space-y-2">
+                    {portfolio.portfolio.links.map((link) => (
+                      <li key={link.id}>
+                        <Button 
+                          variant="link" 
+                          className="p-0"
+                          asChild
+                        >
+                          <a 
+                            href={link.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                          >
+                            {link.url}
+                            <ExternalLink className="ml-2 w-4 h-4" />
+                          </a>
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-muted-foreground">No links available</p>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="socials">
+              <AccordionTrigger>Socials</AccordionTrigger>
+              <AccordionContent>
+                {portfolio.portfolio?.socials.length > 0 ? (
+                  <ul className="space-y-2">
+                    {portfolio.portfolio.socials.map((social) => (
+                      <li key={social.id}>
+                        <Button 
+                          variant="outline" 
+                          className="w-full justify-start"
+                          asChild
+                        >
+                          <a 
+                            href={social.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                          >
+                            {social.platform}
+                            <ExternalLink className="ml-2 w-4 h-4" />
+                          </a>
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-muted-foreground">No socials available</p>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </CardContent>
+      </Card>
+
+      {/* Resume */}
+      {portfolio.portfolio?.resume && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Briefcase className="w-5 h-5" /> Professional Experience
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Company</TableHead>
+                  <TableHead>Duration</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {portfolio.portfolio.resume.experiences.map((exp) => (
+                  <TableRow key={exp.id}>
+                    <TableCell>{exp.role}</TableCell>
+                    <TableCell>{exp.company}</TableCell>
+                    <TableCell>
+                      {exp.startDate} - {exp.endDate || 'Present'}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Education */}
+      {portfolio.portfolio?.resume && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <GraduationCap className="w-5 h-5" /> Education
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Degree</TableHead>
+                  <TableHead>Institution</TableHead>
+                  <TableHead>Duration</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {portfolio.portfolio.resume.education.map((edu) => (
+                  <TableRow key={edu.id}>
+                    <TableCell>{edu.degree}</TableCell>
+                    <TableCell>{edu.school}</TableCell>
+                    <TableCell>
+                      {edu.startDate} - {edu.endDate || 'Present'}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
-
-
-
