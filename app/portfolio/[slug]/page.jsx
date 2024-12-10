@@ -122,7 +122,7 @@ const PortfolioProfileCard = ({ portfolio, username }) => {
 };
 
 export default async function PortfolioPage({ params }) {
-  const username = params.slug;
+  const username = (await params).slug
   const portfolio = await fetchUserPortfolio(username);
 
   if (!portfolio) {
