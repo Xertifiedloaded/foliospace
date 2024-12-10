@@ -1,80 +1,57 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
-
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 export async function POST(req) {
+  const { userId, links, socials, resume } = await req.json();
+
   try {
-    const body = await req.json()
-    const { userId, links, socials, resume } = body
-    
-    const portfolio = await prisma.portfolio.create({
+    const newPortfolio = await prisma.portfolio.create({
       data: {
-        userId,
-        links: { create: links },
-        socials: { create: socials },
-        resume: {
-          create: {
-            experiences: { create: resume.experiences },
-            education: { create: resume.education },
-            skills: resume.skills
-          }
-        }
-      }
-    })
-    
-    return Response.json(portfolio, { status: 201 })
-  } catch (error) {
-    return Response.json({ error: error.message }, { status: 400 })
-  }
-}
-
-
-
-export async function PATCH(req) {
-  try {
-    const body = await req.json()
-    const { portfolioId, links, socials, resume } = body
-    
-    const updatedPortfolio = await prisma.portfolio.update({
-      where: { id: portfolioId },
-      data: {
+        user: {
+          connect: { id: userId },
+        },
         links: {
-          deleteMany: {},
-          create: links
+          create: links.map((link) => ({
+            url: link.url,
+            text: link.text,
+          })),
         },
         socials: {
-          deleteMany: {},
-          create: socials
+          create: socials.map((social) => ({
+            name: social.name,
+            link: social.link,
+            isVisible: social.isVisible || false,
+          })),
         },
-        resume: {
-          update: {
-            experiences: {
-              deleteMany: {},
-              create: resume.experiences
-            },
-            education: {
-              deleteMany: {},
-              create: resume.education
-            },
-            skills: resume.skills
-          }
-        }
+        resume: resume
+          ? {
+              create: {
+                experiences: {
+                  create: resume.experiences.map((exp) => ({
+                    company: exp.company,
+                    position: exp.position,
+                    startDate: new Date(exp.startDate),
+                    endDate: exp.endDate ? new Date(exp.endDate) : null,
+                    description: exp.description,
+                  })),
+                },
+                education: {
+                  create: resume.education.map((edu) => ({
+                    institution: edu.institution,
+                    degree: edu.degree,
+                    startDate: new Date(edu.startDate),
+                    endDate: edu.endDate ? new Date(edu.endDate) : null,
+                  })),
+                },
+                skills: resume.skills,
+              },
+            }
+          : undefined,
       },
-      include: {
-        links: true,
-        socials: true,
-        resume: {
-          include: {
-            experiences: true,
-            education: true
-          }
-        }
-      }
-    })
-    
-    return Response.json(updatedPortfolio)
+    });
+
+    return new Response(JSON.stringify(newPortfolio), { status: 201 });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 400 })
+    console.error("Error creating portfolio:", error);
+    return new Response(JSON.stringify({ error: "Failed to create portfolio" }), { status: 500 });
   }
 }
-

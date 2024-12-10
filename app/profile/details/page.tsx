@@ -1,4 +1,5 @@
 "use client"
+
 import React, { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -7,6 +8,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import SkillsSection from "@/components/ProfileSkillsData"
 import { useAuth } from "@/hooks/use-auth"
+import Image from "next/image"
+import { Loader2 } from "lucide-react"
+import { toast } from "@/hooks/use-toast"
+import { fileToBase64 } from "../../../middlware/FileToBase"
 
 interface ProfileData {
   userId: string
@@ -15,76 +20,117 @@ interface ProfileData {
   hobbies: string
   languages: string
   picture: File | null
+  previewUrl?: string
 }
 
-export default function Details() {
+export default function ProfileDetails() {
   const { user } = useAuth()
   const [formData, setFormData] = useState<ProfileData>({
-    userId: "", 
+    userId: "",
     tagline: "",
     bio: "",
     hobbies: "",
     languages: "",
-    picture: null
+    picture: null,
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     if (user?.id) {
-      setFormData(prev => ({ ...prev, userId: user?.id }))
+      setFormData((prev) => ({ ...prev, userId: user.id }))
     }
   }, [user])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, files } = e.target as HTMLInputElement
-    setFormData(prev => ({
-      ...prev,
-      [name]: files ? files[0] : value
-    }))
+    const { name, value, files } = e.target
+
+    if (files && files.length > 0) {
+      const file = files[0]
+      const previewUrl = URL.createObjectURL(file)
+
+      setFormData((prev) => ({
+        ...prev,
+        [name]: file,
+        previewUrl: previewUrl,
+      }))
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }))
+    }
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    const formDataToSend = new FormData()
-    Object.keys(formData).forEach(key => {
-      const value = formData[key as keyof ProfileData]
-      if (value !== null) {
-        formDataToSend.append(key, value as string | Blob)
-      }
-    })
-
+    setIsSubmitting(true)
+  
     try {
+      const pictureBase64 = formData.picture 
+        ? await fileToBase64(formData.picture) 
+        : null
+  
+      const payload = {
+        userId: user.id,
+        tagline: formData.tagline,
+        bio: formData.bio,
+        hobbies: formData.hobbies,
+        languages: formData.languages,
+        picture: pictureBase64,
+      }
+  
+      console.log("Payload being sent:", payload)
+
       const response = await fetch('/api/portfolio/details', {
         method: 'PATCH',
-        body: formDataToSend
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       })
-
-      if (response.ok) {
-        const result = await response.json()
-        console.log('Profile updated:', result)
-      } else {
-        console.error('Submission failed')
+  
+      const result = await response.json()
+  
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to update profile')
       }
+  
+      toast({ title: "Profile updated successfully!" })
     } catch (error) {
-      console.error('Error:', error)
+      console.log('Submission error:', error)
+      toast({ title: "Error updating profile", description: error.message, variant: "destructive" })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
   return (
-    <div>
+    <div className="container mx-auto px-4">
       <section>
         <Card>
           <CardHeader>
             <CardTitle>Profile Details</CardTitle>
           </CardHeader>
         </Card>
-        
+
         <Card className="mt-4">
           <CardHeader>
             <CardTitle className="text-sm">Basic Information</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+              {formData.previewUrl && (
+                <div className="flex justify-center mb-4">
+                  <Image
+                    src={formData.previewUrl}
+                    alt="Profile Preview"
+                    width={150}
+                    height={150}
+                    className="rounded-full object-cover"
+                  />
+                </div>
+              )}
+
               <div>
                 <Label htmlFor="tagline">Tagline</Label>
                 <Input
@@ -115,7 +161,7 @@ export default function Details() {
                   name="hobbies"
                   value={formData.hobbies}
                   onChange={handleChange}
-                  placeholder="Enter your hobbies"
+                  placeholder="Enter your hobbies (comma-separated)"
                 />
               </div>
 
@@ -126,7 +172,7 @@ export default function Details() {
                   name="languages"
                   value={formData.languages}
                   onChange={handleChange}
-                  placeholder="Enter the languages you speak"
+                  placeholder="Enter the languages you speak (comma-separated)"
                 />
               </div>
 
@@ -141,8 +187,15 @@ export default function Details() {
                 />
               </div>
 
-              <Button type="submit" className="w-full">
-                Save Profile
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Profile"
+                )}
               </Button>
             </form>
           </CardContent>
