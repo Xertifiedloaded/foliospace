@@ -103,7 +103,6 @@ export const AuthProvider = ({ children }) => {
         const { decoded } = await response.json()
         setUser(decoded)
       } catch (error) {
-        console.error('Authentication error:', error)
       } finally {
         setIsLoading(false)
       }
