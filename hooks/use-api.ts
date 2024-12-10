@@ -11,13 +11,30 @@ export async function fetchUserPortfolio(username: string) {
     const data = await res.json();
     console.log('Parsed Data:', data);
 
-    return data;
+    const {
+      name,
+      email,
+      profile: { id, userId, picture, tagline, bio, hobbies, languages },
+      socials,
+      links,
+      experiences,
+      education,
+    } = data;
+
+    return {
+      name,
+      email,
+      profile: { id, userId, picture, tagline, bio, hobbies, languages },
+      socials,
+      links,
+      experiences,
+      education,
+    };
   } catch (error) {
     console.error('Error while fetching portfolio:', error);
     return null;
   }
 }
-
 
 export async function fetchProfileInfo() {
   try {

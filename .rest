@@ -1,122 +1,65 @@
-POST http://localhost:3000/api/portfolio
-Content-Type: application/json
 
-{
-  "userId": "6757d4c4c1ccfaa029bf23d2", 
-  "links": [
-    { "url": "https://twitter.com", "text": "Twitter" },
-    { "url": "https://instagram.com", "text": "Instagram" },
-    { "url": "https://facebook.com", "text": "Facebook" },
-    { "url": "https://medium.com", "text": "Medium Blog" },
-    { "url": "https://stackoverflow.com", "text": "Stack Overflow" },
-    { "url": "https://youtube.com", "text": "YouTube" }
-  ],
-  "socials": [
-  { "name": "Facebook", "link": "https://facebook.com", "isVisible": true },
-    { "name": "LinkedIn", "link": "https://linkedin.com", "isVisible": true },
-    { "name": "YouTube", "link": "https://youtube.com", "isVisible": false },
-    { "name": "GitHub", "link": "https://github.com", "isVisible": true },
-    { "name": "Stack Overflow", "link": "https://stackoverflow.com", "isVisible": true }
-  ],
-  "resume": {
-    "experiences": [
-      {
-        "company": "TechCorp",
-        "position": "Software Engineer",
-        "startDate": "2022-01-01",
-        "endDate": "2023-12-31",
-        "description": "Developed web applications"
-      }
-    ],
-    "education": [
-      {
-        "institution": "University of Tech",
-        "degree": "Bachelor's in Computer Science",
-        "startDate": "2018-09-01",
-        "endDate": "2022-06-30"
-      }
-    ],
-    "skills": ["JavaScript", "React", "Node.js"]
-  }
-}
-
-
-
-# POST http://localhost:3000/api/skills
+### Update User Profile
+# PATCH http://localhost:3000/api/portfolio/profile
 # Content-Type: application/json
 
 # {
-# "portfolioId": "67584971810409ab5b7d6154",
-#   "skills": ["JavaScript", "React", "Node.js", "TypeScript"]
-# }
-
-
-
-# POST http://localhost:3000/api/link
-# Content-Type: application/json
-
-# {
-#   "url": "https://example.com",
-#   "text": "Example Link",
-#   "portfolioId": "67584971810409ab5b7d6154"
-# }
-
-
-# POST http://localhost:3000/api/social
-# Content-Type: application/json
-
-# {
-#   "name": "Twitch",
-#   "link": "https://twitter.com/username",
-# "portfolioId": "67584971810409ab5b7d6154",
-#   "isVisible": true
-# }
-
-
-
-
-
-### Create Portfolio
-
-# POST http://localhost:3000/api/resume
-# Content-Type: application/json
-
-# {
-#   "userId": "6757d4c4c1ccfaa029bf23d2", 
-#   "resume": {
-#     "experiences": [
-#       {
-#         "company": "Company A",
-#         "position": "Developer",
-#         "startDate": "2022-01-01",
-#         "endDate": "2023-01-01",
-#         "description": "Worked on developing the XYZ project."
-#       }
-#     ],
-#     "education": [
-#       {
-#         "institution": "University X",
-#         "degree": "Bachelor's in Computer Science",
-#         "startDate": "2018-01-01",
-#         "endDate": "2022-01-01"
-#       }
-#     ]
-#   }
-# }
-
-
-### Create Profile for User
-
-# POST http://localhost:3000/api/profile
-# Content-Type: application/json
-
-# {
-#  "userId": "6757d4c4c1ccfaa029bf23d2", 
-#   "picture": "https://example.com/profile-picture.jpg",
-#   "tagline": "Passionate Developer",
-#   "bio": "Experienced developer with a passion for coding and solving complex problems.",
-#   "hobbies": ["Reading", "Coding", "Gaming"],
+#   "userId": "6758ab84cde2ce0b60aec2b4", 
+#   "picture": "https://example.com/profile.jpg",
+#   "tagline": "Full Stack Developer",
+#   "bio": "Passionate about creating impactful solutions through code.",
+#   "hobbies": ["coding", "reading", "traveling"],
 #   "languages": ["English", "Spanish"]
 # }
 
 
+//////////////////////////////////////
+
+
+### Create a New Social Record
+# POST http://localhost:3000/api/portfolio/socials
+# Content-Type: application/json
+
+# {
+#   "userId": "6758ab84cde2ce0b60aec2b4",
+#   "name": "GitHub",
+#   "link": "https://github.com/example",
+#   "isVisible": true
+# }
+
+POST http://localhost:3000/api/portfolio/links
+Content-Type: application/json
+
+{
+  "userId": "6758ab84cde2ce0b60aec2b4",
+  "text": "GitHub",
+  "url": "https://github.com/example",
+  "isVisible": true
+}
+
+
+### Create a New Education Record
+# POST http://localhost:3000/api/portfolio/education
+# Content-Type: application/json
+
+# {
+#   "userId": "6758ab84cde2ce0b60aec2b4",
+#   "institution": "University of Example",
+#   "degree": "Bachelor of Science in Computer Science",
+#   "startDate": "2020-01-01T00:00:00.000Z",
+#   "endDate": "2024-01-01T00:00:00.000Z"
+# }
+
+
+### Create a New Experience Record
+POST http://localhost:3000/api/portfolio/experience
+Content-Type: application/json
+
+{
+  "userId": "6758ab84cde2ce0b60aec2b4",
+  "company": "Tech Innovators Inc.",
+  "position": "Software Engineer",
+  "startDate": "2018-06-01T00:00:00.000Z",
+  "endDate": "2022-12-31T00:00:00.000Z",
+  "description": "Developed and maintained cutting-edge applications for various clients."
+}

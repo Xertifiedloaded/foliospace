@@ -6,6 +6,7 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
 model User {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   username    String     @unique
@@ -14,15 +15,19 @@ model User {
   password    String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  profile     Profile?   @relation("UserProfile", fields: [profileId], references: [id], onDelete: Cascade)
-  profileId   String?    @unique @db.ObjectId
-  portfolio   Portfolio? @relation("UserPortfolio", fields: [portfolioId], references: [id], onDelete: Cascade)
-  portfolioId String?    @unique @db.ObjectId
+
+  profile     Profile?
+  socials     Social[]
+  links       Link[]
+  experiences Experience[]
+  education   Education[]
+  skills      String[]
 }
 
 model Profile {
   id         String  @id @default(auto()) @map("_id") @db.ObjectId
-  user       User?   @relation("UserProfile")
+  userId     String? @unique @db.ObjectId
+  user       User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   picture    String?
   tagline    String?
   bio        String?
@@ -30,45 +35,30 @@ model Profile {
   languages  String[]
 }
 
-
-model Portfolio {
-  id         String  @id @default(auto()) @map("_id") @db.ObjectId
-  user       User?   @relation("UserPortfolio")
-  links      Link[]
-  socials    Social[]
-  resume     Resume?
-}
-
 model Link {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  portfolio   Portfolio? @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
-  portfolioId String?    @db.ObjectId
+  userId      String?    @db.ObjectId
+  user        User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   url         String?
   text        String?
 }
 
 model Social {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  portfolio   Portfolio? @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
-  portfolioId String?    @db.ObjectId
+  userId      String?    @db.ObjectId
+  user        User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   name        String?
   link        String?
   isVisible   Boolean    @default(false)
 }
 
-
-model Resume {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  portfolio   Portfolio?   @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
-  portfolioId String?      @unique @db.ObjectId
-  experiences Experience[]
-  education   Education[]
-  skills      String[]
-}
 model Experience {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  resume      Resume?   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  resumeId    String?   @db.ObjectId
+  userId      String?   @db.ObjectId
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   company     String?
   position    String?
   startDate   DateTime?
@@ -78,10 +68,14 @@ model Experience {
 
 model Education {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  resume      Resume?   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  resumeId    String?   @db.ObjectId
+  userId      String?   @db.ObjectId
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   institution String?
   degree      String?
   startDate   DateTime?
   endDate     DateTime?
 }
+
+
+

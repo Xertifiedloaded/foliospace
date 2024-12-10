@@ -44,7 +44,7 @@ export default function LinksSection() {
 
   const addLink = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newLink.url && newLink.text && user?.portfolioId) {
+    if (newLink.url && newLink.text && user?.id) {
       const formattedLink: LinkData = {
         url: newLink.url.startsWith("http") 
           ? newLink.url 
