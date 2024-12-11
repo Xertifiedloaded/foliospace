@@ -2,10 +2,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Play, Maximize2, BookOpen, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useInView } from "react-intersection-observer";
 
 const BrandSection: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [autoplayError, setAutoplayError] = useState(false);
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.5 });
 
   const handleVideoFocus = () => {
     if (videoRef.current) {
@@ -30,9 +33,19 @@ const BrandSection: React.FC = () => {
 
       const playPromise = videoElement.play();
       if (playPromise !== undefined) {
-        playPromise.catch((error) => {
-          console.error("Autoplay prevented:", error);
-        });
+        playPromise
+          .then(() => {
+            console.log("Video is playing.");
+          })
+          .catch((error) => {
+            console.error("Autoplay prevented:", error);
+            setAutoplayError(true);
+
+            // Retry playback on user interaction
+            videoElement.addEventListener("click", () => {
+              videoElement.play().catch((err) => console.error("Play failed:", err));
+            });
+          });
       }
     }
   }, []);
@@ -40,23 +53,36 @@ const BrandSection: React.FC = () => {
   return (
     <section
       className="grid md:grid-cols-2 items-center gap-12 
-    wrapper px-6 lg:px-12 py-16"
+      wrapper px-6 lg:px-12 py-16"
     >
-      <div className="w-full relative group">
+      <div className="w-full relative group" ref={ref}>
         <div
           className="relative overflow-hidden rounded-2xl shadow-2xl 
           transition-all duration-300 ease-in-out"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          <video
-            ref={videoRef}
-            src="/video/record.mov"
-            className="w-full h-auto object-cover rounded-2xl 
-            transform transition-transform duration-300 
-            group-hover:scale-[1.02]"
-            preload="auto"
-          />
+          {inView && (
+            <video
+              ref={videoRef}
+              src="/video/record.mov"
+              className="w-full h-auto object-cover rounded-2xl 
+              transform transition-transform duration-300 
+              group-hover:scale-[1.02]"
+              preload="auto"
+            />
+          )}
+
+          {autoplayError && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+              <button
+                onClick={() => videoRef.current?.play()}
+                className="bg-white text-black px-4 py-2 rounded-md"
+              >
+                Click to Play
+              </button>
+            </div>
+          )}
 
           <div
             className={`absolute inset-0 flex items-center justify-center 
