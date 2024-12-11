@@ -14,7 +14,7 @@ import { toast } from "@/hooks/use-toast";
 import { fileToBase64 } from "../../../middlware/FileToBase";
 
 interface ProfileData {
-  userId: string;
+  userId?: string;
   tagline: string;
   bio: string;
   hobbies: string;
@@ -62,9 +62,8 @@ export default function ProfileDetails() {
           }
         } catch (error) {
           toast({
-            title: "Error fetching profile",
-            description: error.message,
-            variant: "destructive",
+            description: "Failed to update project",
+            variant: "destructive"
           });
         }
       };
@@ -75,16 +74,18 @@ export default function ProfileDetails() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, files } = e.target;
-
-    if (files && files.length > 0) {
-      const file = files[0];
+    const target = e.target as HTMLInputElement; 
+  
+    const { name, value } = target;
+  
+    if (target.files && target.files.length > 0) {
+      const file = target.files[0];
       const previewUrl = URL.createObjectURL(file);
-
+  
       setFormData((prev) => ({
         ...prev,
         [name]: file,
-        previewUrl: previewUrl,
+        previewUrl,
       }));
     } else {
       setFormData((prev) => ({
@@ -93,6 +94,7 @@ export default function ProfileDetails() {
       }));
     }
   };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,7 +106,7 @@ export default function ProfileDetails() {
         : null;
 
       const payload = {
-        userId: user.id,
+        userId: user?.id,
         tagline: formData?.tagline,
         bio: formData?.bio,
         hobbies: formData?.hobbies,
@@ -128,14 +130,26 @@ export default function ProfileDetails() {
         throw new Error(result.message || "Failed to update profile");
       }
 
-      toast({ title: "Profile updated successfully!" });
-    } catch (error) {
-      console.log("Submission error:", error);
       toast({
-        title: "Error updating profile",
-        description: error.message,
-        variant: "destructive",
+        description: "Project updated successfully",
+        variant: "default"
       });
+    }catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log("Submission error:", error);
+        toast({
+          title: "Error updating profile",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        console.log("Unknown error:", error);
+        toast({
+          title: "Error updating profile",
+          description: "An unknown error occurred.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }

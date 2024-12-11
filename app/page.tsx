@@ -26,11 +26,6 @@ export default function Home() {
           <header className="p-4 bg-gray-100 shadow-sm">
             <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between">
               <div className="flex items-center space-x-4">
-                <img
-                  src={user?.profileImage ?? "/images/user.jpg"}
-                  alt={`${user?.name}'s profile`}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
                 <span className="text-sm font-semibold text-gray-800 hidden sm:block">
                   Welcome, {user.name}!
                 </span>

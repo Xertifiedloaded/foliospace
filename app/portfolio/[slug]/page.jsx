@@ -16,11 +16,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ExternalLink, MapPin, Briefcase, GraduationCap } from "lucide-react";
+import {
+  ExternalLink,
+  MapPin,
+  Briefcase,
+  GraduationCap,
+  Badge,
+} from "lucide-react";
 import { fetchUserPortfolio } from "@/hooks/use-api";
-import { PortfolioProfileCard } from '../../../components/UserProfileCard';
-
-
+import { PortfolioProfileCard } from "../../../components/UserProfileCard";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default async function PortfolioPage({ params }) {
   const username = (await params).slug;
@@ -115,7 +125,7 @@ export default async function PortfolioPage({ params }) {
         </CardContent>
       </Card>
 
-      {/* Resume */}
+
       {portfolio?.experiences && (
         <Card>
           <CardHeader>
@@ -195,6 +205,92 @@ export default async function PortfolioPage({ params }) {
                             day: "numeric",
                           })
                         : "Present"}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
+
+      {portfolio?.projects && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Briefcase className="w-5 h-5" /> Projects
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Technologies</TableHead>
+                  <TableHead>Links</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {portfolio?.projects.map((project) => (
+                  <TableRow key={project.id}>
+                    <TableCell className="font-medium">
+                      {project.title}
+                    </TableCell>
+                    <TableCell className="max-w-xs truncate">
+                      {project.description}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {project.technologies?.map((tech, index) => (
+                          <Badge
+                            key={index}
+                            variant="secondary"
+                            className="text-xs"
+                          >
+                            {tech}
+                          </Badge>
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        {project.link && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <a
+                                  href={project.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <ExternalLink className="w-4 h-4 text-blue-500 hover:text-blue-700" />
+                                </a>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Project Link</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                        {project.githubLink && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <a
+                                  href={project.githubLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                </a>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>GitHub Repository</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -11,8 +11,8 @@ import { toast } from "@/hooks/use-toast";
 
 interface PortfolioProject {
   id?: string;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   technologies: string[];
   link?: string;
   githubLink?: string;
@@ -381,7 +381,7 @@ export default function PortfolioSection() {
                     <div className="flex gap-2">
                       <Button
                         variant="outline"
-                        onClick={() => editProject(project.id)}
+                        onClick={() => editProject(project.id || '')}
                         disabled={isLoading}
                       >
                         Edit

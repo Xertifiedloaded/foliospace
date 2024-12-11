@@ -5,18 +5,68 @@ import React, {
   useContext,
   useEffect,
   useState,
+  ReactNode,
 } from "react";
 import cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-const Context = createContext({});
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [status, setStatus] = useState(undefined);
-  const [error, setError] = useState(null);
+interface User {
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+  profile?: object; 
+  projects?: object[]; 
+  socials?: object[]; 
+  links?: object[]; 
+  experiences?: object[]; 
+  education?: object[]; 
+  skills?: string[];
+}
+
+interface AuthContextProps {
+  user: User | null;
+  status: "loggedIn" | "loggedOut" | undefined;
+  error: string | null;
+  isLoading: boolean;
+  login: (payload: LoginPayload) => Promise<void>;
+  create: (payload: CreatePayload) => Promise<void>;
+  handleLogout: () => Promise<void>;
+}
+
+interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+interface CreatePayload {
+  username: string;
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+// Create Context
+const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [status, setStatus] = useState<"loggedIn" | "loggedOut" | undefined>(
+    undefined
+  );
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true)
-  const create = useCallback(async (payload) => {
+
+  // Create User
+  const create = useCallback(async (payload: CreatePayload) => {
     try {
       const res = await fetch("/api/auth/create", {
         method: "POST",
@@ -26,7 +76,7 @@ export const AuthProvider = ({ children }) => {
         },
         body: JSON.stringify(payload),
       });
-      console.log(res);
+
       if (res.ok) {
         const { user } = await res.json();
         setUser(user);
@@ -37,13 +87,14 @@ export const AuthProvider = ({ children }) => {
         const errorData = await res.json();
         throw new Error(errorData.message || "Registration failed");
       }
-    } catch (error) {
+    } catch (error: any) {
       setError(error.message);
       console.error("Registration error:", error);
     }
-  }, []);
+  }, [router]);
 
-  const login = useCallback(async (payload) => {
+  // Login User
+  const login = useCallback(async (payload: LoginPayload) => {
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -53,11 +104,9 @@ export const AuthProvider = ({ children }) => {
         },
         body: JSON.stringify(payload),
       });
-      console.log(res);
+
       if (res.ok) {
         const { user, token } = await res.json();
-        console.log(token);
-        console.log(user);
         cookies.set("token", token, { expires: 7 });
         setUser(user);
         setStatus("loggedIn");
@@ -67,12 +116,11 @@ export const AuthProvider = ({ children }) => {
         const errorData = await res.json();
         throw new Error(errorData.message || "Login failed");
       }
-    } catch (error) {
+    } catch (error: any) {
       setError(error.message);
       console.error("Login error:", error);
     }
-  }, []);
-
+  }, [router]);
 
   // Logout User
   const handleLogout = useCallback(async () => {
@@ -95,25 +143,25 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // Fetch Session User
   useEffect(() => {
-    async function fetchUser() {
+    const fetchUser = async () => {
       try {
-        setIsLoading(true)
-        const response = await fetch("/api/auth/session")
-        const { decoded } = await response.json()
-        setUser(decoded)
+        setIsLoading(true);
+        const response = await fetch("/api/auth/session");
+        const { decoded } = await response.json();
+        setUser(decoded);
       } catch (error) {
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    
-    fetchUser()
-  }, [router])
+    };
 
+    fetchUser();
+  }, [router]);
 
   return (
-    <Context.Provider
+    <AuthContext.Provider
       value={{
         user,
         status,
@@ -125,8 +173,15 @@ export const AuthProvider = ({ children }) => {
       }}
     >
       {children}
-    </Context.Provider>
+    </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(Context);
+// Hook to use Auth Context
+export const useAuth = (): AuthContextProps => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
