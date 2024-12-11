@@ -39,6 +39,7 @@ const Header: React.FC = () => {
     { path: "/profile/socials", title: "Socials", icon: Share2 },
     { path: "/profile/resume", title: "Resume", icon: FileText },
     { path: "/profile/portfolio", title: "Portfolio", icon: Palette },
+    { path: "/profile/page-view", title: "Page View", icon: Palette },
   ];
 
   const { user } = useAuth();

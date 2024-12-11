@@ -1,4 +1,3 @@
-
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
@@ -6,7 +5,7 @@ const prisma = new PrismaClient();
 
 export async function GET(request, { params }) {
   try {
-    const username = (await params).username
+    const username = (await params).username;
 
     const user = await prisma.user.findUnique({
       where: { username },
@@ -15,6 +14,7 @@ export async function GET(request, { params }) {
         socials: true,
         links: true,
         experiences: { orderBy: { startDate: 'desc' } },
+        projects: true,
         education: { orderBy: { startDate: 'desc' } },
       },
     });
@@ -28,10 +28,20 @@ export async function GET(request, { params }) {
 
     const { password, ...safeUserData } = user;
 
-    return NextResponse.json(safeUserData, {
+    const sanitizedUserData = {
+      ...safeUserData,
+      profile: user.profile || {},
+      projects: user.projects || [],  
+      socials: user.socials || [],
+      links: user.links || [],
+      experiences: user.experiences || [],
+      education: user.education || [],
+    };
+
+    return NextResponse.json(sanitizedUserData, {
       status: 200,
       headers: {
-        'Cache-Control': 'no-store, max-age=0', 
+        'Cache-Control': 'no-store, max-age=0',
       },
     });
   } catch (error) {

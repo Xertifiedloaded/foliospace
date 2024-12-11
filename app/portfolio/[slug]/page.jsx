@@ -48,7 +48,6 @@ export default async function PortfolioPage({ params }) {
     <div className="container mx-auto px-4 py-8 space-y-6">
       <PortfolioProfileCard portfolio={portfolio} username={username} />
 
-      {/* Links and Socials */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

@@ -51,15 +51,34 @@ Content-Type: application/json
 # }
 
 
-### Create a New Experience Record
-POST http://localhost:3000/api/portfolio/experience
+## Create a New Experience Record
+# POST http://localhost:3000/api/portfolio/experience
+# Content-Type: application/json
+
+# {
+#   "userId": "6758ab84cde2ce0b60aec2b4",
+#   "company": "Tech Innovators Inc.",
+#   "position": "Software Engineer",
+#   "startDate": "2018-06-01T00:00:00.000Z",
+#   "endDate": "2022-12-31T00:00:00.000Z",
+#   "description": "Developed and maintained cutting-edge applications for various clients."
+# }
+
+
+# GET http://localhost:3000/api/portfolio/projects?userId=675983486b2d0012ea586c6d
+
+# Content-Type: application/json
+
+
+GET http://localhost:3000/api/portfolio/Xertifiedloaded
 Content-Type: application/json
 
-{
-  "userId": "6758ab84cde2ce0b60aec2b4",
-  "company": "Tech Innovators Inc.",
-  "position": "Software Engineer",
-  "startDate": "2018-06-01T00:00:00.000Z",
-  "endDate": "2022-12-31T00:00:00.000Z",
-  "description": "Developed and maintained cutting-edge applications for various clients."
-}
+# {
+#   "userId": "675983486b2d0012ea586c6d",
+#   "title": "Project Title",
+#   "description": "Project Description",
+#   "technologies": ["React", "Node.js"],
+#   "link": "https://projectlink.com",
+#   "githubLink": "https://github.com/project",
+#   "image": "image1.jpg"
+# }

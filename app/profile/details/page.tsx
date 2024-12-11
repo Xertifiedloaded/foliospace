@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import SkillsSection from "@/components/ProfileSkillsData"
-import { useAuth } from "@/hooks/use-auth"
-import Image from "next/image"
-import { Loader2 } from "lucide-react"
-import { toast } from "@/hooks/use-toast"
-import { fileToBase64 } from "../../../middlware/FileToBase"
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import SkillsSection from "@/components/ProfileSkillsData";
+import { useAuth } from "@/hooks/use-auth";
+import Image from "next/image";
+import { Loader2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { fileToBase64 } from "../../../middlware/FileToBase";
 
 interface ProfileData {
-  userId: string
-  tagline: string
-  bio: string
-  hobbies: string
-  languages: string
-  picture: File | null
-  previewUrl?: string
+  userId: string;
+  tagline: string;
+  bio: string;
+  hobbies: string;
+  languages: string;
+  picture: File | null;
+  previewUrl?: string;
 }
 
 export default function ProfileDetails() {
-  const { user } = useAuth()
+  const { user } = useAuth();
   const [formData, setFormData] = useState<ProfileData>({
     userId: "",
     tagline: "",
@@ -32,77 +32,114 @@ export default function ProfileDetails() {
     hobbies: "",
     languages: "",
     picture: null,
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
-      setFormData((prev) => ({ ...prev, userId: user.id }))
+      const fetchProfile = async () => {
+        try {
+          const response = await fetch(
+            `/api/portfolio/profile?userId=${user?.id}`
+          );
+          const data = await response.json();
+          if (response.ok) {
+            setFormData({
+              userId: data.userId || "",
+              tagline: data.tagline || "",
+              bio: data.bio || "",
+              hobbies: data.hobbies || "",
+              languages: data.languages || "",
+              picture: null,
+              previewUrl: data.picture || "",
+            });
+          } else {
+            toast({
+              title: "Error fetching profile",
+              description: data.message,
+              variant: "destructive",
+            });
+          }
+        } catch (error) {
+          toast({
+            title: "Error fetching profile",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      };
+      fetchProfile();
     }
-  }, [user])
+  }, [user]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, files } = e.target
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, files } = e.target;
 
     if (files && files.length > 0) {
-      const file = files[0]
-      const previewUrl = URL.createObjectURL(file)
+      const file = files[0];
+      const previewUrl = URL.createObjectURL(file);
 
       setFormData((prev) => ({
         ...prev,
         [name]: file,
         previewUrl: previewUrl,
-      }))
+      }));
     } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
-      }))
+        [name]: value ?? "",
+      }));
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-  
+    e.preventDefault();
+    setIsSubmitting(true);
+
     try {
-      const pictureBase64 = formData.picture 
-        ? await fileToBase64(formData.picture) 
-        : null
-  
+      const pictureBase64 = formData?.picture
+        ? await fileToBase64(formData?.picture)
+        : null;
+
       const payload = {
         userId: user.id,
-        tagline: formData.tagline,
-        bio: formData.bio,
-        hobbies: formData.hobbies,
-        languages: formData.languages,
+        tagline: formData?.tagline,
+        bio: formData?.bio,
+        hobbies: formData?.hobbies,
+        languages: formData?.languages,
         picture: pictureBase64,
-      }
-  
-      console.log("Payload being sent:", payload)
+      };
 
-      const response = await fetch('/api/portfolio/details', {
-        method: 'PATCH',
+      console.log("Payload being sent:", payload);
+
+      const response = await fetch("/api/portfolio/profile", {
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-      })
-  
-      const result = await response.json()
-  
+      });
+
+      const result = await response.json();
+
       if (!response.ok) {
-        throw new Error(result.message || 'Failed to update profile')
+        throw new Error(result.message || "Failed to update profile");
       }
-  
-      toast({ title: "Profile updated successfully!" })
+
+      toast({ title: "Profile updated successfully!" });
     } catch (error) {
-      console.log('Submission error:', error)
-      toast({ title: "Error updating profile", description: error.message, variant: "destructive" })
+      console.log("Submission error:", error);
+      toast({
+        title: "Error updating profile",
+        description: error.message,
+        variant: "destructive",
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="container mx-auto px-4">
@@ -119,14 +156,15 @@ export default function ProfileDetails() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {formData.previewUrl && (
+              {formData?.previewUrl && (
                 <div className="flex justify-center mb-4">
-                  <Image
-                    src={formData.previewUrl}
+                  <img
+                    src={
+                      `data:image/jpeg;base64,${formData?.previewUrl}` ||
+                      `${formData.previewUrl}`
+                    }
                     alt="Profile Preview"
-                    width={150}
-                    height={150}
-                    className="rounded-full object-cover"
+                    className="rounded-full w-24 h-24 object-cover"
                   />
                 </div>
               )}
@@ -136,7 +174,7 @@ export default function ProfileDetails() {
                 <Input
                   id="tagline"
                   name="tagline"
-                  value={formData.tagline}
+                  value={formData?.tagline ?? ""}
                   onChange={handleChange}
                   placeholder="Enter your tagline"
                   required
@@ -148,7 +186,7 @@ export default function ProfileDetails() {
                 <Textarea
                   id="bio"
                   name="bio"
-                  value={formData.bio}
+                  value={formData?.bio ?? ""}
                   onChange={handleChange}
                   placeholder="Tell us about yourself"
                 />
@@ -159,7 +197,7 @@ export default function ProfileDetails() {
                 <Input
                   id="hobbies"
                   name="hobbies"
-                  value={formData.hobbies}
+                  value={formData?.hobbies ?? ""}
                   onChange={handleChange}
                   placeholder="Enter your hobbies (comma-separated)"
                 />
@@ -170,7 +208,7 @@ export default function ProfileDetails() {
                 <Input
                   id="languages"
                   name="languages"
-                  value={formData.languages}
+                  value={formData?.languages?? ""}
                   onChange={handleChange}
                   placeholder="Enter the languages you speak (comma-separated)"
                 />
@@ -205,5 +243,5 @@ export default function ProfileDetails() {
         <SkillsSection />
       </section>
     </div>
-  )
+  );
 }

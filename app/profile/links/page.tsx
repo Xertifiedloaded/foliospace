@@ -6,12 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X, Plus, Link as LinkIcon } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { fetchUserPortfolio } from "@/hooks/use-api";
 
 interface LinkData {
+  id?: string;
+  userId: string;
   url: string;
   text: string;
-  portfolioId: string;
 }
 
 export default function LinksSection() {
@@ -26,13 +26,17 @@ export default function LinksSection() {
 
   useEffect(() => {
     const fetchLinks = async () => {
-      if (!user?.portfolioId) return;
+      if (!user?.id) return;
       
       try {
-        const { portfolio } = await fetchUserPortfolio(user?.username);
-        if (portfolio?.links) {
-          setLinks(portfolio.links);
+        const response = await fetch(`/api/portfolio/links?userId=${user.id}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch links');
         }
+        
+        const fetchedLinks = await response.json();
+        setLinks(fetchedLinks);
       } catch (err) {
         console.error("Failed to fetch links", err);
         setError("Could not load existing links");
@@ -40,55 +44,57 @@ export default function LinksSection() {
     };
     
     fetchLinks();
-  }, [user?.username]);
+  }, [user?.id]);
 
-  const addLink = (e: React.FormEvent) => {
+  const addLink = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newLink.url && newLink.text && user?.id) {
-      const formattedLink: LinkData = {
-        url: newLink.url.startsWith("http") 
-          ? newLink.url 
-          : `https://${newLink.url}`,
-        text: newLink.text,
-        portfolioId: user.portfolioId
-      };
+      setIsLoading(true);
+      try {
+        const formattedLink = {
+          userId: user.id,
+          url: newLink.url.startsWith("http") 
+            ? newLink.url 
+            : `https://${newLink.url}`,
+          text: newLink.text
+        };
 
-      setLinks([...links, formattedLink]);
-      setNewLink({ url: "", text: "" });
+        const response = await fetch('/api/portfolio/links', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formattedLink)
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to add link');
+        }
+
+        const addedLink = await response.json();
+        setLinks([...links, addedLink]);
+        setNewLink({ url: "", text: "" });
+      } catch (err) {
+        console.error("Error adding link", err);
+        setError("Could not add link");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
-  const removeLink = (linkToRemove: LinkData) => {
-    setLinks(links.filter((link) => link !== linkToRemove));
-  };
-
-  const handleSubmit = async () => {
-    if (!user?.portfolioId) {
-      setError("No portfolio ID found");
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
+  const removeLink = async (linkToRemove: LinkData) => {
     try {
-      const response = await fetch("/api/link", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(links)
+      const response = await fetch(`/api/portfolio/links?userId=${user?.id}&linkId=${linkToRemove.id}`, {
+        method: 'DELETE'
       });
 
-      if (response.ok) {
-        console.log("Links updated successfully");
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Failed to update links");
+      if (!response.ok) {
+        throw new Error('Failed to delete link');
       }
-    } catch (error) {
-      console.error("Submission error", error);
-      setError("Network error. Please try again.");
-    } finally {
-      setIsLoading(false);
+
+      setLinks(links.filter((link) => link.id !== linkToRemove.id));
+    } catch (err) {
+      console.error("Error removing link", err);
+      setError("Could not remove link");
     }
   };
 
@@ -121,17 +127,22 @@ export default function LinksSection() {
               />
             </div>
           </div>
-          <Button type="submit" variant="outline" className="w-full">
-            <Plus className="mr-2 h-4 w-4" /> Add Link
+          <Button 
+            type="submit" 
+            variant="outline" 
+            className="w-full"
+            disabled={isLoading}
+          >
+            <Plus className="mr-2 h-4 w-4" /> {isLoading ? 'Adding...' : 'Add Link'}
           </Button>
         </form>
 
         {links.length > 0 && (
           <div className="mt-4 space-y-2">
             <h3 className="text-sm font-medium">Current Links</h3>
-            {links.map((link, index) => (
+            {links.map((link) => (
               <div
-                key={index}
+                key={link.id}
                 className="flex justify-between items-center bg-gray-100 p-2 rounded"
               >
                 <div className="flex items-center space-x-2">
@@ -158,16 +169,6 @@ export default function LinksSection() {
               </div>
             ))}
           </div>
-        )}
-
-        {links.length > 0 && (
-          <Button 
-            onClick={handleSubmit} 
-            disabled={isLoading}
-            className="w-full mt-4"
-          >
-            {isLoading ? "Saving..." : "Save Links"}
-          </Button>
         )}
 
         {error && (

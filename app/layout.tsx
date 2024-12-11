@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "../hooks/use-auth";
 import MaintenancePage from "./maintenance/page";
 import ComingSoonPage from './coming-soon/page';
+import { Toaster } from "@/components/ui/toaster";
 
 
 const geistSans = localFont({
@@ -49,6 +50,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Toaster/>
         {isMaintainance ? (
           <MaintenancePage />
         ) : isComingSoon ? (
