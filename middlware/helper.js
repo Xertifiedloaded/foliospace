@@ -36,7 +36,6 @@ export const generateToken = (user) => {
 //   });
 // }
 
-import { serialize } from "cookie";
 
 export function cookiesSerialize(token) {
   const isProduction = process.env.NODE_ENV === "production";
