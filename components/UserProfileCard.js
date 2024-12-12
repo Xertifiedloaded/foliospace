@@ -1,12 +1,13 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ExternalLink} from "lucide-react";
-export const PortfolioProfileCard = ({ portfolio, username }) => {
-  const profile = portfolio?.profile || {};
-console.log(portfolio);
+import { ExternalLink } from "lucide-react";
+
+export const PortfolioProfileCard = ({ portfolio }) => {
+  const profile = portfolio?.profile;
+console.log(profile);
   return (
-    <Card className=" shadow-lg">
+    <Card className="shadow-lg">
       <CardHeader className="relative pb-0">
         <div className="absolute top-4 right-4 flex space-x-2">
           {portfolio?.socials?.length > 0 ? (
@@ -36,32 +37,28 @@ console.log(portfolio);
         </div>
         <div className="flex flex-col items-center space-y-4">
           <img
-            src={`data:image/jpeg;base64,${profile.picture } `??  "/images/user.jpg" }
-            // src={profile.picture ?? "/images/user.jpg"}
+            src={profile?.picture ? `data:image/jpeg;base64,${profile.picture}` : "/images/user.jpg"}
             alt={`${portfolio.name || "User"} profile`}
             className="w-32 h-32 rounded-full object-cover border-4 border-primary"
           />
           <div className="text-center">
-            <h1 className="text-2xl font-bold">{portfolio.name || null}</h1>
-            <p className="text-muted-foreground mt-1">
-              {portfolio.email || null}
-            </p>
+            <h1 className="text-2xl font-bold">{portfolio.name || "User"}</h1>
+            <p className="text-muted-foreground mt-1">{portfolio.email || "No email"}</p>
             <Badge variant="secondary" className="mt-2">
-              @{username}
+              {portfolio?.username}
             </Badge>
-            <p className="text-muted-foreground mt-1">{profile.email}</p>
           </div>
         </div>
       </CardHeader>
       <CardContent className="mt-4">
         <div className="space-y-4">
-          {profile.tagline && (
+          {profile?.tagline && (
             <div className="text-center italic text-muted-foreground">
               "{profile.tagline}"
             </div>
           )}
 
-          {profile.bio && (
+          {profile?.bio && (
             <div>
               <h2 className="text-lg font-semibold mb-2">About Me</h2>
               <p className="text-sm">{profile.bio}</p>
@@ -69,7 +66,7 @@ console.log(portfolio);
           )}
 
           <div className="grid grid-cols-2 gap-4">
-            {profile.hobbies?.length > 0 && (
+            {profile?.hobbies?.length > 0 && (
               <div>
                 <h2 className="text-lg font-semibold mb-2">Hobbies</h2>
                 <ul className="text-sm space-y-1">
@@ -83,7 +80,7 @@ console.log(portfolio);
               </div>
             )}
 
-            {profile.languages?.length > 0 && (
+            {profile?.languages?.length > 0 && (
               <div>
                 <h2 className="text-lg font-semibold mb-2">Languages</h2>
                 <ul className="text-sm space-y-1">

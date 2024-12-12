@@ -33,7 +33,7 @@ interface AuthContextProps {
   isLoading: boolean;
   login: (payload: LoginPayload) => Promise<void>;
   create: (payload: CreatePayload) => Promise<void>;
-  handleLogout: () => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 interface LoginPayload {
@@ -65,7 +65,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const router = useRouter();
 
-  // Create User
   const create = useCallback(async (payload: CreatePayload) => {
     try {
       const res = await fetch("/api/auth/create", {
@@ -123,7 +122,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [router]);
 
   // Logout User
-  const handleLogout = useCallback(async () => {
+  const logout = useCallback(async () => {
     try {
       const res = await fetch("/api/auth/logout", {
         method: "POST",
@@ -169,7 +168,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isLoading,
         login,
         create,
-        handleLogout,
+        logout,
       }}
     >
       {children}

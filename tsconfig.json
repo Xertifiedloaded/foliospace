@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "hooks/use-auth.tsx"
-, "app/portfolio/[slug]/page.jsx", "sections/DashBoardHeading.jsx", "app/api/portfolio/details/route.js", "app/api/portfolio/create-portfolio/route.js", "components/ProfileCard.jsx"  ],
+, "src/pages/portfolio/[slug].jsx", "sections/DashBoardHeading.jsx", "src/api/portfolio/details/route.js", "src/api/portfolio/create-portfolio/route.js", "components/ProfileCard.jsx"  ],
   "exclude": [
     "node_modules"
   ]
