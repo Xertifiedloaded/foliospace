@@ -1,9 +1,8 @@
 import "./global.css";
 import { Toaster } from "@/components/ui/toaster";
 
-import ComingSoonPage from "./coming-soon";
 import { AuthProvider } from '../../hooks/use-auth';
-import MaintenancePage from "./maintenance";
+
 
 
 
@@ -15,15 +14,9 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <div className={` antialiased`}>
       <Toaster />
-      {isMaintainance ? (
-        <MaintenancePage />
-      ) : isComingSoon ? (
-        <ComingSoonPage />
-      ) : (
-        <AuthProvider>
+      <AuthProvider>
           <Component {...pageProps} />
         </AuthProvider>
-      )}
     </div>
   );
 }
