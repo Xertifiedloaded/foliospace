@@ -27,15 +27,28 @@ export const generateToken = (user) => {
   );
 };
 
+// export function cookiesSerialize(token) {
+//   return serialize("token", token, {
+//     httpOnly: true,
+//     secure: false,
+//     maxAge: 3600,
+//     path: "/",
+//   });
+// }
+
+import { serialize } from "cookie";
+
 export function cookiesSerialize(token) {
+  const isProduction = process.env.NODE_ENV === "production";
+
   return serialize("token", token, {
     httpOnly: true,
-    secure: false,
-    maxAge: 3600,
+    secure: isProduction, 
+    maxAge: 3600, 
     path: "/",
+    sameSite: "Strict", 
   });
 }
-
 
 
 export const verifyToken = (req, res, next) => {

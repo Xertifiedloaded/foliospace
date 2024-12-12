@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     }
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, 'mankindsnnjndjsnwulskidsnzjsdnj');
 
       return res.status(200).json({
         message: "Token is valid",
