@@ -25,24 +25,22 @@ export function UserNavigation() {
   const handleLogout = () => {
     signOut({
       redirect: true,
-      callbackUrl: "/auth/login", 
+      callbackUrl: "/auth/login",
     });
   };
 
   return (
     <>
       {user && (
-        <div className="flex     justify-between items-center space-x-2">
-          <div className="flex items-center">
+        <div className="flex  justify-between items-center space-x-2">
+          <div className="hidden lg:flex  justify-center h-full items-center">
             <Avatar className="mr-2">
-              <AvatarFallback>
+              <AvatarFallback className="text-sm ">
                 {user?.name?.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-sm font-medium">
-                {user?.name}
-              </p>
+              <p className="text-xs font-medium">{user?.name}</p>
               <p className="text-xs text-gray-500 -mt-0.5">{user?.email}</p>
             </div>
           </div>
@@ -56,6 +54,17 @@ export function UserNavigation() {
 
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <div className="flex justify-start items-center h-full ">
+                <Avatar className="">
+                  <AvatarFallback className="text-sm ">
+                    {user?.name?.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-xs font-medium">{user?.name}</p>
+                  <p className="text-xs text-gray-500 -mt-0.5">{user?.email}</p>
+                </div>
+              </div>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => router.push("/profile/dashboard")}

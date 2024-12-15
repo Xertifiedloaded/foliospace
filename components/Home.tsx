@@ -44,10 +44,10 @@ export default function ProfessionalHomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-white">
       <header className="fixed w-full top-0 z-50 bg-white/85 backdrop-blur-md border-b border-neutral-200 shadow-sm">
-        <div className="wrapper px-6 py-4 flex justify-between items-center">
+        <div className=" px-6 py-4 flex justify-between items-center">
           <div className="flex items-center">
             <RiCheckboxCircleLine className="mr-2 text-2xl text-blue-600" />
-            <span className="text-2xl font-black text-neutral-900 tracking-tight">FolioSpace</span>
+            <span className="lg:text-2xl text-sm  font-black text-neutral-900 tracking-tight">FolioSpace</span>
           </div>
           <nav className="flex items-center space-x-4">
             {user ? (
