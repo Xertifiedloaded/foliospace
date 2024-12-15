@@ -1,49 +1,49 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { User } from "lucide-react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  ExternalLink,
-  Briefcase,
-  GraduationCap,
-} from "lucide-react";
-import { PortfolioProfileCard } from "@/components/UserProfileCard";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Badge } from "@/components/ui/badge";
-import { useRouter } from "next/router";
+  EducationSection,
+  ExperienceSection,
+  PortfolioLink,
+  PortfolioProjectSections,
+} from "../../../sections/ProjectSection";
+import { PortfolioProfileCard } from "../../../components/UserProfileCard";
+
+const ProfileHeader = ({ portfolio }) => (
+  <div className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl shadow-2xl overflow-hidden">
+    <div className="absolute top-0 right-0 opacity-20">
+      <svg
+        width="300"
+        height="300"
+        viewBox="0 0 300 300"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="250" cy="50" r="200" fill="white" fillOpacity="0.1" />
+      </svg>
+    </div>
+    <div className="p-8 relative z-10 flex items-center">
+      <div className="bg-white/20 p-1 rounded-full mr-6">
+        <User className="w-24 h-24 text-white" />
+      </div>
+      <div>
+        <h1 className="text-4xl font-bold mb-2">{portfolio.name}</h1>
+        <p className="text-xl opacity-80">{portfolio.headline}</p>
+      </div>
+    </div>
+  </div>
+);
 
 const PortfolioPage = () => {
-  const router = useRouter()
-  const { username } = router.query
+  const router = useRouter();
+  const { username } = router.query;
   const [portfolio, setPortfolio] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -98,235 +98,22 @@ const PortfolioPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
+    <div className="container mx-auto px-4 py-8 max-w-4xl space-y-6">
       <PortfolioProfileCard portfolio={portfolio} />
-
-      {/* Links and Socials Section */}
       {(portfolio.links?.length || portfolio.socials?.length) && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ExternalLink className="w-5 h-5" /> Links & Socials
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Accordion type="single" collapsible>
-              {portfolio.links?.length > 0 && (
-                <AccordionItem value="links">
-                  <AccordionTrigger>Links</AccordionTrigger>
-                  <AccordionContent>
-                    <ul className="space-y-2">
-                      {portfolio.links.map((link) => (
-                        <li key={link.id}>
-                          <Button variant="link" className="p-0" asChild>
-                            <a
-                              href={link.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {link.text}
-                              <ExternalLink className="ml-2 w-4 h-4" />
-                            </a>
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-
-              {portfolio.socials?.length > 0 && (
-                <AccordionItem value="socials">
-                  <AccordionTrigger>Socials</AccordionTrigger>
-                  <AccordionContent>
-                    <ul className="space-y-2">
-                      {portfolio.socials.map((social) => (
-                        <li key={social.id}>
-                          <Button
-                            variant="outline"
-                            className="w-full justify-start"
-                            asChild
-                          >
-                            <a
-                              href={social.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {social.name}
-                              <ExternalLink className="ml-2 w-4 h-4" />
-                            </a>
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-            </Accordion>
-          </CardContent>
-        </Card>
+        <PortfolioLink links={portfolio.links} socials={portfolio.socials} />
       )}
 
-      {/* Experiences Section */}
       {portfolio.experiences?.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Briefcase className="w-5 h-5" /> Professional Experience
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Company</TableHead>
-                  <TableHead>Duration</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {portfolio.experiences.map((exp) => (
-                  <TableRow key={exp.id}>
-                    <TableCell>{exp.position}</TableCell>
-                    <TableCell>{exp.company}</TableCell>
-                    <TableCell>
-                      {formatDate(exp.startDate)}{" "}
-                      -{" "}
-                      {exp.endDate
-                        ? formatDate(exp.endDate)
-                        : "Present"}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+        <ExperienceSection experiences={portfolio.experiences} />
       )}
 
-      {/* Education Section */}
       {portfolio.education?.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <GraduationCap className="w-5 h-5" /> Education
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Degree</TableHead>
-                  <TableHead>Institution</TableHead>
-                  <TableHead>Duration</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {portfolio.education.map((edu) => (
-                  <TableRow key={edu.id}>
-                    <TableCell>{edu.degree}</TableCell>
-                    <TableCell>{edu.institution}</TableCell>
-                    <TableCell>
-                      {formatDate(edu.startDate)}{" "}
-                      -{" "}
-                      {edu.endDate
-                        ? formatDate(edu.endDate)
-                        : "Present"}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+        <EducationSection education={portfolio.education} />
       )}
 
-      {/* Projects Section */}
       {portfolio.projects?.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Briefcase className="w-5 h-5" /> Projects
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Technologies</TableHead>
-                  <TableHead>Links</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {portfolio.projects.map((project) => (
-                  <TableRow key={project.id}>
-                    <TableCell className="font-medium">
-                      {project.title}
-                    </TableCell>
-                    <TableCell className="max-w-xs truncate">
-                      {project.description}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {project.technologies?.map((tech, index) => (
-                          <Badge
-                            key={index}
-                            variant="secondary"
-                            className="text-xs"
-                          >
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        {project.link && (
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <a
-                                  href={project.link}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <ExternalLink className="w-4 h-4 text-blue-500 hover:text-blue-700" />
-                                </a>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Project Link</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        )}
-                        {project.githubLink && (
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <a
-                                  href={project.githubLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <ExternalLink className="w-4 h-4 text-green-500 hover:text-green-700" />
-                                </a>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>GitHub Repository</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+        <PortfolioProjectSections projects={portfolio.projects} />
       )}
     </div>
   );

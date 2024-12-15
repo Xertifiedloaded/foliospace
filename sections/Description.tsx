@@ -1,159 +1,140 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { 
-  RiPlayFill, 
-  RiBookmarkLine, 
-  RiArrowRightLine, 
-  RiFullscreenLine 
+import React from "react";
+import {
+  RiPlayFill,
+  RiBookmarkLine,
+  RiArrowRightLine,
+  RiCheckboxCircleLine,
+  RiPresentationLine,
+  RiCodeSSlashLine,
+  RiLightbulbLine,
+  RiStackLine,
 } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
-import { useInView } from "react-intersection-observer";
+
+const PROFESSIONAL_HIGHLIGHTS = [
+  {
+    icon: RiCodeSSlashLine,
+    title: "Dynamic Skill Mapping",
+    description:
+      "Transform complex skills into visual, interactive narratives.",
+    gradient: "from-blue-500 to-cyan-500",
+  },
+  {
+    icon: RiLightbulbLine,
+    title: "AI-Powered Insights",
+    description:
+      "Intelligent recommendations to elevate your professional brand.",
+    gradient: "from-purple-500 to-indigo-500",
+  },
+  {
+    icon: RiStackLine,
+    title: "Comprehensive Portfolio",
+    description:
+      "Curate and showcase your achievements with precision and creativity.",
+    gradient: "from-green-500 to-emerald-500",
+  },
+];
 
 const ProfessionalBrandSection: React.FC = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const { ref, inView } = useInView({ 
-    triggerOnce: true, 
-    threshold: 0.3 
-  });
-
-  const handleVideoPlay = () => {
-    const video = videoRef.current;
-    if (video) {
-      video.play().catch(error => {
-        console.error("Video play failed:", error);
-      });
-      setIsVideoPlaying(true);
-    }
-  };
-
-  const handleFullscreen = () => {
-    const video = videoRef.current;
-    if (video) {
-      if (video.requestFullscreen) {
-        video.requestFullscreen();
-      }
-    }
-  };
-
   return (
-    <section className="container mx-auto px-4 py-16 grid  lg:grid-cols-2 gap-12 items-center">
-
-      <motion.div 
-        ref={ref}
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: inView ? 1 : 0, x: inView ? 0 : -50 }}
-        transition={{ duration: 0.6 }}
-        className="relative group"
-      >
-        <div 
-          className="relative overflow-hidden rounded-2xl shadow-xl"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          {inView && (
-            <video
-              ref={videoRef}
-              src="/video/record.mov"
-              className="w-full h-auto object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
-              preload="auto"
-              muted
-              playsInline
-            />
-          )}
-
-          <div 
-            className={`absolute inset-0 bg-black/30 flex items-center justify-center 
-            transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
-          >
-            <div className="flex space-x-4">
-              {!isVideoPlaying && (
-                <button 
-                  onClick={handleVideoPlay}
-                  className="bg-white/20 backdrop-blur-md p-4 rounded-full hover:bg-white/40 transition"
+    <section className=" wrapper py-16 grid lg:grid-cols-2 gap-16 items-center">
+      <div className="relative">
+        <div className="absolute -inset-4 bg-neutral-100 rounded-3xl blur-2xl opacity-50"></div>
+        <div className="relative z-10 bg-white border border-neutral-200 rounded-3xl shadow-2xl overflow-hidden">
+          <div className="p-8 space-y-6">
+            {PROFESSIONAL_HIGHLIGHTS.map((highlight, index) => (
+              <div key={index} className="flex items-center space-x-5 group">
+                <div
+                  className={`
+                  p-3 rounded-xl bg-gradient-to-br ${highlight.gradient} 
+                  text-white transition-transform group-hover:scale-105
+                `}
                 >
-                  <RiPlayFill className="w-8 h-8 text-white" />
-                </button>
-              )}
-              <button 
-                onClick={handleFullscreen}
-                className="bg-white/20 backdrop-blur-md p-4 rounded-full hover:bg-white/40 transition"
-              >
-                <RiFullscreenLine className="w-8 h-8 text-white" />
-              </button>
+                  <highlight.icon className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold  text-neutral-900 group-hover:text-blue-600 transition">
+                    {highlight.title}
+                  </h3>
+                  <p className="text-neutral-600 text-sm">
+                    {highlight.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="bg-neutral-50 border-t border-neutral-200 p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4, 5].map((_, index) => (
+                  <div
+                    key={index}
+                    className="w-10 h-10 bg-neutral-300 rounded-full border-2 border-white"
+                  ></div>
+                ))}
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-neutral-600">
+                  100+ Professionals Onboarded
+                </p>
+                <div className="flex items-center justify-end mt-1">
+                  <RiCheckboxCircleLine className="mr-2 text-blue-600" />
+                  <span className="text-xs text-neutral-500">
+                    Verified Network
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
+      <div className="space-y-8 ">
+        <div className="inline-block bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
+          Professional Branding Ecosystem
+        </div>
 
-      <motion.div
-        initial={{ opacity: 0, x: 50 }}
-        animate={{ opacity: inView ? 1 : 0, x: inView ? 0 : 50 }}
-        transition={{ duration: 0.6 }}
-        className="space-y-8"
-      >
+        <h2 className="lg:text-4xl text-4xl font-bold text-neutral-900 leading-tight">
+          Architect Your Digital Professional Identity
+        </h2>
+
+        <div className="space-y-5">
+          <p className="lg:text-lg text-sm text-neutral-600 leading-relaxed">
+            In today's competitive landscape, your digital presence is your most
+            powerful career accelerator. Creatify transforms your professional
+            journey into a strategic, compelling narrative that opens doors to
+            unprecedented opportunities.
+          </p>
+          <p className="lg:text-lg text-sm text-neutral-600 leading-relaxed">
+            We transcend traditional portfolios—creating a dynamic platform that
+            amplifies your unique professional story, celebrates your
+            achievements, and positions you as an exceptional candidate.
+          </p>
+        </div>
+
         <div className="space-y-6">
-          <h2 className="text-4xl font-bold text-gray-900 leading-tight">
-            Elevate Your Digital Narrative
-          </h2>
+          <div className="flex flex-wrap lg:flex-nowrap gap-4 lg:justify-start">
+            <Button
+              size="lg"
+              className="bg-blue-600 w-full hover:bg-blue-700 text-white group flex items-center px-6 py-3 rounded-lg"
+            >
+              <RiPresentationLine className="mr-2 text-lg" />
+              Start Your Journey
+              <RiArrowRightLine className="ml-2 opacity-0 group-hover:opacity-100 transition" />
+            </Button>
 
-          <div className="space-y-4">
-            <p className="text-lg text-gray-600 leading-relaxed">
-              In the digital era, your online presence is your professional 
-              passport. Creatify transforms your career journey into a 
-              compelling, dynamic digital showcase that resonates with 
-              opportunities and personal branding.
-            </p>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              More than a portfolio, Creatify is your strategic platform to 
-              amplify your professional story, celebrate achievements, and 
-              unlock new career horizons.
-            </p>
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-blue-600 w-full text-blue-600 hover:bg-blue-50 group flex items-center px-6 py-3 rounded-lg"
+            >
+              <RiBookmarkLine className="mr-2 text-lg" />
+              Explore Features
+            </Button>
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-          <Button 
-            size="lg" 
-            className="group flex items-center justify-center space-x-2"
-          >
-            <RiPlayFill className="w-5 h-5 group-hover:rotate-[360deg] transition" />
-            <span>Get Started</span>
-            <RiArrowRightLine className="ml-2 opacity-0 group-hover:opacity-100 transition" />
-          </Button>
-
-          <Button 
-            variant="outline" 
-            size="lg" 
-            className="group flex items-center justify-center space-x-2"
-          >
-            <RiBookmarkLine className="w-5 h-5 group-hover:scale-110 transition" />
-            <span>Learn More</span>
-          </Button>
-        </div>
-
-        <div className="pt-8 border-t border-gray-200">
-          <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
-            <p className="text-sm text-gray-500 text-center sm:text-left">
-              Trusted by professionals across industries
-            </p>
-            <div className="flex justify-center -space-x-3">
-              {[1, 2, 3, 4, 5].map((_, index) => (
-                <img
-                  key={index}
-                  src="/images/user.jpg"
-                  alt={`User ${index + 1}`}
-                  className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </motion.div>
+      </div>
     </section>
   );
 };

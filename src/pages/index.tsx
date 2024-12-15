@@ -1,20 +1,18 @@
 "use client";
 
-import Image from "next/image";
 import BrandVideoSection from "@/sections/Description";
-import Features from "@/sections/Features";
-import Profile from "@/sections/Profile";
-
 import ProfessionalHomePage from "@/components/Home";
+import ProfileSection from "@/sections/Profile";
+import Footer from "@/components/ui/Footer";
 
 export default function Home() {
-
   return (
     <>
-   <ProfessionalHomePage/>
+      <ProfessionalHomePage />
       <BrandVideoSection />
-      <Features />
-      <Profile />
+      <ProfileSection/>
+
+      <Footer/>
     </>
   );
 }

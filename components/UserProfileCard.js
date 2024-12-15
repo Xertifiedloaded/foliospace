@@ -1,101 +1,118 @@
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, LinkedinIcon, GithubIcon, TwitterIcon } from "lucide-react";
+
+const SocialIcon = ({ type }) => {
+  const icons = {
+    linkedin: LinkedinIcon,
+    github: GithubIcon,
+    twitter: TwitterIcon,
+    default: ExternalLink
+  };
+
+  const Icon = icons[type.toLowerCase()] || icons.default;
+  return <Icon className="w-5 h-5" />;
+};
 
 export const PortfolioProfileCard = ({ portfolio }) => {
-  const profile = portfolio?.profile;
-console.log(profile);
+  const { profile, socials, name, email, username } = portfolio || {};
+
+  const socialPlatforms = {
+    linkedin: "text-blue-600",
+    github: "text-gray-800",
+    twitter: "text-sky-500"
+  };
+
   return (
-    <Card className="shadow-lg">
-      <CardHeader className="relative pb-0">
-        <div className="absolute top-4 right-4 flex space-x-2">
-          {portfolio?.socials?.length > 0 ? (
-            <ul className="space-y-2">
-              {portfolio.socials.map((social) => (
-                <li key={social.id}>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    asChild
-                  >
-                    <a
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {social.name}
-                      <ExternalLink className="ml-2 w-4 h-4" />
-                    </a>
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-muted-foreground">No socials available</p>
-          )}
-        </div>
-        <div className="flex flex-col items-center space-y-4">
-          <img
-            src={profile?.picture ? `data:image/jpeg;base64,${profile.picture}` : "/images/user.jpg"}
-            alt={`${portfolio.name || "User"} profile`}
-            className="w-32 h-32 rounded-full object-cover border-4 border-primary"
-          />
-          <div className="text-center">
-            <h1 className="text-2xl font-bold">{portfolio.name || "User"}</h1>
-            <p className="text-muted-foreground mt-1">{portfolio.email || "No email"}</p>
-            <Badge variant="secondary" className="mt-2">
-              {portfolio?.username}
+    <Card className=" shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100 pb-4">
+        <div className="">
+          <div>
+            <CardTitle className="text-xl font-bold text-gray-800">
+              {name || "Professional Portfolio"}
+            </CardTitle>
+            <p className="text-sm text-gray-600 mt-1">
+              {username && `@${username}`}
+            </p>
+            {email && (
+            <Badge variant="secondary" className="text-xs">
+              {email}
             </Badge>
+          )}
           </div>
+        
         </div>
       </CardHeader>
-      <CardContent className="mt-4">
-        <div className="space-y-4">
-          {profile?.tagline && (
-            <div className="text-center italic text-muted-foreground">
-              "{profile.tagline}"
-            </div>
-          )}
-
-          {profile?.bio && (
-            <div>
-              <h2 className="text-lg font-semibold mb-2">About Me</h2>
-              <p className="text-sm">{profile.bio}</p>
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 gap-4">
-            {profile?.hobbies?.length > 0 && (
-              <div>
-                <h2 className="text-lg font-semibold mb-2">Hobbies</h2>
-                <ul className="text-sm space-y-1">
-                  {profile.hobbies.map((hobby, index) => (
-                    <li key={index} className="flex items-center">
-                      <span className="mr-2">•</span>
-                      {hobby}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {profile?.languages?.length > 0 && (
-              <div>
-                <h2 className="text-lg font-semibold mb-2">Languages</h2>
-                <ul className="text-sm space-y-1">
-                  {profile.languages.map((language, index) => (
-                    <li key={index} className="flex items-center">
-                      <span className="mr-2">•</span>
-                      {language}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+      
+      <CardContent className="p-6 space-y-6">
+        {profile?.tagline && (
+          <div className="italic lg:text-lg text-base text-gray-700 border-l-4 border-blue-500 pl-4">
+            "{profile.tagline}"
           </div>
+        )}
+
+        {profile?.bio && (
+          <div>
+            <h3 className="lg:text-lg text-base font-semibold mb-2 text-gray-800 border-b pb-1">
+              About Me
+            </h3>
+            <p className="text-gray-600 text-sm">{profile.bio}</p>
+          </div>
+        )}
+
+        <div className="grid md:grid-cols-2 gap-4">
+          {profile?.hobbies?.length > 0 && (
+            <div>
+              <h4 className="font-medium text-gray-700 mb-2">Hobbies</h4>
+              <ul className="space-y-1 flex items-center flex-wrap lg:flex-nowrap gap-2 text-sm text-gray-600">
+                {profile.hobbies.map((hobby, index) => (
+                  <li key={index} className="flex items-center">
+                    <span className="mr-2 text-blue-500">•</span>
+                    {hobby}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {profile?.languages?.length > 0 && (
+            <div>
+              <h4 className="font-medium text-gray-700 mb-2">Languages</h4>
+              <ul className="space-y-1 flex items-center flex-wrap gap-2  lg:flex-nowrap text-sm text-gray-600">
+                {profile.languages.map((language, index) => (
+                  <li key={index} className="flex items-center">
+                    <span className="mr-2 text-blue-500">•</span>
+                    {language}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
+
+        {socials?.length > 0 && (
+          <div className="mt-4 pt-4 border-t">
+            <h4 className="text-sm font-medium text-gray-600 mb-3">Connect</h4>
+            <div className="flex space-x-3">
+              {socials.map((social, index) => (
+                <Button 
+                  key={index} 
+                  variant="outline" 
+                  size="icon" 
+                  className={`${socialPlatforms[social.name.toLowerCase()] || 'text-gray-500'} hover:bg-gray-50`}
+                  onClick={() => window.open(social.url, '_blank')}
+                >
+                  <SocialIcon type={social.name} />
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
 };
+
+export default PortfolioProfileCard;
