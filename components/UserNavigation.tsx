@@ -15,16 +15,17 @@ import {
   RiMoreFill,
 } from "react-icons/ri";
 import { useRouter } from "next/router";
-import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-
+import { signOut, useSession } from "next-auth/react";
 export function UserNavigation() {
   const router = useRouter();
-  const { user, logout } = useAuth();
 
+  const { data: session } = useSession();
+  const user = session?.user;
   const handleLogout = () => {
-    logout().then(() => {
-      router.push("/login");
+    signOut({
+      redirect: true,
+      callbackUrl: "/auth/login", 
     });
   };
 
@@ -35,12 +36,12 @@ export function UserNavigation() {
           <div className="flex items-center">
             <Avatar className="mr-2">
               <AvatarFallback>
-                {user?.name?.charAt(0) || user?.username?.charAt(0)}
+                {user?.name?.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <div>
               <p className="text-sm font-medium">
-                {user?.name || user?.username}
+                {user?.name}
               </p>
               <p className="text-xs text-gray-500 -mt-0.5">{user?.email}</p>
             </div>

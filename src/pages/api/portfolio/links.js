@@ -1,18 +1,22 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../../../lib/NextOption";
 
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
+  const session = await getServerSession(req, res, authOptions);
+
+  if (!session || !session.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const userId = session.user.id;
+
   if (req.method === "GET") {
     try {
-      const { userId } = req.query;
-
-      if (!userId) {
-        return res.status(400).json({ error: "UserId is required" });
-      }
-
       const links = await prisma.link.findMany({
-        where: { userId },
+        where: { userId }, 
       });
 
       return res.status(200).json(links);
@@ -21,21 +25,23 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "DELETE") {
     try {
-      const { linkId, userId } = req.query;
+      const { linkId } = req.query; 
 
-      if (!linkId || !userId) {
-        return res.status(400).json({ error: "LinkId and UserId are required" });
+      if (!linkId) {
+        return res.status(400).json({ error: "LinkId is required" });
       }
 
       const deletedLink = await prisma.link.deleteMany({
         where: {
           id: linkId,
-          userId: userId,
+          userId, 
         },
       });
 
       if (deletedLink.count === 0) {
-        return res.status(404).json({ error: "Link not found or you don't have permission" });
+        return res
+          .status(404)
+          .json({ error: "Link not found or you don't have permission" });
       }
 
       return res.status(200).json({ message: "Link deleted successfully" });
@@ -44,14 +50,16 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "POST") {
     try {
-      const { userId, url, text } = req.body;
+      const { url, text } = req.body;
 
-      if (!userId) {
-        return res.status(400).json({ error: "UserId is required" });
+      if (!url || !text) {
+        return res
+          .status(400)
+          .json({ error: "Both URL and Text fields are required" });
       }
 
       const newLink = await prisma.link.create({
-        data: { userId, url, text },
+        data: { userId, url, text }, 
       });
 
       return res.status(201).json(newLink);
@@ -59,6 +67,6 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: error.message });
     }
   } else {
-    return res.status(405).json({ message: "Method Not Allowed" });
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 }

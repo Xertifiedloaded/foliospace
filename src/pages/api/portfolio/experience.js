@@ -1,11 +1,21 @@
 import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../../../lib/NextOption";
+
 
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
+  const session = await getServerSession(req, res, authOptions);
+  
+  if (!session) {
+    return res.status(401).json({ error: "Unauthorized" }); 
+  }
+
+  const userId = session.user.id;
   if (req.method === "POST") {
     try {
-      const { userId, company, position, startDate, endDate, description } = req.body;
+      const { company, position, startDate, endDate, description } = req.body;
 
       if (!userId) {
         return res.status(400).json({ error: "UserId is required" });
@@ -21,8 +31,6 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "GET") {
     try {
-      const { userId } = req.query;
-
       if (!userId) {
         return res.status(400).json({ error: "UserId query parameter is required" });
       }
@@ -37,7 +45,7 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "PATCH") {
     try {
-      const { userId, company, position, startDate, endDate, description, experienceId } = req.body;
+      const { company, position, startDate, endDate, description, experienceId } = req.body;
 
       if (!userId || !experienceId) {
         return res.status(400).json({ error: "UserId and experienceId are required" });
@@ -54,10 +62,10 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "DELETE") {
     try {
-      const { experienceId, userId } = req.query;
+      const { experienceId } = req.query;
 
-      if (!experienceId || !userId) {
-        return res.status(400).json({ error: "experienceId and userId query parameters are required" });
+      if (!experienceId) {
+        return res.status(400).json({ error: "experienceId query parameter is required" });
       }
 
       const deletedExperience = await prisma.experience.delete({

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, Plus, Calendar } from "lucide-react";
 import { format } from "date-fns";
-import { useAuth } from "@/hooks/use-auth";
+import { useSession } from "next-auth/react"; 
 
 interface Education {
   id: string;
@@ -18,12 +18,13 @@ interface Education {
 }
 
 export default function Education() {
+  const { data: session } = useSession();
   const [education, setEducation] = useState<Education[]>([]);
-  const { user } = useAuth();
-  const userId = user?.id;
   const [newEducation, setNewEducation] = useState<Partial<Education>>({});
   const [isEditing, setIsEditing] = useState<string | null>(null);
 
+  const userId = session?.user?.id; 
+  
   useEffect(() => {
     const fetchEducation = async () => {
       if (userId) {
@@ -77,15 +78,15 @@ export default function Education() {
 
   const deleteEducation = async (id: string) => {
     setEducation(education.filter((edu) => edu.id !== id));
-
+  
     try {
       const response = await fetch(
-        `/api/portfolio/education?educationId=${id}&userId=${userId}`,
+        `/api/portfolio/education?educationId=${id}`,
         {
           method: "DELETE",
         }
       );
-
+  
       if (!response.ok) {
         console.error("Failed to delete education");
       }
@@ -93,25 +94,26 @@ export default function Education() {
       console.error("Delete error", error);
     }
   };
+  
 
-  const updateEducation = async (
-    id: string,
-    updatedData: Partial<Education>
-  ) => {
+  const updateEducation = async (id: string, updatedData: Partial<Education>) => {
     setEducation(
       education.map((edu) => (edu.id === id ? { ...edu, ...updatedData } : edu))
     );
-
+  
     try {
       const response = await fetch(
-        `/api/portfolio/education?educationId=${id}&userId=${userId}`,
+        `/api/portfolio/education`, 
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedData),
+          body: JSON.stringify({
+            educationId: id, 
+            ...updatedData, 
+          }),
         }
       );
-
+  
       if (!response.ok) {
         console.error("Failed to update education");
       }
@@ -119,6 +121,7 @@ export default function Education() {
       console.error("Update error", error);
     }
   };
+  
 
   const handleSave = () => {
     if (

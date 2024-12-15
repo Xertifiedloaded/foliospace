@@ -7,12 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import SkillsSection from "@/components/ProfileSkillsData";
-import { useAuth } from "@/hooks/use-auth";
-import Image from "next/image";
+import ProfileLayout from "@/components/layout";
+import { useSession } from "next-auth/react";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { fileToBase64 } from "../../../middlware/FileToBase";
-import ProfileLayout from "@/components/layout";
 
 interface ProfileData {
   userId?: string;
@@ -25,7 +24,8 @@ interface ProfileData {
 }
 
 export default function ProfileDetails() {
-  const { user } = useAuth();
+  const { data: session, status } = useSession();
+
   const [formData, setFormData] = useState<ProfileData>({
     userId: "",
     tagline: "",
@@ -33,59 +33,68 @@ export default function ProfileDetails() {
     hobbies: "",
     languages: "",
     picture: null,
+    previewUrl: "",
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (user?.id) {
-      const fetchProfile = async () => {
-        try {
-          const response = await fetch(
-            `/api/portfolio/profile?userId=${user?.id}`
-          );
-          const data = await response.json();
-          if (response.ok) {
-            setFormData({
-              userId: data.userId || "",
-              tagline: data.tagline || "",
-              bio: data.bio || "",
-              hobbies: data.hobbies || "",
-              languages: data.languages || "",
-              picture: null,
-              previewUrl: data.picture || "",
-            });
-          } else {
-            toast({
-              title: "Error fetching profile",
-              description: data.message,
-              variant: "destructive",
-            });
-          }
-        } catch (error) {
+    if (status === "loading") {
+      return;
+    }
+
+    if (!session) {
+      toast({
+        title: "Unauthorized",
+        description: "You need to be logged in to view or edit your profile.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(`/api/portfolio/profile?userId=${session.user.id}`);
+        const data = await response.json();
+        if (response.ok) {
+          setFormData({
+            userId: data.userId || "",
+            tagline: data.tagline || "",
+            bio: data.bio || "",
+            hobbies: Array.isArray(data.hobbies) ? data.hobbies.join(", ") : data.hobbies || "",
+            languages: Array.isArray(data.languages) ? data.languages.join(", ") : data.languages || "",
+            picture: null,
+            previewUrl: data.picture || "",
+          });
+        } else {
           toast({
-            description: "Failed to update project",
-            variant: "destructive"
+            title: "Error fetching profile",
+            description: data.message,
+            variant: "destructive",
           });
         }
-      };
-      fetchProfile();
-    }
-  }, [user]);
+      } catch (error) {
+        toast({
+          description: "Failed to fetch profile data.",
+          variant: "destructive",
+        });
+      }
+    };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const target = e.target as HTMLInputElement; 
-  
+    fetchProfile();
+  }, [session, status]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const target = e.target as HTMLInputElement;
     const { name, value } = target;
-  
+
     if (target.files && target.files.length > 0) {
       const file = target.files[0];
       const previewUrl = URL.createObjectURL(file);
-  
+
       setFormData((prev) => ({
         ...prev,
-        [name]: file,
+        picture: file,
         previewUrl,
       }));
     } else {
@@ -96,26 +105,21 @@ export default function ProfileDetails() {
     }
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      const pictureBase64 = formData?.picture
-        ? await fileToBase64(formData?.picture)
-        : null;
+      const pictureBase64 = formData?.picture ? await fileToBase64(formData?.picture) : null;
 
       const payload = {
-        userId: user?.id,
+        userId: session?.user?.id,
         tagline: formData?.tagline,
         bio: formData?.bio,
-        hobbies: formData?.hobbies,
-        languages: formData?.languages,
+        hobbies: formData?.hobbies ? formData.hobbies.split(",").map((hobby) => hobby.trim()) : [],
+        languages: formData?.languages ? formData.languages.split(",").map((lang) => lang.trim()) : [],
         picture: pictureBase64,
       };
-
-      console.log("Payload being sent:", payload);
 
       const response = await fetch("/api/portfolio/profile", {
         method: "PATCH",
@@ -132,19 +136,17 @@ export default function ProfileDetails() {
       }
 
       toast({
-        description: "Project updated successfully",
-        variant: "default"
+        description: "Profile updated successfully",
+        variant: "default",
       });
-    }catch (error: unknown) {
+    } catch (error: unknown) {
       if (error instanceof Error) {
-        console.log("Submission error:", error);
         toast({
           title: "Error updating profile",
           description: error.message,
           variant: "destructive",
         });
       } else {
-        console.log("Unknown error:", error);
         toast({
           title: "Error updating profile",
           description: "An unknown error occurred.",
@@ -156,109 +158,110 @@ export default function ProfileDetails() {
     }
   };
 
-  return (
-<ProfileLayout>
-<div className="container mx-auto px-4">
-      <section>
-        <Card>
-          <CardHeader>
-            <CardTitle>Profile Details</CardTitle>
-          </CardHeader>
-        </Card>
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
 
-        <Card className="mt-4">
-          <CardHeader>
-            <CardTitle className="text-sm">Basic Information</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {formData?.previewUrl && (
-                <div className="flex justify-center mb-4">
-                  <img
-                    src={
-                      `data:image/jpeg;base64,${formData?.previewUrl}` ||
-                      `${formData.previewUrl}`
-                    }
-                    alt="Profile Preview"
-                    className="rounded-full w-24 h-24 object-cover"
+  return (
+    <ProfileLayout>
+      <div className="container mx-auto px-4">
+        <section>
+          <Card>
+            <CardHeader>
+              <CardTitle>Profile Details</CardTitle>
+            </CardHeader>
+          </Card>
+
+          <Card className="mt-4">
+            <CardHeader>
+              <CardTitle className="text-sm">Basic Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {formData?.previewUrl && (
+                  <div className="flex justify-center mb-4">
+                    <img
+                      src={formData?.previewUrl}
+                      alt="Profile Preview"
+                      className="rounded-full w-24 h-24 object-cover"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <Label htmlFor="tagline">Tagline</Label>
+                  <Input
+                    id="tagline"
+                    name="tagline"
+                    value={formData?.tagline ?? ""}
+                    onChange={handleChange}
+                    placeholder="Enter your tagline"
+                    required
                   />
                 </div>
-              )}
 
-              <div>
-                <Label htmlFor="tagline">Tagline</Label>
-                <Input
-                  id="tagline"
-                  name="tagline"
-                  value={formData?.tagline ?? ""}
-                  onChange={handleChange}
-                  placeholder="Enter your tagline"
-                  required
-                />
-              </div>
+                <div>
+                  <Label htmlFor="bio">Bio</Label>
+                  <Textarea
+                    id="bio"
+                    name="bio"
+                    value={formData?.bio ?? ""}
+                    onChange={handleChange}
+                    placeholder="Tell us about yourself"
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="bio">Bio</Label>
-                <Textarea
-                  id="bio"
-                  name="bio"
-                  value={formData?.bio ?? ""}
-                  onChange={handleChange}
-                  placeholder="Tell us about yourself"
-                />
-              </div>
+                <div>
+                  <Label htmlFor="hobbies">Hobbies</Label>
+                  <Input
+                    id="hobbies"
+                    name="hobbies"
+                    value={formData?.hobbies ?? ""}
+                    onChange={handleChange}
+                    placeholder="Enter your hobbies (comma-separated)"
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="hobbies">Hobbies</Label>
-                <Input
-                  id="hobbies"
-                  name="hobbies"
-                  value={formData?.hobbies ?? ""}
-                  onChange={handleChange}
-                  placeholder="Enter your hobbies (comma-separated)"
-                />
-              </div>
+                <div>
+                  <Label htmlFor="languages">Languages</Label>
+                  <Input
+                    id="languages"
+                    name="languages"
+                    value={formData?.languages ?? ""}
+                    onChange={handleChange}
+                    placeholder="Enter the languages you speak (comma-separated)"
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="languages">Languages</Label>
-                <Input
-                  id="languages"
-                  name="languages"
-                  value={formData?.languages?? ""}
-                  onChange={handleChange}
-                  placeholder="Enter the languages you speak (comma-separated)"
-                />
-              </div>
+                <div>
+                  <Label htmlFor="picture">Profile Image</Label>
+                  <Input
+                    id="picture"
+                    name="picture"
+                    type="file"
+                    onChange={handleChange}
+                    accept="image/*"
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="picture">Profile Image</Label>
-                <Input
-                  id="picture"
-                  name="picture"
-                  type="file"
-                  onChange={handleChange}
-                  accept="image/*"
-                />
-              </div>
-
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  "Save Profile"
-                )}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </section>
-      <section>
-        <SkillsSection />
-      </section>
-    </div>
-</ProfileLayout>
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Profile"
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </section>
+        <section>
+          <SkillsSection />
+        </section>
+      </div>
+    </ProfileLayout>
   );
 }

@@ -17,25 +17,25 @@
 
 
 ### Create a New Social Record
-# POST http://localhost:3000/api/portfolio/socials
-# Content-Type: application/json
-
-# {
-#   "userId": "6758ab84cde2ce0b60aec2b4",
-#   "name": "GitHub",
-#   "link": "https://github.com/example",
-#   "isVisible": true
-# }
-
-POST http://localhost:3000/api/portfolio/links
+GET http://localhost:3000/api/portfolio/socials?userId=675d7811787575cbf1056637
 Content-Type: application/json
 
 {
   "userId": "6758ab84cde2ce0b60aec2b4",
-  "text": "GitHub",
-  "url": "https://github.com/example",
+  "name": "GitHub",
+  "link": "https://github.com/example",
   "isVisible": true
 }
+
+# POST http://localhost:3000/api/portfolio/links
+# Content-Type: application/json
+
+# {
+#   "userId": "6758ab84cde2ce0b60aec2b4",
+#   "text": "GitHub",
+#   "url": "https://github.com/example",
+#   "isVisible": true
+# }
 
 
 ### Create a New Education Record

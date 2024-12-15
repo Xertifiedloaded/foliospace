@@ -1,16 +1,26 @@
 import { PrismaClient } from '@prisma/client';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../../../lib/NextOption';
+
 
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   try {
     const { method, query, body } = req;
+    
+    const session = await getServerSession(req, res, authOptions);
+    if (!session || !session.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const userId = session.user.id; 
 
     if (method === "POST") {
-      const { userId, title, description, technologies, link, githubLink, image } = body;
+      const { title, description, technologies, link, githubLink, image } = body;
 
-      if (!userId || !title || !description || !image) {
-        return res.status(400).json({ error: "UserId, title, description, and image are required" });
+      if (!title || !description || !image) {
+        return res.status(400).json({ error: "Title, description, and image are required" });
       }
 
       let imageData = null;
@@ -39,10 +49,10 @@ export default async function handler(req, res) {
     }
 
     if (method === "GET") {
-      const { userId } = query;
+      const { userId: queryUserId } = query;
 
-      if (!userId) {
-        return res.status(400).json({ error: "UserId is required" });
+      if (queryUserId && queryUserId !== userId) {
+        return res.status(403).json({ error: "You can only access your own projects" });
       }
 
       const projects = await prisma.project.findMany({
@@ -68,10 +78,10 @@ export default async function handler(req, res) {
 
     if (method === "PATCH") {
       const { id } = query;
-      const { userId, title, description, technologies, link, githubLink, image } = body;
+      const { title, description, technologies, link, githubLink, image } = body;
 
-      if (!id || !userId || !title || !description) {
-        return res.status(400).json({ error: "id, userId, title, and description are required" });
+      if (!id || !title || !description) {
+        return res.status(400).json({ error: "id, title, and description are required" });
       }
 
       const existingProject = await prisma.project.findUnique({

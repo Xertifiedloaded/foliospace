@@ -1,22 +1,24 @@
 import "./global.css";
 import { Toaster } from "@/components/ui/toaster";
+import { SessionProvider } from "next-auth/react";
 
-import { AuthProvider } from '../../hooks/use-auth';
+import { AuthProvider } from "../../hooks/use-auth";
 
-
-
-
-
-export default function MyApp({ Component, pageProps }) {
-  const isMaintainance = false; 
-  const isComingSoon = false; 
-
+export default function MyApp({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   return (
-    <div className={` antialiased`}>
-      <Toaster />
-      <AuthProvider>
-          <Component {...pageProps} />
-        </AuthProvider>
-    </div>
+    <>
+    
+      <SessionProvider session={session}>
+        <div className={` antialiased`}>
+          <Toaster />
+          <AuthProvider>
+            <Component {...pageProps} />
+          </AuthProvider>
+        </div>
+      </SessionProvider>
+    </>
   );
 }

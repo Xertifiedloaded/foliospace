@@ -5,7 +5,6 @@ import {
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarSeparator,
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import {
@@ -42,7 +41,6 @@ const Header: React.FC = () => {
     { path: "/profile/page-view", title: "Page View", icon: Palette },
   ];
 
-  const { user } = useAuth();
   const handleNavigation = (path: string): void => {
     window.location.href = path;
   };

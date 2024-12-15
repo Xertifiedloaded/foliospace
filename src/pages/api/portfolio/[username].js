@@ -13,9 +13,13 @@ export default async function handler(req, res) {
           profile: true,
           socials: true,
           links: true,
-          experiences: { orderBy: { startDate: 'desc' } },
+          experiences: { 
+            orderBy: { startDate: 'desc' } 
+          },
           projects: true,
-          education: { orderBy: { startDate: 'desc' } },
+          education: { 
+            orderBy: { startDate: 'desc' } 
+          },
         },
       });
 
@@ -24,10 +28,9 @@ export default async function handler(req, res) {
       }
 
       const { password, ...safeUserData } = user;
-
       const sanitizedUserData = {
         ...safeUserData,
-        profile: user.profile || {},
+        profile: user.profile || null,
         projects: user.projects || [],
         socials: user.socials || [],
         links: user.links || [],

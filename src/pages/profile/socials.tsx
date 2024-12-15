@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X, Plus } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
+import { useSession } from "next-auth/react";
 import ProfileLayout from "@/components/layout";
 
 interface SocialMediaData {
@@ -17,38 +17,45 @@ interface SocialMediaData {
 
 export default function SocialMediaSection() {
   const [socials, setSocials] = useState<SocialMediaData[]>([]);
-  const { user } = useAuth();
-  const userId = user?.id;
-  const [newSocial, setNewSocial] = useState<
-    Omit<SocialMediaData, "isVisible" | "id">
-  >({
+  const { data: session, status } = useSession();
+  const [newSocial, setNewSocial] = useState<Omit<SocialMediaData, "isVisible" | "id">>({
     name: "",
     link: "",
   });
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState<string | null>(null);  
+
+  const userId = session?.user?.id;
+
 
   useEffect(() => {
     const fetchSocials = async () => {
+      if (!userId) return;
+      setLoading(true);
+      setError(null);
       try {
         const response = await fetch(`/api/portfolio/socials?userId=${userId}`);
-
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
           setSocials(data.socials || []);
         } else {
-          console.error("Failed to fetch social media links.");
+          setError("Failed to fetch social media links.");
         }
       } catch (error) {
-        console.error("Error fetching socials:", error);
+        setError("Error fetching socials: " + error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchSocials();
-  }, [userId]);
+    if (status === "authenticated") {
+      fetchSocials();
+    }
+  }, [session, status, userId]);
 
-  const addSocial = (e: React.FormEvent) => {
+
+  const addSocial = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!newSocial.name.trim() || !newSocial.link.trim()) {
       alert("Please complete all fields with valid data.");
       return;
@@ -57,74 +64,87 @@ export default function SocialMediaSection() {
     const formattedSocial: Omit<SocialMediaData, "id"> = {
       ...newSocial,
       isVisible: true,
-      link: newSocial.link.startsWith("http")
-        ? newSocial.link
-        : `https://${newSocial.link}`,
+      link: newSocial.link.startsWith("http") ? newSocial.link : `https://${newSocial.link}`,
     };
 
-    fetch("/api/portfolio/socials", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, ...formattedSocial }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setSocials((prev) => [...prev, { id: data.id, ...formattedSocial }]);
-          setNewSocial({ name: "", link: "" });
-        } else {
-          alert("Failed to add social media link.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error adding social:", error);
-        alert("An error occurred while adding the social media link.");
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/portfolio/socials", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, ...formattedSocial }),
       });
+      const data = await res.json();
+      if (data.success) {
+        setSocials((prev) => [...prev, { id: data.id, ...formattedSocial }]);
+        setNewSocial({ name: "", link: "" });
+      } else {
+        alert("Failed to add social media link.");
+      }
+    } catch (error) {
+      setError("An error occurred while adding the social media link.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const removeSocial = (id: string) => {
-    fetch(`/api/portfolio/socials?id=${id}`, { method: "DELETE" })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setSocials((prev) => prev.filter((social) => social.id !== id));
-        } else {
-          alert("Failed to remove social media link.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error removing social:", error);
-        alert("An error occurred while removing the social media link.");
+  // Remove social link
+  const removeSocial = async (id: string) => {
+    if (!userId) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/portfolio/socials?id=${id}&userId=${userId}`, {
+        method: "DELETE",
       });
+      const data = await res.json();
+      if (data.success) {
+        setSocials((prev) => prev.filter((social) => social.id !== id));
+      } else {
+        alert("Failed to remove social media link.");
+      }
+    } catch (error) {
+      setError("An error occurred while removing the social media link.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const toggleVisibility = (id: string) => {
+
+  const toggleVisibility = async (id: string) => {
     const social = socials.find((item) => item.id === id);
-    if (!social) return;
+    if (!social || !userId) return;
 
-    fetch(
-      `/api/portfolio/socials?id=${id}&userId=${userId}&name=${
-        social.name
-      }&link=${social.link}&isVisible=${!social.isVisible}`,
-      {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/portfolio/socials`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id,
+          name: social.name,
+          link: social.link,
+          isVisible: !social.isVisible,
+          userId: userId,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSocials((prev) =>
+          prev.map((item) =>
+            item.id === id ? { ...item, isVisible: !item.isVisible } : item
+          )
+        );
+      } else {
+        alert("Failed to update visibility.");
       }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        if (data.success) {
-          setSocials((prev) =>
-            prev.map((item) =>
-              item.id === id ? { ...item, isVisible: !item.isVisible } : item
-            )
-          );
-        } else {
-          alert("Failed to update visibility.");
-        }
-      })
-      .catch((error) => console.error("Error toggling visibility:", error));
+    } catch (error) {
+      setError("Error toggling visibility.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -163,10 +183,12 @@ export default function SocialMediaSection() {
                 />
               </div>
             </div>
-            <Button type="submit" variant="outline" className="w-full">
-              <Plus className="mr-2 h-4 w-4" /> Add Social Link
+            <Button type="submit" variant="outline" className="w-full" disabled={loading}>
+              {loading ? "Adding..." : <><Plus className="mr-2 h-4 w-4" /> Add Social Link</>}
             </Button>
           </form>
+
+          {error && <p className="text-red-500 mt-4">{error}</p>}
 
           {socials.length > 0 && (
             <div className="mt-4 space-y-2">
@@ -193,6 +215,7 @@ export default function SocialMediaSection() {
                       variant={social.isVisible ? "default" : "outline"}
                       size="sm"
                       onClick={() => toggleVisibility(social.id)}
+                      disabled={loading}
                     >
                       {social.isVisible ? "Visible" : "Hidden"}
                     </Button>
@@ -200,6 +223,7 @@ export default function SocialMediaSection() {
                       variant="ghost"
                       size="icon"
                       onClick={() => removeSocial(social.id)}
+                      disabled={loading}
                     >
                       <X className="h-4 w-4" />
                     </Button>

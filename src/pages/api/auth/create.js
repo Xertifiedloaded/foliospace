@@ -1,6 +1,5 @@
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
-import { cookiesSerialize, generateToken } from "../../../../middlware/helper.js";
 
 const prisma = new PrismaClient();
 
@@ -22,15 +21,12 @@ export default async function handler(req, res) {
 
   try {
     const existingUser = await prisma.user.findUnique({
-      where: {
-        email,
-      },
+      where: { email },
     });
 
     if (existingUser) {
       return res.status(409).json({ message: "User already exists." });
     }
-
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
       data: {
@@ -41,15 +37,8 @@ export default async function handler(req, res) {
       },
     });
 
-    const token = generateToken(user);
-    const cookie = cookiesSerialize(token);
-
-    res.setHeader("Set-Cookie", cookie);
-
     return res.status(201).json({
-      message: "User created successfully",
-      user: { ...user, password: undefined },
-      token,
+      message: "User created successfully. You can now log in.",
     });
   } catch (error) {
     console.error("Registration error:", error);

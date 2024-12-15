@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { X, Plus, Briefcase } from "lucide-react";
 import { format } from "date-fns";
-import { useAuth } from "@/hooks/use-auth";
+import { useSession } from "next-auth/react";
 
 interface Experience {
   id: string;
@@ -20,8 +20,8 @@ interface Experience {
 }
 
 export default function Experience() {
-  const { user } = useAuth();
-  const userId = user?.id;
+  const { data: session } = useSession(); 
+  const userId = session?.user?.id;
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [newExperience, setNewExperience] = useState<Partial<Experience>>({
     isCurrentRole: false,
@@ -369,31 +369,23 @@ export default function Experience() {
                 <Button
                   variant="destructive"
                   size="sm"
-                  className="hover:bg-red-600/90"
+                  className="w-full"
                   onClick={() => deleteExperience(exp.id)}
                 >
-                  <X className="mr-2 h-4 w-4" /> Delete
+                  <X className="mr-2" /> Delete
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-blue-600 hover:bg-blue-50 border-blue-200"
+                  className="w-full"
                   onClick={() => handleEditClick(exp)}
                 >
-                  Edit Experience
+                  <Plus className="mr-2" /> Edit
                 </Button>
               </div>
             </div>
           </div>
         ))}
-
-        {experiences.length === 0 && (
-          <div className="text-center py-8 bg-gray-50 rounded-lg">
-            <p className="text-gray-500">
-              No professional experiences added yet
-            </p>
-          </div>
-        )}
       </div>
     </section>
   );

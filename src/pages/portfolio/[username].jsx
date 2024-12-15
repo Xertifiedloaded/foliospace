@@ -1,7 +1,6 @@
-
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -19,39 +18,67 @@ import {
 } from "@/components/ui/table";
 import {
   ExternalLink,
-  MapPin,
   Briefcase,
   GraduationCap,
-  Badge,
 } from "lucide-react";
-import { fetchUserPortfolio } from "@/hooks/use-api";
-import { PortfolioProfileCard } from "../../../components/UserProfileCard";
+import { PortfolioProfileCard } from "@/components/UserProfileCard";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-export async function getServerSideProps({ params }) {
-  const { slug } = params;
+import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/router";
 
-  const response = await fetch(`http://localhost:3000/api/portfolio/${slug}`);
-  const portfolio = await response.json();
-  console.log(portfolio);
-  if (!portfolio) {
-    return {
-      notFound: true,
+const PortfolioPage = () => {
+  const router = useRouter()
+  const { username } = router.query
+  const [portfolio, setPortfolio] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      try {
+        const response = await fetch(`/api/portfolio/${username}`);
+        if (!response.ok) {
+          throw new Error("Portfolio not found");
+        }
+        const data = await response.json();
+        console.log(data);
+        setPortfolio(data);
+      } catch (error) {
+        console.error("Portfolio fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
     };
+
+    if (username) {
+      fetchPortfolio();
+    }
+  }, [username]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Card className="w-[400px] text-center">
+          <CardHeader>
+            <CardTitle>Loading...</CardTitle>
+          </CardHeader>
+        </Card>
+      </div>
+    );
   }
 
-  return {
-    props: {
-      portfolio,
-    },
-  };
-}
-
-export default function PortfolioPage({ portfolio }) {
   if (!portfolio) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -61,8 +88,8 @@ export default function PortfolioPage({ portfolio }) {
           </CardHeader>
           <CardContent>
             <p>We couldn't find any data for the user.</p>
-            <Button variant="outline" className="mt-4">
-              Go Back
+            <Button variant="outline" className="mt-4" asChild>
+              <Link href="/">Go Back</Link>
             </Button>
           </CardContent>
         </Card>
@@ -74,74 +101,74 @@ export default function PortfolioPage({ portfolio }) {
     <div className="container mx-auto px-4 py-8 space-y-6">
       <PortfolioProfileCard portfolio={portfolio} />
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ExternalLink className="w-5 h-5" /> Links & Socials
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Accordion type="single" collapsible>
-            <AccordionItem value="links">
-              <AccordionTrigger>Links</AccordionTrigger>
-              <AccordionContent>
-                {portfolio?.links?.length > 0 ? (
-                  <ul className="space-y-2">
-                    {portfolio?.links.map((link) => (
-                      <li key={link.id}>
-                        <Button variant="link" className="p-0" asChild>
-                          <a
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {link.text}
-                            <ExternalLink className="ml-2 w-4 h-4" />
-                          </a>
-                        </Button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-muted-foreground">No links available</p>
-                )}
-              </AccordionContent>
-            </AccordionItem>
+      {/* Links and Socials Section */}
+      {(portfolio.links?.length || portfolio.socials?.length) && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ExternalLink className="w-5 h-5" /> Links & Socials
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible>
+              {portfolio.links?.length > 0 && (
+                <AccordionItem value="links">
+                  <AccordionTrigger>Links</AccordionTrigger>
+                  <AccordionContent>
+                    <ul className="space-y-2">
+                      {portfolio.links.map((link) => (
+                        <li key={link.id}>
+                          <Button variant="link" className="p-0" asChild>
+                            <a
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {link.text}
+                              <ExternalLink className="ml-2 w-4 h-4" />
+                            </a>
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              )}
 
-            <AccordionItem value="socials">
-              <AccordionTrigger>Socials</AccordionTrigger>
-              <AccordionContent>
-                {portfolio?.socials?.length > 0 ? (
-                  <ul className="space-y-2">
-                    {portfolio?.socials?.map((social) => (
-                      <li key={social.id}>
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start"
-                          asChild
-                        >
-                          <a
-                            href={social.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
+              {portfolio.socials?.length > 0 && (
+                <AccordionItem value="socials">
+                  <AccordionTrigger>Socials</AccordionTrigger>
+                  <AccordionContent>
+                    <ul className="space-y-2">
+                      {portfolio.socials.map((social) => (
+                        <li key={social.id}>
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start"
+                            asChild
                           >
-                            {social.name}
-                            <ExternalLink className="ml-2 w-4 h-4" />
-                          </a>
-                        </Button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-muted-foreground">No socials available</p>
-                )}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </CardContent>
-      </Card>
+                            <a
+                              href={social.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {social.name}
+                              <ExternalLink className="ml-2 w-4 h-4" />
+                            </a>
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+            </Accordion>
+          </CardContent>
+        </Card>
+      )}
 
-      {portfolio?.experiences.length > 0 && (
+      {/* Experiences Section */}
+      {portfolio.experiences?.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -158,23 +185,15 @@ export default function PortfolioPage({ portfolio }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {portfolio?.experiences.map((exp) => (
+                {portfolio.experiences.map((exp) => (
                   <TableRow key={exp.id}>
                     <TableCell>{exp.position}</TableCell>
                     <TableCell>{exp.company}</TableCell>
                     <TableCell>
-                      {new Date(exp.startDate).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}{" "}
+                      {formatDate(exp.startDate)}{" "}
                       -{" "}
                       {exp.endDate
-                        ? new Date(exp.endDate).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })
+                        ? formatDate(exp.endDate)
                         : "Present"}
                     </TableCell>
                   </TableRow>
@@ -185,7 +204,8 @@ export default function PortfolioPage({ portfolio }) {
         </Card>
       )}
 
-      {portfolio?.education.length > 0  && (
+      {/* Education Section */}
+      {portfolio.education?.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -202,23 +222,15 @@ export default function PortfolioPage({ portfolio }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {portfolio?.education.map((edu) => (
+                {portfolio.education.map((edu) => (
                   <TableRow key={edu.id}>
                     <TableCell>{edu.degree}</TableCell>
                     <TableCell>{edu.institution}</TableCell>
                     <TableCell>
-                      {new Date(edu.startDate).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}{" "}
+                      {formatDate(edu.startDate)}{" "}
                       -{" "}
                       {edu.endDate
-                        ? new Date(edu.endDate).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })
+                        ? formatDate(edu.endDate)
                         : "Present"}
                     </TableCell>
                   </TableRow>
@@ -229,7 +241,8 @@ export default function PortfolioPage({ portfolio }) {
         </Card>
       )}
 
-      {portfolio?.projects.length > 0  && (
+      {/* Projects Section */}
+      {portfolio.projects?.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -247,7 +260,7 @@ export default function PortfolioPage({ portfolio }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {portfolio?.projects.map((project) => (
+                {portfolio.projects.map((project) => (
                   <TableRow key={project.id}>
                     <TableCell className="font-medium">
                       {project.title}
@@ -288,7 +301,7 @@ export default function PortfolioPage({ portfolio }) {
                             </Tooltip>
                           </TooltipProvider>
                         )}
-                        {project.githubLink  && (
+                        {project.githubLink && (
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
@@ -296,7 +309,9 @@ export default function PortfolioPage({ portfolio }) {
                                   href={project.githubLink}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                ></a>
+                                >
+                                  <ExternalLink className="w-4 h-4 text-green-500 hover:text-green-700" />
+                                </a>
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p>GitHub Repository</p>
@@ -315,4 +330,6 @@ export default function PortfolioPage({ portfolio }) {
       )}
     </div>
   );
-}
+};
+
+export default PortfolioPage;

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { X, Plus } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
+import { useSession } from "next-auth/react"; 
 import { toast } from "@/hooks/use-toast";
 import ProfileLayout from "@/components/layout";
 
@@ -21,8 +21,9 @@ interface PortfolioProject {
 }
 
 export default function PortfolioSection() {
-  const { user } = useAuth();
-  const userId = user?.id;
+  const { data: session } = useSession(); 
+  const userId = session?.user?.id; 
+
   const [projects, setProjects] = useState<PortfolioProject[]>([]);
   const [newProject, setNewProject] = useState<Partial<PortfolioProject>>({
     technologies: [],
@@ -45,7 +46,9 @@ export default function PortfolioSection() {
   };
 
   useEffect(() => {
-    fetchProjects();
+    if (userId) {
+      fetchProjects();
+    }
   }, [userId]);
 
   const addProject = async (e: React.FormEvent) => {
@@ -161,6 +164,7 @@ export default function PortfolioSection() {
       }
     }
   };
+
   const deleteProject = async (project: PortfolioProject) => {
     if (!project.id) return;
     setIsLoading(true);
@@ -225,185 +229,165 @@ export default function PortfolioSection() {
       addProject(e); 
     }
   };
+
   return (
-<ProfileLayout>
-<Card>
-      <CardHeader>
-        <CardTitle>Portfolio Projects</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label>Project Title</Label>
-              <Input
-                value={newProject.title || ""}
-                onChange={(e) =>
-                  setNewProject((prev) => ({ ...prev, title: e.target.value }))
-                }
-                placeholder="Project Name"
-              />
+    <ProfileLayout>
+      <Card>
+        <CardHeader>
+          <CardTitle>Portfolio Projects</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Project Title</Label>
+                <Input
+                  value={newProject.title || ""}
+                  onChange={(e) =>
+                    setNewProject((prev) => ({ ...prev, title: e.target.value }))
+                  }
+                  placeholder="Project Name"
+                />
+              </div>
+              <div>
+                <Label>Project Link</Label>
+                <Input
+                  value={newProject.link || ""}
+                  onChange={(e) =>
+                    setNewProject((prev) => ({ ...prev, link: e.target.value }))
+                  }
+                  placeholder="Live project URL"
+                />
+              </div>
             </div>
+
             <div>
-              <Label>Project Link</Label>
-              <Input
-                value={newProject.link || ""}
-                onChange={(e) =>
-                  setNewProject((prev) => ({ ...prev, link: e.target.value }))
-                }
-                placeholder="Live project URL"
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label>Project Description</Label>
-            <Textarea
-              value={newProject.description || ""}
-              onChange={(e) =>
-                setNewProject((prev) => ({
-                  ...prev,
-                  description: e.target.value,
-                }))
-              }
-              placeholder="Describe your project"
-              rows={4}
-            />
-          </div>
-
-          <div>
-            <Label>Technologies Used</Label>
-            <div className="flex gap-2">
-              <Input
-                id="techInput"
-                value={
-                  newProject.technologies?.[
-                    newProject.technologies.length - 1
-                  ] || ""
-                }
+              <Label>Project Description</Label>
+              <Textarea
+                value={newProject.description || ""}
                 onChange={(e) =>
                   setNewProject((prev) => ({
                     ...prev,
-                    technologies: prev.technologies
-                      ? [...prev.technologies.slice(0, -1), e.target.value]
-                      : [e.target.value],
+                    description: e.target.value,
                   }))
                 }
-                placeholder="Add technology"
+                placeholder="Describe your project"
+                rows={4}
               />
+            </div>
+
+            <div>
+              <Label>Technologies Used</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="techInput"
+                  value={
+                    newProject.technologies?.[
+                      newProject.technologies.length - 1
+                    ] || ""
+                  }
+                  onChange={(e) =>
+                    setNewProject((prev) => ({
+                      ...prev,
+                      technologies: prev.technologies
+                        ? [...prev.technologies.slice(0, -1), e.target.value]
+                        : [e.target.value],
+                    }))
+                  }
+                  placeholder="Add technology"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={addTechnology}
+                  disabled={isLoading}
+                >
+                  <Plus className="mr-2" /> Add
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {newProject.technologies?.map((tech, index) => (
+                  <div
+                    key={index}
+                    className="bg-gray-100 rounded-full px-3 py-1 text-sm flex items-center"
+                  >
+                    {tech}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="ml-2 h-5 w-5"
+                      onClick={() =>
+                        setNewProject((prev) => ({
+                          ...prev,
+                          technologies: prev.technologies?.filter(
+                            (t) => t !== tech
+                          ),
+                        }))
+                      }
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <Label>Project Image</Label>
+              <Input
+                type="file"
+                onChange={handleImageUpload}
+                accept="image/*"
+              />
+            </div>
+
+            <div className="flex justify-end">
               <Button
-                type="button"
-                variant="outline"
-                onClick={addTechnology}
+                type="submit"
                 disabled={isLoading}
               >
-                <Plus className="mr-2" /> Add
+                {editIndex !== null ? "Save Changes" : "Add Project"}
               </Button>
             </div>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {newProject.technologies?.map((tech, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-100 rounded-full px-3 py-1 text-sm flex items-center"
-                >
-                  {tech}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="ml-2 h-5 w-5"
-                    onClick={() =>
-                      setNewProject((prev) => ({
-                        ...prev,
-                        technologies: prev.technologies?.filter(
-                          (t) => t !== tech
-                        ),
-                      }))
-                    }
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <div className="space-y-6">
+        {projects.map((project) => (
+          <div key={project.id}>
+            <Card>
+              <CardHeader>
+                <CardTitle>{project.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-sm">{project.description}</div>
+                <div className="flex gap-2">
+                  {project.technologies.map((tech, index) => (
+                    <span key={index} className="text-xs text-gray-600">
+                      {tech}
+                    </span>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <Label>Project Image</Label>
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="mt-2"
-            />
-            {newProject.image && (
-              <div className="mt-2">
-                <img
-                  src={newProject.image}
-                  alt="Project preview"
-                  className="w-32 h-32 object-cover"
-                />
+              </CardContent>
+              <div className="flex justify-end space-x-2 p-4">
+                <Button
+                  onClick={() => editProject(project.id!)}
+                  variant="outline"
+                >
+                  Edit
+                </Button>
+                <Button
+                  onClick={() => deleteProject(project)}
+                  variant="destructive"
+                >
+                  Delete
+                </Button>
               </div>
-            )}
+            </Card>
           </div>
-
-          <Button
-            type="submit"
-            variant="outline"
-            className="w-full"
-            disabled={isLoading}
-          >
-            <Plus className="mr-2" />{" "}
-            {editIndex === null ? "Add Project" : "Save Changes"}
-          </Button>
-        </form>
-
-        {projects.length > 0 && (
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold mb-4">Current Projects</h2>
-            {projects.map((project) => (
-              <Card key={project.id} className="mb-4">
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-xl font-bold">{project.title}</h3>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {project.description}
-                      </p>
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {project.technologies?.map((tech, techIndex) => (
-                          <span
-                            key={techIndex}
-                            className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        onClick={() => editProject(project.id || '')}
-                        disabled={isLoading}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => deleteProject(project)}
-                        disabled={isLoading}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
-</ProfileLayout>
+        ))}
+      </div>
+    </ProfileLayout>
   );
 }

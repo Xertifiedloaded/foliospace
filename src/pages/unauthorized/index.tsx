@@ -1,36 +1,8 @@
-
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 
-interface UnauthorizedPageProps {
-  from: string | null;
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { from } = context.query;
-
-  if (from !== 'middleware') {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {
-      from: from || null,
-    },
-  };
-};
-
-const UnauthorizedPage: React.FC<UnauthorizedPageProps> = ({ from }) => {
+const UnauthorizedPage: React.FC = () => {
   const router = useRouter();
-
-  if (from !== 'middleware') {
-    return null;
-  }
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 px-6">
@@ -85,6 +57,23 @@ const UnauthorizedPage: React.FC<UnauthorizedPageProps> = ({ from }) => {
       </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const referer = context.req.headers.referer || '';
+
+  if (!referer.includes('/profile') && !referer.includes('/dashboard')) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {}, 
+  };
 };
 
 export default UnauthorizedPage;

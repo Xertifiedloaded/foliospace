@@ -6,23 +6,36 @@ import { ExternalLink } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import PageView from "@/sections/PageView";
 import DashBoardHeading from "@/sections/DashBoardHeading";
 import DashBoardSkills from "@/sections/DashBoardSkills";
-import { useAuth } from "@/hooks/use-auth";
 import ProfileLayout from "@/components/layout";
+import { useSession } from "next-auth/react";
+
+interface Profile {
+  id: string;
+  userId: string;
+  name?: string;
+  email?: string;
+  hobbies?: string[];
+  languages?: string[];
+  createdAt?: string;
+  updatedAt?: string;
+  picture?: string;
+  [key: string]: any; 
+}
 
 const Dashboard: React.FC = () => {
-  const [profile, setProfile] = useState<Record<string, any> | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth();
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const userId = user?.id || "";
-        const response = await fetch(`/api/portfolio/profile?userId=${userId}`);
+        if (!session?.user?.id) return;
+
+        const response = await fetch(`/api/portfolio/profile?userId=${session.user.id}`);
         if (!response.ok) {
           if (response.status === 404) {
             setProfile(null);
@@ -30,38 +43,25 @@ const Dashboard: React.FC = () => {
             throw new Error("Failed to fetch profile");
           }
         } else {
-          const data = await response.json();
+          const data: Profile = await response.json();
           setProfile(data);
         }
-        setIsLoading(false);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred"
-        );
+        setError((err as Error).message || "An unknown error occurred");
+      } finally {
         setIsLoading(false);
       }
     };
 
-    if (user) {
-      fetchProfile();
-    }
-  }, [user]);
+    fetchProfile();
+  }, [session?.user?.id]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const excludedFields: string[] = ["id", "userId", "createdAt", "updatedAt", "picture"];
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  const excludedFields = ["id", "userId", "createdAt", "updatedAt", "picture"];
-
-  const isValueEmpty = (value: any) =>
-    value === undefined ||
-    value === null ||
+  const isValueEmpty = (value: any): boolean =>
+    !value ||
     (Array.isArray(value) && value.length === 0) ||
-    (typeof value === "string" && value.trim() === "");
+    (typeof value === "string" && !value.trim());
 
   return (
     <ProfileLayout>
@@ -69,34 +69,29 @@ const Dashboard: React.FC = () => {
         <DashBoardHeading />
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-900">
-              Profile Details
-            </CardTitle>
+            <CardTitle className="text-2xl font-bold text-gray-900">Profile Details</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3 text-gray-700">
-              {profile === null ? (
+              {error ? (
+                <p className="text-red-500">{error}</p>
+              ) : isLoading ? (
+                <p>Loading...</p>
+              ) : profile === null ? (
                 <div className="text-center text-gray-500">
-                  <p>
-                    No profile found for this user. Please complete your
-                    profile.
-                  </p>
+                  <p>No profile found for this user. Please complete your profile.</p>
                 </div>
               ) : (
-                Object?.keys(profile)
+                Object.keys(profile)
                   .filter((key) => !excludedFields.includes(key))
                   .map((key) => (
                     <React.Fragment key={key}>
                       <div className="flex items-center space-x-2">
-                        <p className="font-semibold capitalize flex-grow">
-                          {key.replace(/([A-Z])/g, " $1")}
-                        </p>
+                        <p className="font-semibold capitalize flex-grow">{key.replace(/([A-Z])/g, " $1")}</p>
                         <Link href="/profile/details">
                           <ExternalLink
                             className={`w-5 h-5 ${
-                              isValueEmpty(profile[key])
-                                ? "text-red-500 hover:text-red-600"
-                                : "text-green-500 hover:text-green-600"
+                              isValueEmpty(profile[key]) ? "text-red-500" : "text-green-500"
                             } transition-colors duration-200`}
                           />
                         </Link>
@@ -104,13 +99,10 @@ const Dashboard: React.FC = () => {
                       <div>
                         {key === "hobbies" || key === "languages" ? (
                           <div className="flex flex-wrap gap-2">
-                            {profile[key].map((item: string, index: number) => (
+                            {profile[key]?.map((item: string, index: number) => (
                               <button
                                 key={index}
-                                className="
-                                px-3 py-1 bg-gray-100 duration-200 transition-colors 
-                                text-gray-700 rounded-full hover:bg-gray-200 text-sm
-                              "
+                                className="px-3 py-1 bg-gray-100 duration-200 transition-colors text-gray-700 rounded-full hover:bg-gray-200 text-sm"
                               >
                                 {item}
                               </button>
@@ -118,7 +110,7 @@ const Dashboard: React.FC = () => {
                           </div>
                         ) : Array.isArray(profile[key]) ? (
                           <ul className="list-disc list-inside">
-                            {profile[key].map((item: any, index: number) => (
+                            {profile[key]?.map((item: string, index: number) => (
                               <li key={index}>{item}</li>
                             ))}
                           </ul>

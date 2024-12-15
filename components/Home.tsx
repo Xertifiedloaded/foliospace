@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { UserNavigation } from "./UserNavigation";
-
+import { useSession } from "next-auth/react";
 const FEATURE_SECTIONS = [
   {
     name: "Portfolio Builder",
@@ -39,8 +39,8 @@ const FEATURE_SECTIONS = [
 
 export default function ProfessionalHomePage() {
   const router = useRouter();
-  const { user } = useAuth();
-
+  const { data: session } = useSession();
+  const user = session?.user;
   return (
     <div className="lg:min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <header className="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">

@@ -1,16 +1,25 @@
 import { PrismaClient } from '@prisma/client';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../../../lib/NextOption';
+
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   try {
+    const session = await getServerSession(req, res, authOptions);
     const { method } = req;
+    if (!session || !session.user) {
+      return res.status(401).json({ error: "User not authenticated" });
+    }
+
+    const userId = session.user.id; 
 
     if (method === "POST") {
       const body = req.body;
-      const { userId, name, link, isVisible } = body;
+      const { name, link, isVisible } = body;
 
-      if (!userId || !name || !link) {
-        return res.status(400).json({ error: "UserId, name, and link are required" });
+      if (!name || !link) {
+        return res.status(400).json({ error: "Name and link are required" });
       }
 
       const newSocial = await prisma.social.create({
@@ -21,12 +30,6 @@ export default async function handler(req, res) {
     }
 
     if (method === "GET") {
-      const { userId } = req.query;
-
-      if (!userId) {
-        return res.status(400).json({ error: "UserId is required" });
-      }
-
       const socialLinks = await prisma.social.findMany({
         where: { userId },
       });
@@ -49,10 +52,10 @@ export default async function handler(req, res) {
     }
 
     if (method === "PATCH") {
-      const { id, userId, name, link, isVisible } = req.body;
+      const { id, name, link, isVisible } = req.body;
 
-      if (!id || !userId || !name || !link) {
-        return res.status(400).json({ error: "id, userId, name, and link are required" });
+      if (!id || !name || !link) {
+        return res.status(400).json({ error: "id, name, and link are required" });
       }
 
       const existingSocial = await prisma.social.findUnique({
