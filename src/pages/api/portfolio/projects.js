@@ -3,7 +3,6 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/NextOption';
 import { v2 as cloudinary } from 'cloudinary';
 
-// Configure Cloudinary
 cloudinary.config({
   cloud_name: 'djknvzync',
   api_key: "569228811476594",
@@ -34,8 +33,8 @@ export default async function handler(req, res) {
       if (image) {
         try {
           const uploadResponse = await cloudinary.uploader.upload(image, {
-            folder: 'projects', // Optional: organize images in a specific folder
-            max_allowed_size: 10 * 1024 * 1024 // 10MB max file size
+            folder: 'projects', 
+            max_allowed_size: 10 * 1024 * 1024 
           });
           imageUrl = uploadResponse.secure_url;
         } catch (uploadError) {
@@ -79,7 +78,6 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "ID is required" });
       }
 
-      // Optional: Delete image from Cloudinary before deleting project record
       const projectToDelete = await prisma.project.findUnique({
         where: { id },
       });
@@ -115,13 +113,12 @@ export default async function handler(req, res) {
       let imageUrl = existingProject.image;
       if (image) {
         try {
-          // If existing image, delete it from Cloudinary
+
           if (existingProject.image) {
             const publicId = existingProject.image.split('/').pop().split('.')[0];
             await cloudinary.uploader.destroy(`projects/${publicId}`);
           }
 
-          // Upload new image
           const uploadResponse = await cloudinary.uploader.upload(image, {
             folder: 'projects',
             max_allowed_size: 10 * 1024 * 1024

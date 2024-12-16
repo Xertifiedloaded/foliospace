@@ -36,6 +36,8 @@ export default function PortfolioSection() {
       try {
         const response = await fetch(`/api/portfolio/projects?userId=${userId}`);
         const data = await response.json();
+        console.log(data);
+        
         if (data.projects) {
           setProjects(data.projects);
         }

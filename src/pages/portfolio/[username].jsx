@@ -14,31 +14,6 @@ import {
 } from "../../../sections/ProjectSection";
 import { PortfolioProfileCard } from "../../../components/UserProfileCard";
 
-const ProfileHeader = ({ portfolio }) => (
-  <div className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl shadow-2xl overflow-hidden">
-    <div className="absolute top-0 right-0 opacity-20">
-      <svg
-        width="300"
-        height="300"
-        viewBox="0 0 300 300"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle cx="250" cy="50" r="200" fill="white" fillOpacity="0.1" />
-      </svg>
-    </div>
-    <div className="p-8 relative z-10 flex items-center">
-      <div className="bg-white/20 p-1 rounded-full mr-6">
-        <User className="w-24 h-24 text-white" />
-      </div>
-      <div>
-        <h1 className="text-4xl font-bold mb-2">{portfolio.name}</h1>
-        <p className="text-xl opacity-80">{portfolio.headline}</p>
-      </div>
-    </div>
-  </div>
-);
-
 const PortfolioPage = () => {
   const router = useRouter();
   const { username } = router.query;

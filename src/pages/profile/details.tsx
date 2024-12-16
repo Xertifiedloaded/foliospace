@@ -18,7 +18,7 @@ interface ProfileData {
   bio: string;
   hobbies: string;
   languages: string;
-  picture: File | null;
+  picture: string | null;
   previewUrl?: string;
 }
 
@@ -53,6 +53,7 @@ export default function ProfileDetails() {
       try {
         const response = await fetch(`/api/portfolio/profile?userId=${session.user.id}`);
         const data = await response.json();
+console.log(data);
 
         if (response.ok) {
           setFormData({
@@ -84,17 +85,21 @@ export default function ProfileDetails() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const target = e.target as HTMLInputElement;
-    const { name, value } = target;
+    const { name, value, files } = target;
 
-    if (target.files && target.files.length > 0) {
-      const file = target.files[0];
-      const previewUrl = URL.createObjectURL(file);
+    if (files && files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
 
-      setFormData((prev) => ({
-        ...prev,
-        picture: file,
-        previewUrl,
-      }));
+      reader.onloadend = () => {
+        setFormData((prev) => ({
+          ...prev,
+          picture: reader.result as string,
+          previewUrl: URL.createObjectURL(file),
+        }));
+      };
+
+      reader.readAsDataURL(file);
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -106,60 +111,54 @@ export default function ProfileDetails() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+  
     try {
-      const formDataToSend = new FormData();
-
-      formDataToSend.append("tagline", formData.tagline);
-      formDataToSend.append("bio", formData.bio);
-
-      const hobbies = formData.hobbies
-        ? formData.hobbies.split(",").map((hobby) => hobby.trim())
-        : [];
-      const languages = formData.languages
-        ? formData.languages.split(",").map((lang) => lang.trim())
-        : [];
-
-      formDataToSend.append("hobbies", JSON.stringify(hobbies));
-      formDataToSend.append("languages", JSON.stringify(languages));
-
+      const payload: any = {
+        tagline: formData.tagline,
+        bio: formData.bio,
+        hobbies: formData.hobbies
+          ? formData.hobbies.split(",").map((hobby) => hobby.trim())
+          : [],
+        languages: formData.languages
+          ? formData.languages.split(",").map((lang) => lang.trim())
+          : [],
+      };
+  
+      // Only add picture if it exists
       if (formData.picture) {
-        formDataToSend.append("imageFile", formData.picture); // Match the backend key
+        payload.picture = formData.picture;
       }
-
+  
       const response = await fetch("/api/portfolio/profile", {
         method: "PATCH",
-        body: formDataToSend,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
-
+  
       const result = await response.json();
-
+  
       if (!response.ok) {
         throw new Error(result.error || "Failed to update profile");
       }
-
+  
       toast({
         description: "Profile updated successfully",
         variant: "default",
       });
-
-      if (result.picture) {
-        setFormData((prev) => ({
-          ...prev,
-          previewUrl: result.picture,
-        }));
-      }
+  
+      // Update the form data with the returned profile
+      setFormData((prev) => ({
+        ...prev,
+        previewUrl: result.picture || prev.previewUrl,
+        picture: result.picture || prev.picture,
+      }));
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast({
           title: "Error updating profile",
           description: error.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Error updating profile",
-          description: "An unknown error occurred.",
           variant: "destructive",
         });
       }

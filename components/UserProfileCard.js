@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, LinkedinIcon, GithubIcon, TwitterIcon } from "lucide-react";
-
+import Image from 'next/image';
 const SocialIcon = ({ type }) => {
   const icons = {
     linkedin: LinkedinIcon,
@@ -18,7 +18,7 @@ const SocialIcon = ({ type }) => {
 
 export const PortfolioProfileCard = ({ portfolio }) => {
   const { profile, socials, name, email, username } = portfolio || {};
-
+console.log(profile);
   const socialPlatforms = {
     linkedin: "text-blue-600",
     github: "text-gray-800",
@@ -29,7 +29,9 @@ export const PortfolioProfileCard = ({ portfolio }) => {
     <Card className=" shadow-lg hover:shadow-xl transition-shadow duration-300">
       <CardHeader className="bg-gradient-to-r from-blue-50 to-blue-100 pb-4">
         <div className="">
+          <Image src={profile?.picture} height={100} width={100} alt={username}/>
           <div>
+            <Image/>
             <CardTitle className="text-xl font-bold text-gray-800">
               {name || "Professional Portfolio"}
             </CardTitle>
