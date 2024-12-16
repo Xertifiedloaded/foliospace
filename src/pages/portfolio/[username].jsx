@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { User } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -90,6 +89,18 @@ const PortfolioPage = () => {
       {portfolio.projects?.length > 0 && (
         <PortfolioProjectSections projects={portfolio.projects} />
       )}
+
+      <div className="flex justify-center items-center">
+        <Button>
+          <a
+            href={`${window.location.origin}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Create your Portfolio
+          </a>
+        </Button>
+      </div>
     </div>
   );
 };

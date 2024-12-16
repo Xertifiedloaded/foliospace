@@ -24,58 +24,136 @@ import {
   DialogTrigger 
 } from "@/components/ui/dialog";
 export const PortfolioProjectSections = ({ projects }) => (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Briefcase className="w-5 h-5 text-sm" /> Featured Projects
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {projects.map((project) => (
-          <div 
-            key={project.id} 
-            className="border-b pb-4 last:border-b-0 group transition-all"
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex-grow">
-                <h3 className="font-semibold lg:text-lg text-sm">{project.title}</h3>
-                <p className="text-gray-600 mt-1">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mt-2">
+  <Card className="w-full">
+    <CardHeader>
+      <CardTitle className="flex items-center gap-2">
+        <Briefcase className="w-5 h-5 text-sm" /> Featured Projects
+      </CardTitle>
+    </CardHeader>
+    <CardContent className="space-y-4">
+      {projects.map((project) => (
+        <Dialog key={project.id}>
+          <div className="border rounded-lg p-4 hover:shadow-sm transition-all group">
+            <div className="grid grid-cols-12 gap-4 items-center">
+              {/* Project Image */}
+              {project.image && (
+                <div className="col-span-3 md:col-span-2 lg:col-span-2">
+                  <img 
+                    src={project.image} 
+                    alt={project.title}
+                    className="w-full aspect-square object-cover rounded-md"
+                  />
+                </div>
+              )}
+
+              {/* Project Details */}
+              <div className={
+                `${project.image ? 'col-span-9 md:col-span-10 lg:col-span-10' : 'col-span-12'} space-y-2`
+              }>
+                <div className="flex justify-between items-start">
+                  <div className="flex-grow pr-4">
+                    <h3 className="font-bold text-lg truncate">{project.title}</h3>
+                    <p className="text-muted-foreground mt-1 line-clamp-2">
+                      {project.description}
+                    </p>
+                  </div>
+
+                  {/* Links and Dialog Trigger */}
+                  <div className="flex items-center space-x-2">
+                    {project.link && (
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:text-blue-700"
+                      >
+                        <ExternalLink className="w-5 h-5" />
+                      </a>
+                    )}
+                    {project.githubLink && (
+                      <a
+                        href={project.githubLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <ExternalLink className="w-5 h-5" />
+                      </a>
+                    )}
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" size="icon" className="ml-2">
+                        <ArrowRight className="w-5 h-5" />
+                      </Button>
+                    </DialogTrigger>
+                  </div>
+                </div>
+
+                {/* Technologies */}
+                <div className="flex flex-wrap gap-2">
                   {project.technologies?.map((tech, index) => (
-                    <Badge key={index} variant="outline">
+                    <Badge 
+                      key={index} 
+                      variant="outline" 
+                      className="text-xs"
+                    >
                       {tech}
                     </Badge>
                   ))}
                 </div>
               </div>
-              <div className="flex space-x-2">
-                {project.link && (
-                  <a 
-                    href={project.link} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-700"
-                  >
-                    <ExternalLink className="w-5 h-5" />
-                  </a>
-                )}
-                {project.githubLink && (
-                  <a 
-                    href={project.githubLink} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    <ExternalLink className="w-5 h-5" />
-                  </a>
-                )}
-              </div>
             </div>
           </div>
-        ))}
-      </CardContent>
-    </Card>
-  );
+
+          {/* Detailed Project Dialog */}
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>{project.title}</DialogTitle>
+            </DialogHeader>
+            <div className="grid md:grid-cols-2 gap-4">
+              {project.image && (
+                <img 
+                  src={project.image} 
+                  alt={project.title}
+                  className="w-full aspect-video object-cover rounded-md"
+                />
+              )}
+              <div>
+                <p className="text-muted-foreground mb-4">{project.description}</p>
+                <div className="space-y-2">
+                  <h4 className="font-semibold">Technologies</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {project.technologies?.map((tech, index) => (
+                      <Badge key={index} variant="secondary">
+                        {tech}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex space-x-2 mt-4">
+                  {project.link && (
+                    <Button asChild>
+                      <Link href={project.link} target="_blank">
+                        View Project
+                      </Link>
+                    </Button>
+                  )}
+                  {project.githubLink && (
+                    <Button variant="outline" asChild>
+                      <Link href={project.githubLink} target="_blank">
+                        GitHub Repository
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      ))}
+    </CardContent>
+  </Card>
+);
+
 
 
 

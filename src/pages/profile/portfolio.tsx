@@ -9,6 +9,7 @@ import { X, Plus } from "lucide-react";
 import { useSession } from "next-auth/react"; 
 import { toast } from "@/hooks/use-toast";
 import ProfileLayout from "@/components/layout";
+import { Badge } from "@/components/ui/badge";
 
 interface PortfolioProject {
   id?: string;
@@ -356,40 +357,73 @@ export default function PortfolioSection() {
       </Card>
 
       <div className="space-y-6">
-        {projects.map((project) => (
-          <div key={project.id}>
-            <Card>
-              <CardHeader>
-                <CardTitle>{project.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-sm">{project.description}</div>
-                <div className="flex gap-2">
-                  {project.technologies.map((tech, index) => (
-                    <span key={index} className="text-xs text-gray-600">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </CardContent>
-              <div className="flex justify-end space-x-2 p-4">
-                <Button
-                  onClick={() => editProject(project.id!)}
-                  variant="outline"
-                >
-                  Edit
-                </Button>
-                <Button
-                  onClick={() => deleteProject(project)}
-                  variant="destructive"
-                >
-                  Delete
-                </Button>
-              </div>
-            </Card>
+  {projects.map((project) => (
+    <Card key={project.id} className="overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-3">
+
+        {project.image && (
+          <div className="md:col-span-1 h-full">
+            <img 
+              src={project.image} 
+              alt={project.title}
+              className="w-full h-28 lg:h-full object-cover"
+            />
           </div>
-        ))}
+        )}
+
+        {/* Project Details */}
+        <div className={`
+          ${project.image ? 'md:col-span-2' : 'md:col-span-3'}
+          p-6 flex flex-col justify-between
+        `}>
+          <div>
+            {/* Title and Description */}
+            <CardHeader className="p-0 mb-4">
+              <CardTitle className="text-xl">{project.title}</CardTitle>
+            </CardHeader>
+
+            <CardContent className="p-0 space-y-4">
+              <p className="text-muted-foreground line-clamp-3">
+                {project.description}
+              </p>
+
+              {/* Technologies */}
+              <div className="flex flex-wrap gap-2">
+                {project.technologies.map((tech, index) => (
+                  <Badge 
+                    key={index} 
+                    variant="secondary" 
+                    className="text-xs"
+                  >
+                    {tech}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end space-x-2 mt-4">
+            <Button
+              onClick={() => editProject(project.id!)}
+              variant="outline"
+              size="sm"
+            >
+              Edit
+            </Button>
+            <Button
+              onClick={() => deleteProject(project)}
+              variant="destructive"
+              size="sm"
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
       </div>
+    </Card>
+  ))}
+</div>
     </ProfileLayout>
   );
 }
