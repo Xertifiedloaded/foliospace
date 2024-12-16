@@ -13,12 +13,10 @@ import {
   Share2,
   FileText,
   Palette,
-  LogOut,
   Menu as MenuIcon,
   LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/use-auth";
 
 interface NavItem {
   path: string;
@@ -46,10 +44,10 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-neutral-900 text-white shadow-md">
+    <header className="sticky top-0 z-50 shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <h1 className="text-lg font-bold text-white">Creatify</h1>
+          <h1 className="text-lg font-bold text-black">Creatify</h1>
           <Menubar className="hidden md:flex">
             {navItems.map((item) => (
               <MenubarMenu key={item.path}>

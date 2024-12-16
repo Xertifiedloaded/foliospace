@@ -11,7 +11,6 @@ import ProfileLayout from "@/components/layout";
 import { useSession } from "next-auth/react";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { fileToBase64 } from "../../../middlware/FileToBase";
 
 interface ProfileData {
   userId?: string;
@@ -39,9 +38,7 @@ export default function ProfileDetails() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (status === "loading") {
-      return;
-    }
+    if (status === "loading") return;
 
     if (!session) {
       toast({
@@ -56,6 +53,7 @@ export default function ProfileDetails() {
       try {
         const response = await fetch(`/api/portfolio/profile?userId=${session.user.id}`);
         const data = await response.json();
+
         if (response.ok) {
           setFormData({
             userId: data.userId || "",
@@ -110,35 +108,47 @@ export default function ProfileDetails() {
     setIsSubmitting(true);
 
     try {
-      const pictureBase64 = formData?.picture ? await fileToBase64(formData?.picture) : null;
+      const formDataToSend = new FormData();
 
-      const payload = {
-        userId: session?.user?.id,
-        tagline: formData?.tagline,
-        bio: formData?.bio,
-        hobbies: formData?.hobbies ? formData.hobbies.split(",").map((hobby) => hobby.trim()) : [],
-        languages: formData?.languages ? formData.languages.split(",").map((lang) => lang.trim()) : [],
-        picture: pictureBase64,
-      };
+      formDataToSend.append("tagline", formData.tagline);
+      formDataToSend.append("bio", formData.bio);
+
+      const hobbies = formData.hobbies
+        ? formData.hobbies.split(",").map((hobby) => hobby.trim())
+        : [];
+      const languages = formData.languages
+        ? formData.languages.split(",").map((lang) => lang.trim())
+        : [];
+
+      formDataToSend.append("hobbies", JSON.stringify(hobbies));
+      formDataToSend.append("languages", JSON.stringify(languages));
+
+      if (formData.picture) {
+        formDataToSend.append("imageFile", formData.picture); // Match the backend key
+      }
 
       const response = await fetch("/api/portfolio/profile", {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+        body: formDataToSend,
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || "Failed to update profile");
+        throw new Error(result.error || "Failed to update profile");
       }
 
       toast({
         description: "Profile updated successfully",
         variant: "default",
       });
+
+      if (result.picture) {
+        setFormData((prev) => ({
+          ...prev,
+          previewUrl: result.picture,
+        }));
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast({
@@ -178,10 +188,10 @@ export default function ProfileDetails() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                {formData?.previewUrl && (
+                {formData.previewUrl && (
                   <div className="flex justify-center mb-4">
                     <img
-                      src={formData?.previewUrl}
+                      src={formData.previewUrl}
                       alt="Profile Preview"
                       className="rounded-full w-24 h-24 object-cover"
                     />
@@ -193,7 +203,7 @@ export default function ProfileDetails() {
                   <Input
                     id="tagline"
                     name="tagline"
-                    value={formData?.tagline ?? ""}
+                    value={formData.tagline}
                     onChange={handleChange}
                     placeholder="Enter your tagline"
                     required
@@ -205,7 +215,7 @@ export default function ProfileDetails() {
                   <Textarea
                     id="bio"
                     name="bio"
-                    value={formData?.bio ?? ""}
+                    value={formData.bio}
                     onChange={handleChange}
                     placeholder="Tell us about yourself"
                   />
@@ -216,7 +226,7 @@ export default function ProfileDetails() {
                   <Input
                     id="hobbies"
                     name="hobbies"
-                    value={formData?.hobbies ?? ""}
+                    value={formData.hobbies}
                     onChange={handleChange}
                     placeholder="Enter your hobbies (comma-separated)"
                   />
@@ -227,7 +237,7 @@ export default function ProfileDetails() {
                   <Input
                     id="languages"
                     name="languages"
-                    value={formData?.languages ?? ""}
+                    value={formData.languages}
                     onChange={handleChange}
                     placeholder="Enter the languages you speak (comma-separated)"
                   />
