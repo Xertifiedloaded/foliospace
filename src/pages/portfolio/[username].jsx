@@ -19,7 +19,7 @@ const PortfolioPage = () => {
   const { username } = router.query;
   const [portfolio, setPortfolio] = useState(null);
   const [loading, setLoading] = useState(true);
-
+console.log(portfolio);
   useEffect(() => {
     const fetchPortfolio = async () => {
       try {
@@ -74,10 +74,9 @@ const PortfolioPage = () => {
 
   return (
     <div className=" px-4 bg-black text-white py-8 max-w-4xl container mx-auto space-y-6">
-      {/* <PortfolioProfileCard portfolio={portfolio} /> */}
       <Hero portfolio={portfolio}/>
       {(portfolio.links?.length || portfolio.socials?.length) && (
-        <PortfolioLink links={portfolio.links} socials={portfolio.socials} />
+        <PortfolioLink profile={portfolio.profile} links={portfolio.links} socials={portfolio.socials} />
       )}
 
       {portfolio.experiences?.length > 0 && (
