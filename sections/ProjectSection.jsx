@@ -2,26 +2,27 @@
 
 
 import React, { useEffect, useState } from "react";
+import { ExternalLink, LinkIcon, Share2Icon,Briefcase,GraduationCap, ArrowRight, Globe } from "lucide-react";
 import Link from "next/link";
+
 import {
-  ExternalLink,
-  Briefcase,
-  GraduationCap,
-  User,
-  ArrowRight
-} from "lucide-react";
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 import { 
-
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 export const PortfolioProjectSections = ({ projects }) => (
   <Card className="w-full">
@@ -227,112 +228,147 @@ export const PortfolioProjectSections = ({ projects }) => (
   
 
 
-  export const  PortfolioLink = ({ links, socials }) => {
-    const [selectedLink, setSelectedLink] = useState(null);
+  export const PortfolioLink = ({ links, socials }) => {
+    const [activeTab, setActiveTab] = useState('links');
   
     return (
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span className="flex items-center">
-              <ExternalLink className="mr-2 w-5 h-5" />
-              Links & Connections
-            </span>
+          <CardTitle className="flex items-center gap-3">
+            <ExternalLink className="w-6 h-6" />
+            Links & Connections
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-2 gap-4">
-            {links?.length > 0 && (
-              <div>
-                <h3 className="font-semibold mb-3 lg:text-lg text-sm">Personal Links</h3>
-                {links.map((link) => (
-                  <Dialog key={link.id}>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full text-sm justify-between mb-2"
-                        onClick={() => setSelectedLink(link)}
-                      >
-                        {link.text}
-                        <ArrowRight className="ml-2 w-4 h-4" />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle >{link.text}</DialogTitle>
-                      </DialogHeader>
-                      <div className="flex flex-col items-center space-y-4">
-                        <p>You are about to navigate to:</p>
-                        <a
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
+  
+        <Tabs 
+          defaultValue="links" 
+          value={activeTab} 
+          onValueChange={setActiveTab}
+          className="w-full"
+        >
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="links">
+              <LinkIcon className="mr-2 w-4 h-4" />
+              Personal Links
+            </TabsTrigger>
+            <TabsTrigger value="socials">
+              <Share2Icon className="mr-2 w-4 h-4" />
+              Social Profiles
+            </TabsTrigger>
+          </TabsList>
+  
+          <CardContent>
+            {/* Links Tab */}
+            <TabsContent value="links">
+              <div className="space-y-3">
+                {links?.length > 0 ? (
+                  links.map((link) => (
+                    <Dialog key={link.id}>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-between"
                         >
-                          {link.url}
-                        </a>
-                        <Button asChild>
+                          <div className="flex items-center">
+                            <Globe className="mr-3 w-5 h-5 text-muted-foreground" />
+                            {link.text}
+                          </div>
+                          <ArrowRight className="w-4 h-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>{link.text}</DialogTitle>
+                          <DialogDescription>
+                            You are about to navigate to an external link
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="flex flex-col items-center space-y-4">
                           <a
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline break-all"
                           >
-                            Open Link
+                            {link.url}
                           </a>
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                ))}
+                          <Button asChild className="w-full">
+                            <a
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Open Link
+                            </a>
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  ))
+                ) : (
+                  <p className="text-center text-muted-foreground">
+                    No personal links available
+                  </p>
+                )}
               </div>
-            )}
+            </TabsContent>
   
-            {socials?.length > 0 && (
-              <div>
-                <h3 className="font-semibold mb-3 lg:text-lg text-sm">Social Profiles</h3>
-                {socials.map((social) => (
-                  <Dialog key={social.id}>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full text-sm justify-between mb-2"
-                        onClick={() => setSelectedLink(social)}
-                      >
-                        {social.name}
-                        <ArrowRight className="ml-2 w-4 h-4" />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>{social.name}</DialogTitle>
-                      </DialogHeader>
-                      <div className="flex flex-col items-center space-y-4">
-                        <p>You are about to navigate to:</p>
-                        <a
-                          href={social.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
+            {/* Socials Tab */}
+            <TabsContent value="socials">
+              <div className="space-y-3">
+                {socials?.length > 0 ? (
+                  socials.map((social) => (
+                    <Dialog key={social.id}>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-between"
                         >
-                          {social.url}
-                        </a>
-                        <Button asChild>
+                          <div className="flex items-center">
+                            <Share2Icon className="mr-3 w-5 h-5 text-muted-foreground" />
+                            {social.name}
+                          </div>
+                          <ArrowRight className="w-4 h-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>{social.name}</DialogTitle>
+                          <DialogDescription>
+                            You are about to open a social profile
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="flex flex-col items-center space-y-4">
                           <a
                             href={social.url}
                             target="_blank"
                             rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline break-all"
                           >
-                            Open Profile
+                            {social.url}
                           </a>
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                ))}
+                          <Button asChild className="w-full">
+                            <a
+                              href={social.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Open Profile
+                            </a>
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  ))
+                ) : (
+                  <p className="text-center text-muted-foreground">
+                    No social profiles available
+                  </p>
+                )}
               </div>
-            )}
-          </div>
-        </CardContent>
+            </TabsContent>
+          </CardContent>
+        </Tabs>
       </Card>
     );
   };

@@ -12,6 +12,7 @@ import {
   PortfolioProjectSections,
 } from "../../../sections/ProjectSection";
 import { PortfolioProfileCard } from "../../../components/UserProfileCard";
+import Hero from "../../../sections/Hero";
 
 const PortfolioPage = () => {
   const router = useRouter();
@@ -72,8 +73,9 @@ const PortfolioPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl space-y-6">
-      <PortfolioProfileCard portfolio={portfolio} />
+    <div className=" px-4 bg-black text-white py-8 max-w-4xl container mx-auto space-y-6">
+      {/* <PortfolioProfileCard portfolio={portfolio} /> */}
+      <Hero portfolio={portfolio}/>
       {(portfolio.links?.length || portfolio.socials?.length) && (
         <PortfolioLink links={portfolio.links} socials={portfolio.socials} />
       )}
