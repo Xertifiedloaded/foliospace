@@ -1,20 +1,27 @@
 import { PrismaClient } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/NextOption';
+import { v2 as cloudinary } from 'cloudinary';
 
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: 'djknvzync',
+  api_key: "569228811476594",
+  api_secret: "di4UhIUKiZ1QnmpSQLdKU8I9Oko",
+});
 
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   try {
     const { method, query, body } = req;
-    
+
     const session = await getServerSession(req, res, authOptions);
     if (!session || !session.user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const userId = session.user.id; 
+    const userId = session.user.id;
 
     if (method === "POST") {
       const { title, description, technologies, link, githubLink, image } = body;
@@ -23,14 +30,17 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Title, description, and image are required" });
       }
 
-      let imageData = null;
+      let imageUrl = null;
       if (image) {
-        const base64Data = image.split(';base64,').pop();
-
-        if (!base64Data) {
-          return res.status(400).json({ error: "Invalid base64 image format" });
+        try {
+          const uploadResponse = await cloudinary.uploader.upload(image, {
+            folder: 'projects', // Optional: organize images in a specific folder
+            max_allowed_size: 10 * 1024 * 1024 // 10MB max file size
+          });
+          imageUrl = uploadResponse.secure_url;
+        } catch (uploadError) {
+          return res.status(400).json({ error: "Image upload failed", details: uploadError.message });
         }
-        imageData = base64Data;
       }
 
       const newProject = await prisma.project.create({
@@ -41,7 +51,7 @@ export default async function handler(req, res) {
           technologies,
           link,
           githubLink,
-          image: imageData,
+          image: imageUrl,
         },
       });
 
@@ -69,6 +79,16 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "ID is required" });
       }
 
+      // Optional: Delete image from Cloudinary before deleting project record
+      const projectToDelete = await prisma.project.findUnique({
+        where: { id },
+      });
+
+      if (projectToDelete && projectToDelete.image) {
+        const publicId = projectToDelete.image.split('/').pop().split('.')[0];
+        await cloudinary.uploader.destroy(`projects/${publicId}`);
+      }
+
       const deletedProject = await prisma.project.delete({
         where: { id },
       });
@@ -92,15 +112,24 @@ export default async function handler(req, res) {
         return res.status(404).json({ error: "Project not found" });
       }
 
-      let imageData = null;
+      let imageUrl = existingProject.image;
       if (image) {
-        const base64Data = image.split(';base64,').pop();
+        try {
+          // If existing image, delete it from Cloudinary
+          if (existingProject.image) {
+            const publicId = existingProject.image.split('/').pop().split('.')[0];
+            await cloudinary.uploader.destroy(`projects/${publicId}`);
+          }
 
-        if (!base64Data) {
-          return res.status(400).json({ error: "Invalid base64 image format" });
+          // Upload new image
+          const uploadResponse = await cloudinary.uploader.upload(image, {
+            folder: 'projects',
+            max_allowed_size: 10 * 1024 * 1024
+          });
+          imageUrl = uploadResponse.secure_url;
+        } catch (uploadError) {
+          return res.status(400).json({ error: "Image upload failed", details: uploadError.message });
         }
-
-        imageData = base64Data;
       }
 
       const updatedProject = await prisma.project.update({
@@ -112,7 +141,7 @@ export default async function handler(req, res) {
           technologies,
           link,
           githubLink,
-          image: imageData,
+          image: imageUrl,
         },
       });
 
