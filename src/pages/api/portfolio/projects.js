@@ -11,6 +11,14 @@ cloudinary.config({
 
 const prisma = new PrismaClient();
 
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '20mb',
+    },
+  },
+};
 export default async function handler(req, res) {
   try {
     const { method, query, body } = req;

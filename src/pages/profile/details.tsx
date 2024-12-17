@@ -20,6 +20,8 @@ interface ProfileData {
   languages: string;
   picture: string | null;
   previewUrl?: string;
+  phoneNumber?: string;
+  address?: string;
 }
 
 export default function ProfileDetails() {
@@ -33,6 +35,8 @@ export default function ProfileDetails() {
     languages: "",
     picture: null,
     previewUrl: "",
+    phoneNumber: "",
+    address: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,17 +55,25 @@ export default function ProfileDetails() {
 
     const fetchProfile = async () => {
       try {
-        const response = await fetch(`/api/portfolio/profile?userId=${session.user.id}`);
+        const response = await fetch(
+          `/api/portfolio/profile?userId=${session.user.id}`
+        );
         const data = await response.json();
-console.log(data);
+        console.log(data);
 
         if (response.ok) {
           setFormData({
             userId: data.userId || "",
             tagline: data.tagline || "",
             bio: data.bio || "",
-            hobbies: Array.isArray(data.hobbies) ? data.hobbies.join(", ") : data.hobbies || "",
-            languages: Array.isArray(data.languages) ? data.languages.join(", ") : data.languages || "",
+            address: data.address || "",
+            phoneNumber: data.phoneNumber || "",
+            hobbies: Array.isArray(data.hobbies)
+              ? data.hobbies.join(", ")
+              : data.hobbies || "",
+            languages: Array.isArray(data.languages)
+              ? data.languages.join(", ")
+              : data.languages || "",
             picture: null,
             previewUrl: data.picture || "",
           });
@@ -83,7 +95,9 @@ console.log(data);
     fetchProfile();
   }, [session, status]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const target = e.target as HTMLInputElement;
     const { name, value, files } = target;
 
@@ -111,10 +125,12 @@ console.log(data);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-  
+
     try {
       const payload: any = {
         tagline: formData.tagline,
+        address: formData.address,
+        phoneNumber: formData.phoneNumber,
         bio: formData.bio,
         hobbies: formData.hobbies
           ? formData.hobbies.split(",").map((hobby) => hobby.trim())
@@ -123,12 +139,11 @@ console.log(data);
           ? formData.languages.split(",").map((lang) => lang.trim())
           : [],
       };
-  
-      // Only add picture if it exists
+
       if (formData.picture) {
         payload.picture = formData.picture;
       }
-  
+
       const response = await fetch("/api/portfolio/profile", {
         method: "PATCH",
         headers: {
@@ -136,19 +151,18 @@ console.log(data);
         },
         body: JSON.stringify(payload),
       });
-  
+
       const result = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(result.error || "Failed to update profile");
       }
-  
+
       toast({
         description: "Profile updated successfully",
         variant: "default",
       });
-  
-      // Update the form data with the returned profile
+
       setFormData((prev) => ({
         ...prev,
         previewUrl: result.picture || prev.previewUrl,
@@ -241,6 +255,26 @@ console.log(data);
                     placeholder="Enter the languages you speak (comma-separated)"
                   />
                 </div>
+                <div>
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    placeholder="Enter your phone number"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phone">Address</Label>
+                  <Input
+                    id="address"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    placeholder="Enter your address or location"
+                  />
+                </div>
 
                 <div>
                   <Label htmlFor="picture">Profile Image</Label>
@@ -253,7 +287,11 @@ console.log(data);
                   />
                 </div>
 
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

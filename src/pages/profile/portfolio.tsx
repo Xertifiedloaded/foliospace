@@ -219,6 +219,7 @@ export default function PortfolioSection() {
             image: reader.result as string,
           }));
         }
+        
       };
       reader.readAsDataURL(file);
     }

@@ -11,6 +11,10 @@ const DashBoardHeading = () => {
     if (typeof window === "undefined" || !username) return "#";
     return `${window.location.origin}/portfolio/${username}`;
   };
+  const getUserLinkCv = (username) => {
+    if (typeof window === "undefined" || !username) return "#";
+    return `${window.location.origin}/resume/${username}`;
+  };
 
   return (
     <Card>
@@ -36,12 +40,12 @@ const DashBoardHeading = () => {
           <small className="text-muted-foreground block">
             Your resume:{" "}
             <a
-              href={getUserLink(username)}
+              href={getUserLinkCv(username)}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 bold hover:text-blue-800 hover:underline"
             >
-              {getUserLink(username)}
+              {getUserLinkCv(username)}
             </a>
           </small>
         </div>

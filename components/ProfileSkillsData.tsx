@@ -10,23 +10,19 @@ import { useState } from "react";
 interface ProfileSkillsData {
   skills: string[];
   stacks: string[];
-  hobbies: string[];
-  languages: string[];
+
 }
 
 export default function SkillsSection() {
   const [formData, setFormData] = useState<ProfileSkillsData>({
     skills: [],
     stacks: [],
-    hobbies: [],
-    languages: [],
+
   });
 
   const [currentInputs, setCurrentInputs] = useState<Record<string, string>>({
     skills: "",
     stacks: "",
-    hobbies: "",
-    languages: "",
   });
 
   const addItem = (key: keyof ProfileSkillsData, newItem: string) => {
@@ -131,8 +127,6 @@ export default function SkillsSection() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {renderDynamicSection("skills", "Add a skill")}
           {renderDynamicSection("stacks", "Add a tech stack")}
-          {renderDynamicSection("hobbies", "Add a hobby")}
-          {renderDynamicSection("languages", "Add a language")}
 
           <Button type="submit" className="w-full mt-4">
             Save Skills & Interests

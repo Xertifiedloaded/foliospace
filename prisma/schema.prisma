@@ -22,30 +22,58 @@ model User {
   links       Link[]
   experiences Experience[]
   education   Education[]
-  skills      String[]
+  skills      Skill[]  @relation("UserSkills") 
+  stacks      Stack[]  @relation("UserStacks")  
 }
 
+model Skill {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  level     String
+  userId    String
+  user      User     @relation("UserSkills", fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Stack {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  userId    String
+  user      User     @relation("UserStacks", fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+
+
 model Project {
-  id     String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId String? @db.ObjectId
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String?  @db.ObjectId
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   title        String?
   description  String?
   technologies String[]
   link         String?
   githubLink   String?
-  image      String?
+  image        String?
 }
 
 model Profile {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String?  @unique @db.ObjectId
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  picture   String?
-  tagline   String?
-  bio       String?
-  hobbies   String[]
-  languages String[]
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String?  @unique @db.ObjectId
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  picture     String?
+  tagline     String?
+  bio         String?
+  hobbies     String[]
+  languages   String[]
+  address     String?
+  phoneNumber String?
 }
 
 model Link {
@@ -80,12 +108,11 @@ model Experience {
 }
 
 model Education {
-  id     String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId String? @db.ObjectId
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String?   @db.ObjectId
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   institution String?
   degree      String?
   startDate   DateTime?
   endDate     DateTime?
 }
-

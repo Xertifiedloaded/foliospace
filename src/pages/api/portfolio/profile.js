@@ -2,7 +2,13 @@ import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../../lib/NextOption";
 import { v2 as cloudinary } from "cloudinary";
-
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '20mb',
+    },
+  },
+};
 const prisma = new PrismaClient();
 
 cloudinary.config({
@@ -12,34 +18,32 @@ cloudinary.config({
 });
 
 export default async function handler(req, res) {
-  const session = await getServerSession(req, res, authOptions);
+  try {
+    const session = await getServerSession(req, res, authOptions);
 
-  if (!session || !session.user) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+    if (!session || !session.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
 
-  const userIdFromSession = session.user.id;
+    const userIdFromSession = session.user.id;
 
-  if (req.method === "PATCH") {
-    try {
-      const { tagline, bio, hobbies, languages, picture } = req.body;
+    if (req.method === "PATCH") {
+      const { tagline, bio, hobbies, languages, picture, phoneNumber, address } = req.body;
 
       let imageUrl = null;
       if (picture) {
         try {
           const uploadResponse = await cloudinary.uploader.upload(picture, {
             folder: "profile-pictures",
-            max_allowed_size: 10 * 1024 * 1024,
+            max_allowed_size: 10 * 1024 * 1024, 
           });
           imageUrl = uploadResponse.secure_url;
         } catch (uploadError) {
-          console.error("Cloudinary upload error:", uploadError);
-          return res
-            .status(400)
-            .json({
-              error: "Image upload failed",
-              details: uploadError.message,
-            });
+          console.error("Cloudinary upload error:", uploadError.message);
+          return res.status(400).json({
+            error: "Image upload failed",
+            details: uploadError.message,
+          });
         }
       }
 
@@ -51,6 +55,8 @@ export default async function handler(req, res) {
           bio,
           hobbies: hobbies || [],
           languages: languages || [],
+          phoneNumber: phoneNumber || undefined,
+          address: address || undefined,
         },
         create: {
           userId: userIdFromSession,
@@ -59,6 +65,8 @@ export default async function handler(req, res) {
           bio,
           hobbies: hobbies || [],
           languages: languages || [],
+          phoneNumber: phoneNumber || null,
+          address: address || null,
         },
       });
 
@@ -66,20 +74,11 @@ export default async function handler(req, res) {
         ...updatedProfile,
         picture: updatedProfile.picture || null,
       });
-    } catch (error) {
-      console.error("Profile update error:", error);
-      return res.status(500).json({ error: error.message });
-    }
-  }
-
-  if (req.method === "GET") {
-    try {
+    } else if (req.method === "GET") {
       const { userId } = req.query;
 
       if (!userId) {
-        return res
-          .status(400)
-          .json({ error: "UserId query parameter is required" });
+        return res.status(400).json({ error: "UserId query parameter is required" });
       }
 
       const profile = await prisma.profile.findUnique({
@@ -94,12 +93,16 @@ export default async function handler(req, res) {
           bio: null,
           hobbies: [],
           languages: [],
+          address: null,
+          phoneNumber: null,
         }
       );
-    } catch (error) {
-      return res.status(500).json({ error: error.message });
+    } else {
+      // Method not allowed
+      return res.status(405).json({ message: "Method Not Allowed" });
     }
+  } catch (error) {
+    console.error("Handler error:", error.message);
+    return res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
-
-  return res.status(405).json({ message: "Method Not Allowed" });
 }
