@@ -42,7 +42,7 @@ export default function Hero({ portfolio }) {
               )}
             </div>
           </div>
-          {profile.bio && (
+          {profile?.bio && (
             <div className="text-sm my-10 text-center text-gray-300 animate-fade-up animate-once animate-delay-300">
               {profile?.bio}
             </div>
@@ -66,10 +66,10 @@ export default function Hero({ portfolio }) {
                     variant="outline"
                     size="icon"
                     className={`rounded-full ${
-                      socialColors[social.name.toLowerCase()] ||
+                      socialColors[social?.name.toLowerCase()] ||
                       "text-gray-500 hover:text-gray-600"
                     }`}
-                    onClick={() => window.open(social.url, "_blank")}
+                    onClick={() => window.open(social?.url, "_blank")}
                   >
                     <SocialIcon type={social.name} />
                   </Button>

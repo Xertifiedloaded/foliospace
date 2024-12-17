@@ -1,16 +1,11 @@
+
 import { PrismaClient } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/NextOption';
-import { v2 as cloudinary } from 'cloudinary';
-
-cloudinary.config({
-  cloud_name: 'djknvzync',
-  api_key: "569228811476594",
-  api_secret: "di4UhIUKiZ1QnmpSQLdKU8I9Oko",
-});
+import fs from 'fs';
+import path from 'path';
 
 const prisma = new PrismaClient();
-
 
 export const config = {
   api: {
@@ -19,6 +14,7 @@ export const config = {
     },
   },
 };
+
 export default async function handler(req, res) {
   try {
     const { method, query, body } = req;
@@ -40,11 +36,28 @@ export default async function handler(req, res) {
       let imageUrl = null;
       if (image) {
         try {
-          const uploadResponse = await cloudinary.uploader.upload(image, {
-            folder: 'projects', 
-            max_allowed_size: 10 * 1024 * 1024 
-          });
-          imageUrl = uploadResponse.secure_url;
+          // Extract file extension and original name
+          const matches = image.match(/^data:image\/([A-Za-z-+/]+);base64,(.+)$/);
+          if (!matches || matches.length !== 3) {
+            return res.status(400).json({ error: "Invalid image format" });
+          }
+
+          const fileExtension = matches[1];
+          const base64Data = matches[2];
+          const buffer = Buffer.from(base64Data, 'base64');
+          
+          // Generate filename
+          const originalName = `${title}-${userId}-${Date.now()}.${fileExtension}`;
+          const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+          
+          if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+          }
+        
+          const filePath = path.join(uploadDir, originalName);
+          fs.writeFileSync(filePath, buffer);
+          
+          imageUrl = `/uploads/${originalName}`;
         } catch (uploadError) {
           return res.status(400).json({ error: "Image upload failed", details: uploadError.message });
         }
@@ -91,8 +104,15 @@ export default async function handler(req, res) {
       });
 
       if (projectToDelete && projectToDelete.image) {
-        const publicId = projectToDelete.image.split('/').pop().split('.')[0];
-        await cloudinary.uploader.destroy(`projects/${publicId}`);
+        // Remove local image file
+        const imagePath = path.join(process.cwd(), 'public', projectToDelete.image);
+        try {
+          if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath);
+          }
+        } catch (error) {
+          console.error('Error deleting image file:', error);
+        }
       }
 
       const deletedProject = await prisma.project.delete({
@@ -121,17 +141,37 @@ export default async function handler(req, res) {
       let imageUrl = existingProject.image;
       if (image) {
         try {
-
+          // Remove existing image file if it exists
           if (existingProject.image) {
-            const publicId = existingProject.image.split('/').pop().split('.')[0];
-            await cloudinary.uploader.destroy(`projects/${publicId}`);
+            const oldImagePath = path.join(process.cwd(), 'public', existingProject.image);
+            try {
+              if (fs.existsSync(oldImagePath)) {
+                fs.unlinkSync(oldImagePath);
+              }
+            } catch (error) {
+              console.error('Error deleting old image:', error);
+            }
           }
 
-          const uploadResponse = await cloudinary.uploader.upload(image, {
-            folder: 'projects',
-            max_allowed_size: 10 * 1024 * 1024
-          });
-          imageUrl = uploadResponse.secure_url;
+          const matches = image.match(/^data:image\/([A-Za-z-+/]+);base64,(.+)$/);
+          if (!matches || matches.length !== 3) {
+            return res.status(400).json({ error: "Invalid image format" });
+          }
+
+          const fileExtension = matches[1];
+          const base64Data = matches[2];
+          const buffer = Buffer.from(base64Data, 'base64');
+        
+          const originalName = `${title}-${userId}-${Date.now()}.${fileExtension}`;
+          const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+        
+          if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+          }
+          
+          const filePath = path.join(uploadDir, originalName);
+          fs.writeFileSync(filePath, buffer);
+          imageUrl = `/uploads/${originalName}`;
         } catch (uploadError) {
           return res.status(400).json({ error: "Image upload failed", details: uploadError.message });
         }
