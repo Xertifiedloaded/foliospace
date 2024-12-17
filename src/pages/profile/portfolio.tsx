@@ -199,15 +199,24 @@ export default function PortfolioSection() {
   const addTechnology = () => {
     const techInput = document.getElementById("techInput") as HTMLInputElement;
     const tech = techInput.value.trim();
-    if (tech && !newProject.technologies?.includes(tech)) {
-      setNewProject((prev) => ({
-        ...prev,
-        technologies: [...(prev.technologies || []), tech],
-      }));
-      techInput.value = "";
-    }
+    
+    setNewProject(prev => {
+      const techSet = new Set(prev.technologies);
+    
+      if (tech && !techSet.has(tech)) {
+        techSet.add(tech);
+        techInput.value = "";
+        
+        return {
+          ...prev,
+          technologies: Array.from(techSet)
+        };
+      }
+      
+      return prev;
+    });
   };
-
+  
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {

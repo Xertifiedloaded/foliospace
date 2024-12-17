@@ -26,16 +26,16 @@ import {
 } from "@/components/ui/dialog";
 
 export const PortfolioProjectSections = ({ projects }) => (
-  <Card className="w-full bg-black text-white">
+  <Card className="w-full overflow-x-hidden bg-black text-white">
     <CardHeader>
       <CardTitle className="flex items-center gap-2 text-white">
         <Briefcase className="w-5 h-5 text-sm text-white" /> Featured Projects
       </CardTitle>
     </CardHeader>
-    <CardContent className="space-y-4">
+    <CardContent className="space-y-4 overflow-x-hidden">
       {projects.map((project) => (
         <Dialog key={project.id}>
-          <div className="border border-gray-800 rounded-lg p-4 hover:bg-gray-900 transition-all group">
+          <div className="border overflow-x-hidden border-gray-800 rounded-lg p-4 hover:bg-gray-900 transition-all group">
             <div className="grid grid-cols-12 gap-4 items-center">
               {project.image && (
                 <div className="col-span-3 md:col-span-2 lg:col-span-2">
@@ -112,7 +112,7 @@ export const PortfolioProjectSections = ({ projects }) => (
             <DialogHeader>
               <DialogTitle className="text-white">{project.title}</DialogTitle>
             </DialogHeader>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid overflow-x-hidden md:grid-cols-2 gap-4">
               {project.image && (
                 <img
                   src={project.image}
@@ -178,7 +178,7 @@ export const EducationSection = ({ education }) => (
       </CardTitle>
     </CardHeader>
     <CardContent>
-      <div className="space-y-4">
+      <div className="space-y-4  overflow-x-hidden">
         {education.map((edu) => (
           <div
             key={edu.id}
@@ -214,7 +214,7 @@ export const ExperienceSection = ({ experiences }) => (
       </CardTitle>
     </CardHeader>
     <CardContent>
-      <div className="space-y-4">
+      <div className="space-y-4 overflow-x-hidden">
         {experiences.map((exp) => (
           <div
             key={exp.id}
