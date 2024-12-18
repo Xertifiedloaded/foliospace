@@ -1,9 +1,9 @@
-
 import { PrismaClient } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/NextOption';
 import fs from 'fs';
 import path from 'path';
+import sharp from 'sharp'; 
 
 const prisma = new PrismaClient();
 
@@ -46,17 +46,22 @@ export default async function handler(req, res) {
           const base64Data = matches[2];
           const buffer = Buffer.from(base64Data, 'base64');
           
-          // Generate filename
           const originalName = `${title}-${userId}-${Date.now()}.${fileExtension}`;
           const uploadDir = path.join(process.cwd(), 'public', 'uploads');
           
           if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
           }
-        
+
           const filePath = path.join(uploadDir, originalName);
-          fs.writeFileSync(filePath, buffer);
-          
+
+
+          const format = await sharp(buffer).metadata().then(metadata => metadata.format);
+          await sharp(buffer)
+            .resize(800)
+            .toFormat(format, { quality: 80 })  
+            .toFile(filePath);
+
           imageUrl = `/uploads/${originalName}`;
         } catch (uploadError) {
           return res.status(400).json({ error: "Image upload failed", details: uploadError.message });
@@ -170,7 +175,13 @@ export default async function handler(req, res) {
           }
           
           const filePath = path.join(uploadDir, originalName);
-          fs.writeFileSync(filePath, buffer);
+
+          // Compress the image using sharp
+          await sharp(buffer)
+            .resize(800)  // Resize to a width of 800px (optional, adjust as needed)
+            .jpeg({ quality: 80 })  // Compress to 80% quality (you can adjust this)
+            .toFile(filePath);
+
           imageUrl = `/uploads/${originalName}`;
         } catch (uploadError) {
           return res.status(400).json({ error: "Image upload failed", details: uploadError.message });
