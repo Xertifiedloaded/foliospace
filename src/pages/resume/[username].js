@@ -77,11 +77,11 @@ export default function ResumePage() {
             <span className="text-sm md:text-base">{email}</span>
             {profile?.phoneNumber && (
               <span className="text-sm md:text-base">
-                {profile.phoneNumber}
+                {profile?.phoneNumber}
               </span>
             )}
             {profile?.address && (
-              <span className="text-sm md:text-base">{profile.address}</span>
+              <span className="text-sm md:text-base">{profile?.address}</span>
             )}
           </div>
         </div>
@@ -107,20 +107,20 @@ export default function ResumePage() {
                 Professional Experience
               </h2>
               <div className="space-y-6">
-                {experiences.map((exp) => (
-                  <div key={exp.id} className="p-4 border rounded-md shadow-sm">
-                    <h3 className="text-lg font-bold">{exp.position}</h3>
+                {experiences?.map((exp) => (
+                  <div key={exp?.id} className="p-4 border rounded-md shadow-sm">
+                    <h3 className="text-lg font-bold">{exp?.position}</h3>
                     <p className="text-sm text-muted-foreground">
-                      {exp.company}
+                      {exp?.company}
                     </p>
                     <Badge variant="secondary" className="mt-2">
-                      {new Date(exp.startDate).getFullYear()} -{" "}
+                      {new Date(exp?.startDate).getFullYear()} -{" "}
                       {exp.endDate
-                        ? new Date(exp.endDate).getFullYear()
+                        ? new Date(exp?.endDate).getFullYear()
                         : "Present"}
                     </Badge>
                     <ul className="mt-2 list-disc pl-6 text-sm">
-                      {exp.description.split("\n").map((line, index) => (
+                      {exp?.description.split("\n").map((line, index) => (
                         <li key={index}>{line}</li>
                       ))}
                     </ul>
@@ -152,16 +152,16 @@ export default function ResumePage() {
                 Education
               </h2>
               <div className="space-y-4">
-                {education.map((edu) => (
+                {education?.map((edu) => (
                   <div key={edu.id} className="p-4 border rounded-md shadow-sm">
-                    <h3 className="text-lg font-bold">{edu.institution}</h3>
+                    <h3 className="text-lg font-bold">{edu?.institution}</h3>
                     <p className="text-sm text-muted-foreground">
                       {edu.degree}
                     </p>
                     <Badge variant="secondary" className="mt-2">
-                      {new Date(edu.startDate).getFullYear()} -{" "}
-                      {edu.endDate
-                        ? new Date(edu.endDate).getFullYear()
+                      {new Date(edu?.startDate).getFullYear()} -{" "}
+                      {edu?.endDate
+                        ? new Date(edu?.endDate).getFullYear()
                         : "Present"}
                     </Badge>
                   </div>
