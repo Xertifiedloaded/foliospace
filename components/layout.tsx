@@ -1,12 +1,13 @@
 'use client';
-import Header from "@/components/Header";
+
 import { MobilePreview } from "@/components/Preview";
 import { useAuth } from "@/hooks/use-auth";
-import { Loader2 } from "lucide-react";
+import Header from "@/components/Header";
 import { SessionProvider, useSession } from "next-auth/react";
 import React, { ReactNode, useEffect } from "react";
 import { useRouter } from "next/router";
 import { toast } from "@/hooks/use-toast"; 
+import SkeletalLoader from "./SkeletalLoader";
 
 interface ProfileLayoutProps {
   children: ReactNode;
@@ -31,25 +32,10 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 
   if (isLoading || status === "loading") {
     return (
-      <div className="bg-gray-50 min-h-screen">
-        <Header />
-        <div className="container mx-auto py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            <div className="space-y-6">
-              {[...Array(4)].map((_, index) => (
-                <div
-                  key={index}
-                  className="h-16 bg-gray-200 rounded-lg animate-pulse"
-                ></div>
-              ))}
-            </div>
-            <div className="h-full bg-gray-200 rounded-lg animate-pulse"></div>
-          </div>
-        </div>
-      </div>
+     <SkeletalLoader/>
     );
   }
+  
 
   if (!session) {
     return null; 

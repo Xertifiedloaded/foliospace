@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, Plus, Calendar } from "lucide-react";
 import { format } from "date-fns";
-import { useSession } from "next-auth/react"; 
+import { useSession } from "next-auth/react";
 
 interface Education {
   id: string;
@@ -23,8 +23,8 @@ export default function Education() {
   const [newEducation, setNewEducation] = useState<Partial<Education>>({});
   const [isEditing, setIsEditing] = useState<string | null>(null);
 
-  const userId = session?.user?.id; 
-  
+  const userId = session?.user?.id;
+
   useEffect(() => {
     const fetchEducation = async () => {
       if (userId) {
@@ -78,7 +78,7 @@ export default function Education() {
 
   const deleteEducation = async (id: string) => {
     setEducation(education.filter((edu) => edu.id !== id));
-  
+
     try {
       const response = await fetch(
         `/api/portfolio/education?educationId=${id}`,
@@ -86,7 +86,7 @@ export default function Education() {
           method: "DELETE",
         }
       );
-  
+
       if (!response.ok) {
         console.error("Failed to delete education");
       }
@@ -94,26 +94,25 @@ export default function Education() {
       console.error("Delete error", error);
     }
   };
-  
 
-  const updateEducation = async (id: string, updatedData: Partial<Education>) => {
+  const updateEducation = async (
+    id: string,
+    updatedData: Partial<Education>
+  ) => {
     setEducation(
       education.map((edu) => (edu.id === id ? { ...edu, ...updatedData } : edu))
     );
-  
+
     try {
-      const response = await fetch(
-        `/api/portfolio/education`, 
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            educationId: id, 
-            ...updatedData, 
-          }),
-        }
-      );
-  
+      const response = await fetch(`/api/portfolio/education`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          educationId: id,
+          ...updatedData,
+        }),
+      });
+
       if (!response.ok) {
         console.error("Failed to update education");
       }
@@ -121,7 +120,6 @@ export default function Education() {
       console.error("Update error", error);
     }
   };
-  
 
   const handleSave = () => {
     if (
@@ -143,58 +141,72 @@ export default function Education() {
       </h2>
       <form onSubmit={addEducation} className="space-y-3">
         <div className="grid lg:grid-cols-2 gap-2">
-          <Input
-            value={newEducation.institution || ""}
-            onChange={(e) =>
-              setNewEducation((prev) => ({
-                ...prev,
-                institution: e.target.value,
-              }))
-            }
-            placeholder="Institution Name"
-          />
-          <Input
-            value={newEducation.degree || ""}
-            onChange={(e) =>
-              setNewEducation((prev) => ({
-                ...prev,
-                degree: e.target.value,
-              }))
-            }
-            placeholder="Degree"
-          />
+          <div>
+            <label htmlFor="institution">Institution Name</label>
+            <Input
+              id="institution"
+              value={newEducation.institution || ""}
+              onChange={(e) =>
+                setNewEducation((prev) => ({
+                  ...prev,
+                  institution: e.target.value,
+                }))
+              }
+              placeholder="Institution Name"
+            />
+          </div>
+          <div>
+            <label htmlFor="degree">Degree</label>
+            <Input
+              id="degree"
+              value={newEducation.degree || ""}
+              onChange={(e) =>
+                setNewEducation((prev) => ({
+                  ...prev,
+                  degree: e.target.value,
+                }))
+              }
+              placeholder="Degree"
+            />
+          </div>
         </div>
         <div className="grid lg:grid-cols-2 gap-2">
-          <Input
-            type="date"
-            placeholder="enter start date"
-            value={
-              newEducation.startDate
-                ? format(newEducation.startDate, "yyyy-MM-dd")
-                : ""
-            }
-            onChange={(e) =>
-              setNewEducation((prev) => ({
-                ...prev,
-                startDate: new Date(e.target.value),
-              }))
-            }
-          />
-          <Input
-            type="date"
-            placeholder="enter end date"
-            value={
-              newEducation.endDate
-                ? format(newEducation.endDate, "yyyy-MM-dd")
-                : ""
-            }
-            onChange={(e) =>
-              setNewEducation((prev) => ({
-                ...prev,
-                endDate: new Date(e.target.value),
-              }))
-            }
-          />
+          <div>
+            <label htmlFor="start-date">Start Date</label>
+            <Input
+              id="start-date"
+              type="date"
+              value={
+                newEducation.startDate
+                  ? format(new Date(newEducation.startDate), "yyyy-MM-dd")
+                  : ""
+              }
+              onChange={(e) =>
+                setNewEducation((prev) => ({
+                  ...prev,
+                  startDate: new Date(e.target.value),
+                }))
+              }
+            />
+          </div>
+          <div>
+            <label htmlFor="end-date">End Date</label>
+            <Input
+              id="end-date"
+              type="date"
+              value={
+                newEducation.endDate
+                  ? format(new Date(newEducation.endDate), "yyyy-MM-dd")
+                  : ""
+              }
+              onChange={(e) =>
+                setNewEducation((prev) => ({
+                  ...prev,
+                  endDate: new Date(e.target.value),
+                }))
+              }
+            />
+          </div>
         </div>
         <Button type="submit" variant="outline" className="w-full">
           <Plus className="mr-2" /> Add Education

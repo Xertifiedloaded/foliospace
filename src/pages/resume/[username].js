@@ -1,12 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+
+import SkeletalLoader from "../../../components/SkeletalLoader";
+import { BriefcaseIcon } from "lucide-react";
 
 export default function ResumePage() {
   const router = useRouter();
@@ -36,15 +39,7 @@ export default function ResumePage() {
   }, [username]);
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Card className="w-[400px] text-center">
-          <CardHeader>
-            <CardTitle>Loading...</CardTitle>
-          </CardHeader>
-        </Card>
-      </div>
-    );
+    return <SkeletalLoader />;
   }
 
   if (!resume) {
@@ -65,153 +60,109 @@ export default function ResumePage() {
     );
   }
 
-  const { profile, socials, name, email, education, experiences } =
+  const { profile, socials, name, email, education, experiences, skills } =
     resume || {};
 
   return (
-    <div className="container mx-auto max-w-6xl px-2 sm:px-4 md:px-6 ">
-      <Card className="w-full">
-        <div className="bg-primary text-primary-foreground text-center p-4 sm:p-6">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
-            {name}
-          </h1>
-          {profile.tagline && (
-            <p className="text-sm sm:text-base text-primary-foreground/80 mb-2">
+    <div className="">
+  
+      <Card className="w-full mb-8 shadow-lg">
+        <div className="bg-gradient-to-r from-primary to-secondary text-white text-center p-6">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">{name}</h1>
+          {profile?.tagline && (
+            <p className="text-base md:text-lg text-white/80 mb-4">
               {profile?.tagline}
             </p>
           )}
-
-          <div className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4">
-            <span className="text-xs sm:text-sm">{email}</span>
-            <Separator
-              orientation="horizontal"
-              className="w-16 sm:hidden my-1"
-            />
-            {profile.phoneNumber && (
-              <>
-                <Separator
-                  orientation="vertical"
-                  className="h-4 hidden sm:block"
-                />
-                <span className="text-xs sm:text-sm">
-                  {profile?.phoneNumber}
-                </span>
-              </>
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4">
+            <span className="text-sm md:text-base">{email}</span>
+            {profile?.phoneNumber && (
+              <span className="text-sm md:text-base">
+                {profile.phoneNumber}
+              </span>
             )}
-
-            <Separator
-              orientation="horizontal"
-              className="w-16 sm:hidden my-1"
-            />
-
-            {profile.address && (
-              <>
-                <Separator
-                  orientation="vertical"
-                  className="h-4 hidden sm:block"
-                />
-                <span className="text-xs sm:text-sm">
-                  {profile?.address || "San Francisco, CA"}
-                </span>
-              </>
+            {profile?.address && (
+              <span className="text-sm md:text-base">{profile.address}</span>
             )}
           </div>
         </div>
+      </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 p-4 sm:p-6">
-          <div className="md:col-span-2 space-y-6">
+
+      <div className="grid container mx-auto max-w-7xl px-4 lg:px-6 grid-cols-1 md:grid-cols-3 gap-6">
+
+        <div className="col-span-2 space-y-6">
+          {profile.bio && (
             <section>
-              <h2 className="text-lg sm:text-xl font-semibold border-b pb-2 mb-4">
+              <h2 className="text-xl font-semibold mb-4">
                 Professional Summary
               </h2>
-              <p className="text-sm sm:text-base text-muted-foreground">
+              <p className="text-sm md:text-base text-muted-foreground">
                 {profile?.bio}
               </p>
             </section>
+          )}
 
-            {/* Professional Experience */}
+          {experiences && (
             <section>
-              {experiences && experiences.length > 0 && (
-                <h2 className="text-lg sm:text-xl font-semibold border-b pb-2 mb-4">
-                  Professional Experience
-                </h2>
-              )}
-              <div className="space-y-6">
-                {experiences &&
-                  experiences.map(
-                    ({
-                      id,
-                      company,
-                      endDate,
-                      startDate,
-                      position,
-                      description,
-                    }) => (
-                      <div key={id}>
-                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
-                          <h3 className="font-bold text-base sm:text-lg mb-1 sm:mb-0">
-                            {position}
-                          </h3>
-                          <Badge
-                            variant="secondary"
-                            className="text-xs sm:text-sm"
-                          >
-                            {new Date(startDate).getFullYear()} -{" "}
-                            {endDate
-                              ? new Date(endDate).getFullYear()
-                              : "Present"}
-                          </Badge>
-                        </div>
-                        <p className="text-xs sm:text-sm text-muted-foreground mb-2">
-                          {company}
-                        </p>
-                        <div className="list-disc pl-4 sm:pl-5 text-xs sm:text-sm text-muted-foreground space-y-1">
-                          {description}
-                        </div>
-                      </div>
-                    )
-                  )}
-              </div>
-            </section>
-          </div>
-
-          <div>
-            {/* Skills */}
-            <section className="mb-6">
-              <h2 className="text-lg sm:text-xl font-semibold border-b pb-2 mb-4">
-                Technical Skills
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <BriefcaseIcon className="h-5 w-5 text-primary" />
+                Professional Experience
               </h2>
-              <div className="flex flex-wrap gap-2">
-                {profile?.skills &&
-                  profile.skills.map((skill, index) => (
-                    <Badge
-                      key={index}
-                      variant="outline"
-                      className="text-xs sm:text-sm"
-                    >
-                      {skill}
+              <div className="space-y-6">
+                {experiences.map((exp) => (
+                  <div key={exp.id} className="p-4 border rounded-md shadow-sm">
+                    <h3 className="text-lg font-bold">{exp.position}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {exp.company}
+                    </p>
+                    <Badge variant="secondary" className="mt-2">
+                      {new Date(exp.startDate).getFullYear()} -{" "}
+                      {exp.endDate
+                        ? new Date(exp.endDate).getFullYear()
+                        : "Present"}
                     </Badge>
-                  ))}
+                    <ul className="mt-2 list-disc pl-6 text-sm">
+                      {exp.description.split("\n").map((line, index) => (
+                        <li key={index}>{line}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </section>
+          )}
+        </div>
 
+        {/* Right Column */}
+        <div className="space-y-6">
+          {skills && (
             <section>
-              <h2 className="text-lg sm:text-xl font-semibold border-b pb-2 mb-4">
+              <h2 className="text-xl font-semibold mb-4">Technical Skills</h2>
+              <div className="flex flex-wrap gap-2">
+                {skills?.map((skill, index) => (
+                  <Badge key={index} variant="outline" className="text-sm">
+                    {skill}
+                  </Badge>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {education && (
+            <section>
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                {/* <AcademicCapIcon className="h-5 w-5 text-primary" /> */}
                 Education
               </h2>
-              {education &&
-                education.map((edu) => (
-                  <div key={edu.id}>
-                    <h3 className="font-bold text-sm sm:text-base">
-                      {edu.institution}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground">
+              <div className="space-y-4">
+                {education.map((edu) => (
+                  <div key={edu.id} className="p-4 border rounded-md shadow-sm">
+                    <h3 className="text-lg font-bold">{edu.institution}</h3>
+                    <p className="text-sm text-muted-foreground">
                       {edu.degree}
                     </p>
-                    <Badge
-                      variant="secondary"
-                      className="mt-2 text-xs sm:text-sm"
-                    >
+                    <Badge variant="secondary" className="mt-2">
                       {new Date(edu.startDate).getFullYear()} -{" "}
                       {edu.endDate
                         ? new Date(edu.endDate).getFullYear()
@@ -219,10 +170,11 @@ export default function ResumePage() {
                     </Badge>
                   </div>
                 ))}
+              </div>
             </section>
-          </div>
+          )}
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
