@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { X, Plus } from "lucide-react";
-import { useSession } from "next-auth/react"; 
+import { X, Plus, Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { toast } from "@/hooks/use-toast";
 import ProfileLayout from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
@@ -22,23 +22,25 @@ interface PortfolioProject {
 }
 
 export default function PortfolioSection() {
-  const { data: session } = useSession(); 
-  const userId = session?.user?.id; 
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
 
   const [projects, setProjects] = useState<PortfolioProject[]>([]);
   const [newProject, setNewProject] = useState<Partial<PortfolioProject>>({
     technologies: [],
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false); 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchProjects = async () => {
     if (userId) {
       try {
-        const response = await fetch(`/api/portfolio/projects?userId=${userId}`);
+        const response = await fetch(
+          `/api/portfolio/projects?userId=${userId}`
+        );
         const data = await response.json();
         console.log(data);
-        
+
         if (data.projects) {
           setProjects(data.projects);
         }
@@ -57,13 +59,13 @@ export default function PortfolioSection() {
   const addProject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newProject.title && newProject.description && userId) {
-      const projectToAdd = { 
-        ...newProject, 
-        userId 
+      const projectToAdd = {
+        ...newProject,
+        userId,
       };
-  
+
       setIsLoading(true);
-  
+
       try {
         const response = await fetch("/api/portfolio/projects", {
           method: "POST",
@@ -72,97 +74,105 @@ export default function PortfolioSection() {
           },
           body: JSON.stringify(projectToAdd),
         });
-  
+
         if (response.ok) {
           const addedProject = await response.json();
           const fullProject: PortfolioProject = {
             id: addedProject.id,
-            title: projectToAdd.title ,
+            title: projectToAdd.title,
             description: projectToAdd.description,
             technologies: projectToAdd.technologies || [],
-            link: projectToAdd.link || '',
-            githubLink: projectToAdd.githubLink || '',
-            image: projectToAdd.image || ''
+            link: projectToAdd.link || "",
+            githubLink: projectToAdd.githubLink || "",
+            image: projectToAdd.image || "",
           };
-  
-          setProjects(prevProjects => [...prevProjects, fullProject]);
-          setNewProject({ technologies: [] }); 
-          toast({ description: "Project added successfully", variant: "default"}); 
+
+          setProjects((prevProjects) => [...prevProjects, fullProject]);
+          setNewProject({ technologies: [] });
+          toast({
+            description: "Project added successfully",
+            variant: "default",
+          });
         } else {
+          const errorText = await response.text();
           console.error("Failed to add project");
-          toast({ description: "Failed to add project", variant: "destructive" }); 
+          toast({
+            description: errorText || "Failed to add project",
+            variant: "destructive",
+          });
         }
       } catch (error) {
         console.error("Error adding project:", error);
-        toast({ description: "Error adding project", variant: "destructive" }); 
+        toast({ description: "Error adding project", variant: "destructive" });
       } finally {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     }
   };
 
   const editProject = (projectId: string) => {
-    const projectToEdit = projects.find(p => p.id === projectId);
+    const projectToEdit = projects.find((p) => p.id === projectId);
     if (projectToEdit) {
       setEditIndex(projects.indexOf(projectToEdit));
       setNewProject({ ...projectToEdit });
     }
   };
-  
+
   const saveEditedProject = async () => {
     if (editIndex !== null && newProject.id) {
       if (!newProject.title || !newProject.description) {
         toast({
           description: "Please fill in all required fields",
-          variant: "destructive"
+          variant: "destructive",
         });
         return;
       }
-  
+
       const updatedProject = {
         ...newProject,
-        userId
+        userId,
       };
-  
+
       try {
-        const response = await fetch(`/api/portfolio/projects?id=${newProject.id}`,{
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedProject),
-        });
+        const response = await fetch(
+          `/api/portfolio/projects?id=${newProject.id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedProject),
+          }
+        );
 
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(errorText || "Failed to update project");
         }
-  
+
         const data = await response.json();
-  
-        const updatedProjects = projects.map(p =>
+
+        const updatedProjects = projects.map((p) =>
           p.id === newProject.id ? { ...data.updatedProject } : p
         );
-  
+
         setProjects(updatedProjects);
         setEditIndex(null);
         setNewProject({ technologies: [] });
-  
+
         toast({
           description: "Project updated successfully",
-          variant: "default"
+          variant: "default",
         });
-  
       } catch (error) {
         console.error("Error updating project:", error);
-        
-        const errorMessage = error instanceof Error 
-          ? error.message 
-          : String(error);
-  
+
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+
         toast({
           description: errorMessage || "Failed to update project",
-          variant: "destructive"
+          variant: "destructive",
         });
       }
     }
@@ -171,21 +181,27 @@ export default function PortfolioSection() {
   const deleteProject = async (project: PortfolioProject) => {
     if (!project.id) return;
     setIsLoading(true);
-  
-    const updatedProjects = projects.filter(p => p.id !== project.id);
+
+    const updatedProjects = projects.filter((p) => p.id !== project.id);
     setProjects(updatedProjects);
-  
+
     try {
       const response = await fetch(`/api/portfolio/projects?id=${project.id}`, {
         method: "DELETE",
       });
-  
+
       if (response.ok) {
-        toast({ description: "Project deleted successfully", variant: "default"});
+        toast({
+          description: "Project deleted successfully",
+          variant: "default",
+        });
       } else {
         setProjects(projects);
         console.error("Failed to delete project");
-        toast({ description: "Failed to delete project", variant: "destructive" });
+        toast({
+          description: "Failed to delete project",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       setProjects(projects);
@@ -196,27 +212,33 @@ export default function PortfolioSection() {
     }
   };
 
-  const addTechnology = () => {
-    const techInput = document.getElementById("techInput") as HTMLInputElement;
-    const tech = techInput.value.trim();
-    
-    setNewProject(prev => {
-      const techSet = new Set(prev.technologies);
-    
-      if (tech && !techSet.has(tech)) {
-        techSet.add(tech);
-        techInput.value = "";
-        
-        return {
-          ...prev,
-          technologies: Array.from(techSet)
-        };
-      }
-      
-      return prev;
-    });
-  };
+ const addTechnology = () => {
+  const techInput = document.getElementById("techInput") as HTMLInputElement;
+  const tech = techInput.value.trim();
+
+  if (tech) {
+    // Check if the input contains a comma or not
+    const newTechnologies = tech.includes(',')
+      ? tech.split(",").map((tech) => tech.trim()).filter((tech) => tech)
+      : [tech];
+
+    // Update the state with new technologies
+    setNewProject((prev) => ({
+      ...prev,
+      technologies: [
+        ...(prev.technologies || []),
+        ...newTechnologies.filter(
+          (tech) => !prev.technologies?.includes(tech)
+        ),
+      ],
+    }));
+
+    techInput.value = newTechnologies.length > 1 ? "" : tech + ", ";
+  }
+};
+
   
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -228,7 +250,6 @@ export default function PortfolioSection() {
             image: reader.result as string,
           }));
         }
-        
       };
       reader.readAsDataURL(file);
     }
@@ -237,9 +258,9 @@ export default function PortfolioSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editIndex !== null) {
-      saveEditedProject(); 
+      saveEditedProject();
     } else {
-      addProject(e); 
+      addProject(e);
     }
   };
 
@@ -257,7 +278,10 @@ export default function PortfolioSection() {
                 <Input
                   value={newProject.title || ""}
                   onChange={(e) =>
-                    setNewProject((prev) => ({ ...prev, title: e.target.value }))
+                    setNewProject((prev) => ({
+                      ...prev,
+                      title: e.target.value,
+                    }))
                   }
                   placeholder="Project Name"
                 />
@@ -355,11 +379,14 @@ export default function PortfolioSection() {
             </div>
 
             <div className="flex justify-end">
-              <Button
-                type="submit"
-                disabled={isLoading}
-              >
-                {editIndex !== null ? "Save Changes" : "Add Project"}
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : editIndex !== null ? (
+                  "Save Changes"
+                ) : (
+                  "Add Project"
+                )}
               </Button>
             </div>
           </form>
@@ -367,77 +394,59 @@ export default function PortfolioSection() {
       </Card>
 
       <div className="space-y-6">
-  {projects.map((project) => (
-    <Card key={project.id} className="overflow-hidden">
-      <div className="grid grid-cols-1 md:grid-cols-3">
+        {projects.map((project) => (
+          <Card key={project.id} className="overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-3">
+              {project.image && (
+                <div className="md:col-span-1 h-full">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-28 lg:h-full object-cover"
+                  />
+                </div>
+              )}
 
-        {project.image && (
-          <div className="md:col-span-1 h-full">
-            <img 
-              src={project.image} 
-              alt={project.title}
-              className="w-full h-28 lg:h-full object-cover"
-            />
-          </div>
-        )}
-
-        {/* Project Details */}
-        <div className={`
-          ${project.image ? 'md:col-span-2' : 'md:col-span-3'}
+              <div
+                className={`
+          ${project.image ? "md:col-span-2" : "md:col-span-3"}
           p-6 flex flex-col justify-between
-        `}>
-          <div>
-            {/* Title and Description */}
-            <CardHeader className="p-0 mb-4">
-              <CardTitle className="text-xl">{project.title}</CardTitle>
-            </CardHeader>
+        `}
+              >
+                <div>
+                  <CardHeader className="p-0 mb-4">
+                    <CardTitle className="text-xl">{project.title}</CardTitle>
+                  </CardHeader>
 
-            <CardContent className="p-0 space-y-4">
-              <p className="text-muted-foreground line-clamp-3">
-                {project.description}
-              </p>
+                  <CardContent className="p-0 space-y-4">
+                    <p className="text-muted-foreground line-clamp-3">
+                      {project.description}
+                    </p>
+                  </CardContent>
+                </div>
 
-              {/* Technologies */}
-              <div className="flex flex-wrap gap-2">
-                {project.technologies.map((tech, index) => (
-                  <Badge 
-                    key={index} 
-                    variant="secondary" 
-                    className="text-xs"
+                {/* Action Buttons */}
+                <div className="flex justify-end space-x-2 mt-4">
+                  <Button
+                    onClick={() => editProject(project.id!)}
+                    variant="outline"
+                    size="sm"
                   >
-                    {tech}
-                  </Badge>
-                ))}
+                    Edit
+                  </Button>
+                  <Button
+                    onClick={() => deleteProject(project)}
+                    variant="destructive"
+                    size="sm"
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
-            </CardContent>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex justify-end space-x-2 mt-4">
-            <Button
-              onClick={() => editProject(project.id!)}
-              variant="outline"
-              size="sm"
-            >
-              Edit
-            </Button>
-            <Button
-              onClick={() => deleteProject(project)}
-              variant="destructive"
-              size="sm"
-            >
-              Delete
-            </Button>
-          </div>
-        </div>
+            </div>
+          </Card>
+        ))}
       </div>
-    </Card>
-  ))}
-</div>
     </ProfileLayout>
   );
 }
-
-
-
-

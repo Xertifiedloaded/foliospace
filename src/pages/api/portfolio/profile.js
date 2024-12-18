@@ -1,14 +1,18 @@
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../../lib/NextOption";
-import fs from 'fs';
-import path from 'path';
-import sharp from 'sharp';
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: "djknvzync",
+  api_key: "569228811476594",
+  api_secret: "di4UhIUKiZ1QnmpSQLdKU8I9Oko",
+});
 
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '20mb', // Set size limit to 20mb for the image upload
+      sizeLimit: "20mb", 
     },
   },
 };
@@ -17,47 +21,30 @@ const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   try {
-    // Get session from NextAuth
+    // Authenticate the user session
     const session = await getServerSession(req, res, authOptions);
 
-    // Check if the session exists and user is authenticated
     if (!session || !session.user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
     const userIdFromSession = session.user.id;
+
     if (req.method === "PATCH") {
       const { tagline, bio, hobbies, languages, picture, phoneNumber, address } = req.body;
 
       let imageUrl = null;
       if (picture) {
         try {
-          const matches = picture.match(/^data:image\/([A-Za-z-+/]+);base64,(.+)$/);
-          if (!matches || matches.length !== 3) {
-            return res.status(400).json({ error: "Invalid image format" });
-          }
-
-          const fileExtension = matches[1];
-          const base64Data = matches[2];
-          const buffer = Buffer.from(base64Data, 'base64');
-          
-          const originalName = `profile-${Date.now()}.${fileExtension}`;
-          const uploadDir = path.join(process.cwd(), 'public', 'pictures');
-          
-          if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-          }
-
-          const format = await sharp(buffer).metadata().then(metadata => metadata.format);
-
-          await sharp(buffer)
-            .resize(800)  // Resize image to 800px width (optional, adjust as needed)
-            .toFormat(format, { quality: 70 })  // Maintain the format and compress with 80% quality
-            .toFile(path.join(uploadDir, originalName));  // Save to file
-
-          imageUrl = `/pictures/${originalName}`;
+          const uploadResponse = await cloudinary.uploader.upload_large(picture, {
+            folder: "projects",
+            chunk_size: 6000000, // Split files into chunks of 6MB
+            quality: "auto:eco", // Automatically adjust quality for compression
+            format: "jpg",
+          });
+          imageUrl = uploadResponse.secure_url;
         } catch (uploadError) {
-          console.error("Image upload error:", uploadError.message);
+          console.error("Error uploading image:", uploadError);
           return res.status(400).json({
             error: "Image upload failed",
             details: uploadError.message,
@@ -65,7 +52,6 @@ export default async function handler(req, res) {
         }
       }
 
-      // Update or create the profile in the database
       const updatedProfile = await prisma.profile.upsert({
         where: { userId: userIdFromSession },
         update: {
@@ -74,8 +60,8 @@ export default async function handler(req, res) {
           bio,
           hobbies: hobbies || [],
           languages: languages || [],
-          phoneNumber: phoneNumber || undefined,
-          address: address || undefined,
+          phoneNumber: phoneNumber || null,
+          address: address || null,
         },
         create: {
           userId: userIdFromSession,
@@ -95,7 +81,7 @@ export default async function handler(req, res) {
       });
     }
 
-    else if (req.method === "GET") {
+    if (req.method === "GET") {
       const { userId } = req.query;
 
       if (!userId) {
@@ -118,9 +104,9 @@ export default async function handler(req, res) {
           phoneNumber: null,
         }
       );
-    } else {
-      return res.status(405).json({ message: "Method Not Allowed" });
     }
+
+    return res.status(405).json({ message: "Method Not Allowed" });
   } catch (error) {
     console.error("Handler error:", error.message);
     return res.status(500).json({ error: "Internal Server Error", details: error.message });

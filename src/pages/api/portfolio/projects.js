@@ -1,16 +1,19 @@
-import { PrismaClient } from '@prisma/client';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../../../lib/NextOption';
-import fs from 'fs';
-import path from 'path';
-import sharp from 'sharp'; 
+import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../../../lib/NextOption";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: "djknvzync",
+  api_key: "569228811476594",
+  api_secret: "di4UhIUKiZ1QnmpSQLdKU8I9Oko",
+});
 
 const prisma = new PrismaClient();
-
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '20mb',
+      sizeLimit: "50mb",
     },
   },
 };
@@ -21,50 +24,37 @@ export default async function handler(req, res) {
 
     const session = await getServerSession(req, res, authOptions);
     if (!session || !session.user) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
     const userId = session.user.id;
 
     if (method === "POST") {
-      const { title, description, technologies, link, githubLink, image } = body;
+      const { title, description, technologies, link, githubLink, image } =
+        body;
 
-      if (!title || !description || !image) {
-        return res.status(400).json({ error: "Title, description, and image are required" });
+      if (!title || !description) {
+        return res
+          .status(400)
+          .json({ error: "Title, description are required" });
       }
 
       let imageUrl = null;
       if (image) {
         try {
-          // Extract file extension and original name
-          const matches = image.match(/^data:image\/([A-Za-z-+/]+);base64,(.+)$/);
-          if (!matches || matches.length !== 3) {
-            return res.status(400).json({ error: "Invalid image format" });
-          }
-
-          const fileExtension = matches[1];
-          const base64Data = matches[2];
-          const buffer = Buffer.from(base64Data, 'base64');
-          
-          const originalName = `${title}-${userId}-${Date.now()}.${fileExtension}`;
-          const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-          
-          if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-          }
-
-          const filePath = path.join(uploadDir, originalName);
-
-
-          const format = await sharp(buffer).metadata().then(metadata => metadata.format);
-          await sharp(buffer)
-            .resize(800)
-            .toFormat(format, { quality: 80 })  
-            .toFile(filePath);
-
-          imageUrl = `/uploads/${originalName}`;
+          const uploadResponse = await cloudinary.uploader.upload_large(image, {
+            folder: "projects",
+            chunk_size: 6000000, // Split files into chunks of 6MB
+            quality: "auto:eco", // Automatically adjust quality for compression
+            format: "jpg",
+          });
+          imageUrl = uploadResponse.secure_url;
         } catch (uploadError) {
-          return res.status(400).json({ error: "Image upload failed", details: uploadError.message });
+          console.error("Error uploading large file:", uploadError);
+          return res.status(400).json({
+            error: "Image upload failed",
+            details: uploadError.message,
+          });
         }
       }
 
@@ -87,7 +77,9 @@ export default async function handler(req, res) {
       const { userId: queryUserId } = query;
 
       if (queryUserId && queryUserId !== userId) {
-        return res.status(403).json({ error: "You can only access your own projects" });
+        return res
+          .status(403)
+          .json({ error: "You can only access your own projects" });
       }
 
       const projects = await prisma.project.findMany({
@@ -109,30 +101,32 @@ export default async function handler(req, res) {
       });
 
       if (projectToDelete && projectToDelete.image) {
-        // Remove local image file
-        const imagePath = path.join(process.cwd(), 'public', projectToDelete.image);
-        try {
-          if (fs.existsSync(imagePath)) {
-            fs.unlinkSync(imagePath);
-          }
-        } catch (error) {
-          console.error('Error deleting image file:', error);
-        }
+        const publicId = projectToDelete.image.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(`projects/${publicId}`);
       }
 
       const deletedProject = await prisma.project.delete({
         where: { id },
       });
 
-      return res.status(200).json({ success: true, message: "Project deleted successfully", id: deletedProject.id });
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "Project deleted successfully",
+          id: deletedProject.id,
+        });
     }
 
     if (method === "PATCH") {
       const { id } = query;
-      const { title, description, technologies, link, githubLink, image } = body;
+      const { title, description, technologies, link, githubLink, image } =
+        body;
 
       if (!id || !title || !description) {
-        return res.status(400).json({ error: "id, title, and description are required" });
+        return res
+          .status(400)
+          .json({ error: "id, title, and description are required" });
       }
 
       const existingProject = await prisma.project.findUnique({
@@ -146,45 +140,19 @@ export default async function handler(req, res) {
       let imageUrl = existingProject.image;
       if (image) {
         try {
-          // Remove existing image file if it exists
-          if (existingProject.image) {
-            const oldImagePath = path.join(process.cwd(), 'public', existingProject.image);
-            try {
-              if (fs.existsSync(oldImagePath)) {
-                fs.unlinkSync(oldImagePath);
-              }
-            } catch (error) {
-              console.error('Error deleting old image:', error);
-            }
-          }
-
-          const matches = image.match(/^data:image\/([A-Za-z-+/]+);base64,(.+)$/);
-          if (!matches || matches.length !== 3) {
-            return res.status(400).json({ error: "Invalid image format" });
-          }
-
-          const fileExtension = matches[1];
-          const base64Data = matches[2];
-          const buffer = Buffer.from(base64Data, 'base64');
-        
-          const originalName = `${title}-${userId}-${Date.now()}.${fileExtension}`;
-          const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-        
-          if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-          }
-          
-          const filePath = path.join(uploadDir, originalName);
-
-          // Compress the image using sharp
-          await sharp(buffer)
-            .resize(800)  // Resize to a width of 800px (optional, adjust as needed)
-            .jpeg({ quality: 80 })  // Compress to 80% quality (you can adjust this)
-            .toFile(filePath);
-
-          imageUrl = `/uploads/${originalName}`;
+          const uploadResponse = await cloudinary.uploader.upload_large(image, {
+            folder: "projects",
+            chunk_size: 6000000, // Split files into chunks of 6MB
+            quality: "auto:eco", // Automatically adjust quality for compression
+            format: "jpg",
+          });
+          imageUrl = uploadResponse.secure_url;
         } catch (uploadError) {
-          return res.status(400).json({ error: "Image upload failed", details: uploadError.message });
+          console.error("Error uploading large file:", uploadError);
+          return res.status(400).json({
+            error: "Image upload failed",
+            details: uploadError.message,
+          });
         }
       }
 
