@@ -142,7 +142,7 @@ export default function Education() {
         <Calendar className="mr-2" /> Education
       </h2>
       <form onSubmit={addEducation} className="space-y-3">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid lg:grid-cols-2 gap-2">
           <Input
             value={newEducation.institution || ""}
             onChange={(e) =>
@@ -164,9 +164,10 @@ export default function Education() {
             placeholder="Degree"
           />
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid lg:grid-cols-2 gap-2">
           <Input
             type="date"
+            placeholder="enter start date"
             value={
               newEducation.startDate
                 ? format(newEducation.startDate, "yyyy-MM-dd")
@@ -181,6 +182,7 @@ export default function Education() {
           />
           <Input
             type="date"
+            placeholder="enter end date"
             value={
               newEducation.endDate
                 ? format(newEducation.endDate, "yyyy-MM-dd")

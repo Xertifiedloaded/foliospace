@@ -22,9 +22,26 @@ model User {
   links       Link[]
   experiences Experience[]
   education   Education[]
+   pageViews   PageView[]
   skills      Skill[]  @relation("UserSkills") 
   stacks      Stack[]  @relation("UserStacks")  
 }
+
+
+model PageView {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String
+  period    String
+  views     Int      @default(0)
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user      User     @relation(fields: [username], references: [username])
+  
+  @@unique([username, period, date])
+}
+
 
 model Skill {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId

@@ -1,394 +1,382 @@
 import React, { useEffect, useState } from "react";
 import {
   ExternalLink,
-  LinkIcon,
-  Share2Icon,
   Briefcase,
   GraduationCap,
   ArrowRight,
   Globe,
-  PlayIcon,
-  LanguagesIcon,
+  FolderCode,
+  CompassIcon,
+  Link2,
 } from "lucide-react";
-import Link from "next/link";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 
 export const PortfolioProjectSections = ({ projects }) => (
-  <Card className="w-full overflow-x-hidden bg-black text-white">
-    <CardHeader>
-      <CardTitle className="flex items-center gap-2 text-white">
-        <Briefcase className="w-5 h-5 text-sm text-white" /> Featured Projects
-      </CardTitle>
-    </CardHeader>
-    <CardContent className="space-y-4 overflow-x-hidden">
-      {projects.map((project) => (
-        <Dialog key={project.id}>
-          <div className="border overflow-x-hidden border-gray-800 rounded-lg p-4 hover:bg-gray-900 transition-all group">
-            <div className="grid grid-cols-12 gap-4 items-center">
-              {project.image && (
-                <div className="col-span-3 md:col-span-2 lg:col-span-2">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full aspect-square object-cover rounded-md"
-                  />
-                </div>
-              )}
+  <div className="w-full  bg-gray-900  text-white">
+    <div className="w-full  py-16">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-center gap-6">
+          <FolderCode className="w-10 md:w-12 h-10 md:h-12 text-gray-400 animate-pulse" />
+          <h1 className="text-3xl md:text-5xl font-bold text-white text-center flex items-center gap-4">
+            Projects
+          </h1>
+          <FolderCode className="w-10 md:w-12 h-10 md:h-12 text-gray-400 animate-pulse" />
+        </div>
+      </div>
+    </div>
+    {projects.map((project) => (
+      <div key={project.id} className="w-full">
+        {project.image && (
+          <div className="w-full h-[50vh] md:h-[70vh] lg:h-[80vh] overflow-hidden relative">
+            <img
+              src={project.image}
+              alt={project.title}
+              className="w-full h-full object-cover absolute inset-0 brightness-50"
+            />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 bg-gradient-to-t from-black/80 to-transparent">
+              <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+                {project.title}
+              </h2>
+              <p className="text-gray-300 text-sm md:text-base max-w-2xl">
+                {project.description}
+              </p>
+            </div>
+          </div>
+        )}
 
-              <div
-                className={`${
-                  project.image
-                    ? "col-span-9 md:col-span-10 lg:col-span-10"
-                    : "col-span-12"
-                } space-y-2`}
-              >
-                <div className="flex justify-between items-start">
-                  <div className="flex-grow pr-4">
-                    <h3 className="font-bold text-lg truncate text-white">
-                      {project.title}
-                    </h3>
-                    <p className="text-gray-400 mt-1 line-clamp-2">
-                      {project.description}
-                    </p>
-                  </div>
+        {/* Project Details */}
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Project Information */}
+            <div>
+              <h3 className="text-xl md:text-2xl font-semibold mb-4">
+                Project Overview
+              </h3>
+              <p className="text-gray-300 mb-6">{project.description}</p>
 
-                  <div className="flex items-center space-x-2">
-                    {project.link && (
-                      <Link
-                        href={project.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:text-blue-400"
-                      >
-                        <ExternalLink className="w-5 h-5" />
-                      </Link>
-                    )}
-                    {project.githubLink && (
-                      <Link
-                        href={project.githubLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-500 hover:text-gray-400"
-                      >
-                        <ExternalLink className="w-5 h-5" />
-                      </Link>
-                    )}
-                    <DialogTrigger asChild>
-                      <Button variant="ghost" size="icon" className="ml-2 text-white hover:bg-gray-800">
-                        <ArrowRight className="w-5 h-5" />
-                      </Button>
-                    </DialogTrigger>
-                  </div>
-                </div>
-
+              {/* Technologies */}
+              <div className="mb-6">
+                <h4 className="font-semibold mb-3">Technologies Used</h4>
                 <div className="flex flex-wrap gap-2">
                   {project.technologies?.map((tech, index) => (
-                    <Badge 
-                      key={index} 
-                      variant="outline" 
-                      className="text-xs bg-gray-900 text-white border-gray-700"
+                    <span
+                      key={index}
+                      className="bg-gray-800 text-white px-3 py-1 rounded-full text-xs"
                     >
                       {tech}
-                    </Badge>
+                    </span>
                   ))}
                 </div>
               </div>
-            </div>
-          </div>
 
-          <DialogContent className="max-w-2xl bg-black text-white border-gray-800">
-            <DialogHeader>
-              <DialogTitle className="text-white">{project.title}</DialogTitle>
-            </DialogHeader>
-            <div className="grid overflow-x-hidden md:grid-cols-2 gap-4">
-              {project.image && (
+              {/* Project Links */}
+              <div className="flex space-x-4">
+                {project.link && (
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+                  >
+                    View Project
+                  </a>
+                )}
+                {project.githubLink && (
+                  <a
+                    href={project.githubLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="border border-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-md transition"
+                  >
+                    GitHub Repository
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {project.image && (
+              <div className="hidden md:block">
                 <img
                   src={project.image}
                   alt={project.title}
-                  className="w-full aspect-video object-cover rounded-md"
+                  className="w-full rounded-lg shadow-lg object-cover aspect-video"
                 />
-              )}
-              <div>
-                <p className="text-gray-400 mb-4">
-                  {project.description}
-                </p>
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-white">Technologies</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {project.technologies?.map((tech, index) => (
-                      <Badge 
-                        key={index} 
-                        variant="secondary" 
-                        className="bg-gray-800 text-white"
-                      >
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex space-x-2 mt-4">
-                  {project.link && (
-                    <Button 
-                      asChild 
-                      className="bg-gray-800 text-white hover:bg-gray-700"
-                    >
-                      <Link href={project.link} target="_blank">
-                        View Project
-                      </Link>
-                    </Button>
-                  )}
-                  {project.githubLink && (
-                    <Button 
-                      variant="outline" 
-                      asChild 
-                      className="bg-black text-white border-gray-700 hover:bg-gray-900"
-                    >
-                      <Link href={project.githubLink} target="_blank">
-                        GitHub Repository
-                      </Link>
-                    </Button>
-                  )}
-                </div>
               </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      ))}
-    </CardContent>
-  </Card>
+            )}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
 );
 
 export const EducationSection = ({ education }) => (
-  <Card className="bg-black text-white">
-    <CardHeader>
-      <CardTitle className="flex items-center gap-2 text-white">
-        <GraduationCap className="w-5 h-5 text-sm text-white" /> Academic Background
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
-      <div className="space-y-4  overflow-x-hidden">
-        {education.map((edu) => (
-          <div
-            key={edu.id}
-            className="border-b border-gray-800 pb-4 last:border-b-0 group transition-all"
-          >
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="font-semibold lg:text-lg text-sm text-white">
-                  {edu.degree}
-                </h3>
-                <p className="text-gray-400 text-sm">{edu.institution}</p>
+  <div className="w-full bg-gray-900  text-white">
+    <div className="container mx-auto  py-16">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-2xl md:text-4xl font-bold mb-12 text-center flex items-center justify-center gap-4">
+          <GraduationCap className="w-6 md:w-8 h-6 md:h-8 text-gray-400" />
+          Academic Journey
+        </h2>
+
+        <div className="space-y-8">
+          {education.map((edu) => (
+            <div
+              key={edu.id}
+              className="bg-gray-900 border border-gray-800 rounded-lg p-5 md:p-6 shadow-lg hover:bg-gray-800 transition-all duration-300 group"
+            >
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                <div className="mb-2 md:mb-0">
+                  <h3 className="text-lg md:text-xl font-semibold text-white group-hover:text-blue-400 transition">
+                    {edu.degree}
+                  </h3>
+                  <p className="text-gray-400 text-sm">{edu.institution}</p>
+                </div>
+
+                <Badge className="bg-gray-700 text-white text-xs px-2 py-1 rounded">
+                  {new Date(edu.startDate).getFullYear()} -{" "}
+                  {edu.endDate
+                    ? new Date(edu.endDate).getFullYear()
+                    : "Present"}
+                </Badge>
               </div>
-              <Badge 
-                variant="secondary" 
-                className="bg-gray-800 text-white text-sm"
-              >
-                {new Date(edu.startDate).getFullYear()} -{" "}
-                {edu.endDate ? new Date(edu.endDate).getFullYear() : "Present"}
-              </Badge>
+
+              {edu.description && (
+                <p className="text-gray-300 text-sm mb-4">{edu.description}</p>
+              )}
+
+              {edu.achievements && (
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-200 mb-2">
+                    Key Achievements
+                  </h4>
+                  <ul className="text-gray-300 text-sm space-y-2 list-disc pl-4">
+                    {edu.achievements.slice(0, 3).map((achievement, index) => (
+                      <li key={index}>{achievement}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {edu.relevantCourses && (
+                <div className="flex flex-wrap gap-2">
+                  {edu.relevantCourses.map((course, index) => (
+                    <span
+                      key={index}
+                      className="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded-full"
+                    >
+                      {course}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </div>
 );
 
 export const ExperienceSection = ({ experiences }) => (
-  <Card className="bg-black text-white">
-    <CardHeader>
-      <CardTitle className="flex items-center gap-2 text-white">
-        <Briefcase className="w-5 h-5 text-white" /> Professional Experience
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
-      <div className="space-y-4 overflow-x-hidden">
-        {experiences.map((exp) => (
-          <div
-            key={exp.id}
-            className="border-b border-gray-800 pb-4 last:border-b-0 group transition-all"
-          >
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="font-semibold text-lg text-white">{exp.position}</h3>
-                <p className="text-gray-400">{exp.company}</p>
+  <div className="w-full bg-gray-900  text-white">
+    <div className="container mx-auto  py-16">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-2xl md:text-4xl font-bold mb-12 text-center flex items-center justify-center gap-4">
+          <Briefcase className="w-6 md:w-8 h-6 md:h-8 text-gray-400" />
+          Professional Journey
+        </h2>
+
+        <div className="space-y-8">
+          {experiences.map((exp) => (
+            <div
+              key={exp.id}
+              className=" border border-gray-800   rounded-lg p-5 md:p-6 shadow-lg hover:bg-gray-800 transition-all duration-300 group"
+            >
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                <div className="mb-2 md:mb-0">
+                  <h3 className="text-lg md:text-xl font-semibold text-white group-hover:text-blue-400 transition">
+                    {exp.position}
+                  </h3>
+                  <p className="text-gray-400 text-sm">{exp.company}</p>
+                </div>
+
+                <Badge className="bg-gray-700 text-white text-xs px-2 py-1 rounded">
+                  {new Date(exp.startDate).getFullYear()} -{" "}
+                  {exp.endDate
+                    ? new Date(exp.endDate).getFullYear()
+                    : "Present"}
+                </Badge>
               </div>
-              <Badge 
-                variant="secondary" 
-                className="bg-gray-800 text-white"
-              >
-                {new Date(exp.startDate).getFullYear()} -{" "}
-                {exp.endDate ? new Date(exp.endDate).getFullYear() : "Present"}
-              </Badge>
+
+              {exp.responsibilities && (
+                <ul className="text-gray-300 text-sm space-y-2 list-disc pl-4 mb-4">
+                  {exp.responsibilities.slice(0, 3).map((resp, index) => (
+                    <li key={index}>{resp}</li>
+                  ))}
+                </ul>
+              )}
+
+              {exp.technologies && (
+                <div className="flex flex-wrap gap-2">
+                  {exp.technologies.map((tech, index) => (
+                    <span
+                      key={index}
+                      className="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded-full"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </div>
 );
+
+
 
 export const PortfolioLink = ({ links, socials, profile }) => {
   const [activeTab, setActiveTab] = useState("links");
 
+  const renderIcon = (type) => {
+    const iconMap = {
+      links: <Link2 className="w-6 h-6 text-blue-400" />,
+      hobbies: <CompassIcon className="w-6 h-6 text-green-400" />,
+      languages: <Globe className="w-6 h-6 text-purple-400" />
+    };
+    return iconMap[type];
+  };
+
   return (
-    <Card className="w-full bg-black text-white">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-3 text-white">
-          <ExternalLink className="w-6 h-6 text-white" />
-          Profile Connections
-        </CardTitle>
-      </CardHeader>
-
-      <Tabs
-        defaultValue="links"
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="w-full"
-      >
-        <TabsList className="grid w-full grid-cols-4 mb-4 bg-gray-900">
-          <TabsTrigger 
-            value="links" 
-            className="flex items-center text-white hover:bg-gray-800 data-[state=active]:bg-gray-700"
-          >
-            <LinkIcon className="mr-2 w-4 h-4" />
-            Links
-          </TabsTrigger>
-          <TabsTrigger 
-            value="socials" 
-            className="flex items-center text-white hover:bg-gray-800 data-[state=active]:bg-gray-700"
-          >
-            <Share2Icon className="mr-2 w-4 h-4" />
-            Socials
-          </TabsTrigger>
-          <TabsTrigger 
-            value="hobbies" 
-            className="flex items-center text-white hover:bg-gray-800 data-[state=active]:bg-gray-700"
-          >
-            <PlayIcon className="mr-2 w-4 h-4" />
-            Hobbies
-          </TabsTrigger>
-          <TabsTrigger 
-            value="languages" 
-            className="flex items-center text-white hover:bg-gray-800 data-[state=active]:bg-gray-700"
-          >
-            <LanguagesIcon className="mr-2 w-4 h-4" />
-            Languages
-          </TabsTrigger>
-        </TabsList>
-
-        <CardContent>
-          {/* Links Tab */}
-          <TabsContent value="links">
-            <div className="space-y-3">
-              {links?.length > 0 ? (
-                links.map((link) => (
-                  <Button
-                    key={link.id}
-                    variant="outline"
-                    className="w-full justify-between mb-2 bg-gray-900 text-white border-gray-700 hover:bg-gray-800"
-                    onClick={() => window.open(link.url, '_blank')}
-                  >
-                    <div className="flex items-center">
-                      <Globe className="mr-3 w-5 h-5 text-gray-400" />
-                      {link.text}
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-white" />
-                  </Button>
-                ))
-              ) : (
-                <p className="text-center text-gray-400">
-                  No personal links available
-                </p>
-              )}
+    <div className="w-full bg-black text-white">
+      <div className="">
+        <div className="bg-gray-900 border border-gray-800 rounded-xl shadow-2xl overflow-hidden">
+          {/* Header */}
+          <div className="bg-gray-800 px-6 py-4 flex justify-between items-center">
+            <div className="flex items-center space-x-3">
+              <ExternalLink className="w-6 h-6 text-gray-400" />
+              <h2 className="text-xl font-semibold text-white">
+                Profile Connections
+              </h2>
             </div>
-          </TabsContent>
 
-          {/* Socials Tab */}
-          <TabsContent value="socials">
-            <div className="space-y-3">
-              {socials?.length > 0 ? (
-                socials.map((social) => (
-                  <Button
-                    key={social.id}
-                    variant="outline"
-                    className="w-full justify-between mb-2 bg-gray-900 text-white border-gray-700 hover:bg-gray-800"
-                    onClick={() => window.open(social.url, '_blank')}
-                  >
-                    <div className="flex items-center">
-                      <Share2Icon className="mr-3 w-5 h-5 text-gray-400" />
-                      {social.name}
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-white" />
-                  </Button>
-                ))
-              ) : (
-                <p className="text-center text-gray-400">
-                  No social profiles available
-                </p>
-              )}
+            {/* Social Icons */}
+            <div className="flex space-x-3">
+              {socials?.map((social) => (
+                <a
+                  key={social.platform}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white transition"
+                >
+                  {social.icon && React.createElement(social.icon, { className: "w-5 h-5" })}
+                </a>
+              ))}
             </div>
-          </TabsContent>
+          </div>
 
-          {/* Hobbies Tab */}
-          <TabsContent value="hobbies">
-            <div className="space-y-3">
-              {profile?.hobbies?.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {profile.hobbies.map((hobby, index) => (
-                    <Badge 
-                      key={index} 
-                      variant="outline" 
-                      className="px-3 py-1 bg-gray-900 text-white border-gray-700"
+          {/* Tabs Navigation */}
+          <div className="flex border-b border-gray-800">
+            {["links", "hobbies", "languages"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`flex-1 flex items-center justify-center py-4 space-x-2 
+                  ${activeTab === tab 
+                    ? "bg-gray-800 text-white" 
+                    : "text-gray-500 hover:bg-gray-700"}
+                  transition-all duration-300`}
+              >
+                {renderIcon(tab)}
+                <span className="capitalize">{tab}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Content */}
+          <div className="p-6">
+            {activeTab === "links" && (
+              <div className="space-y-4">
+                {links?.length > 0 ? (
+                  links.map((link) => (
+                    <div
+                      key={link.id}
+                      className="flex items-center justify-between bg-gray-800 rounded-lg p-4 hover:bg-gray-700 transition"
                     >
-                      {hobby}
-                    </Badge>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-gray-400">
-                  No hobbies listed
-                </p>
-              )}
-            </div>
-          </TabsContent>
+                      <div className="flex items-center space-x-4">
+                        <Globe className="w-6 h-6 text-blue-400" />
+                        <div>
+                          <h3 className="text-white font-medium">{link.text}</h3>
+                          <p className="text-gray-400 text-sm truncate max-w-xs">
+                            {link.url}
+                          </p>
+                        </div>
+                      </div>
 
-          {/* Languages Tab */}
-          <TabsContent value="languages">
-            <div className="space-y-3">
-              {profile?.languages?.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {profile.languages.map((language, index) => (
-                    <Badge 
-                      key={index} 
-                      variant="secondary" 
-                      className="px-3 py-1 bg-gray-800 text-white"
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:text-blue-300 transition"
+                      >
+                        <ArrowRight className="w-5 h-5" />
+                      </a>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500">No links available</p>
+                )}
+              </div>
+            )}
+
+            {activeTab === "hobbies" && (
+              <div className="flex flex-wrap gap-3">
+                {profile?.hobbies?.length > 0 ? (
+                  profile.hobbies.map((hobby, index) => (
+                    <span
+                      key={index}
+                      className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm flex items-center space-x-2"
                     >
-                      {language}
-                    </Badge>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-gray-400">
-                  No languages listed
-                </p>
-              )}
-            </div>
-          </TabsContent>
-        </CardContent>
-      </Tabs>
-    </Card>
+                      <CompassIcon className="w-4 h-4 text-green-400" />
+                      <span>{hobby}</span>
+                    </span>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500 w-full">
+                    No hobbies listed
+                  </p>
+                )}
+              </div>
+            )}
+
+            {activeTab === "languages" && (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {profile?.languages?.length > 0 ? (
+                  profile.languages.map((language, index) => (
+                    <div
+                      key={index}
+                      className="bg-gray-800 rounded-lg p-3 flex items-center space-x-3"
+                    >
+                      <Globe className="w-6 h-6 text-purple-400" />
+                      <span className="text-white">{language}</span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500 col-span-full">
+                    No languages listed
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };

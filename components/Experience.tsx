@@ -152,7 +152,7 @@ export default function Experience() {
 
       {editExperience ? (
         <form onSubmit={handleEditSubmit} className="space-y-3">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid lg:grid-cols-2 gap-2">
             <Input
               value={editExperience.company || ""}
               onChange={(e) =>
@@ -176,7 +176,7 @@ export default function Experience() {
               required
             />
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid lg:grid-cols-3 grid-cols-2 gap-2">
             <Input
               type="date"
               value={
@@ -250,7 +250,7 @@ export default function Experience() {
         </form>
       ) : (
         <form onSubmit={addExperience} className="space-y-3">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid lg:grid-cols-2 gap-2">
             <Input
               value={newExperience.company || ""}
               onChange={(e) =>
@@ -274,7 +274,7 @@ export default function Experience() {
               required
             />
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid lg:grid-cols-3 grid-cols-2 gap-2">
             <Input
               type="date"
               value={
@@ -306,7 +306,7 @@ export default function Experience() {
                 }
               />
             )}
-            <div className="flex items-center">
+            <div className="flex mt-2 lg:mt-0 items-center">
               <input
                 type="checkbox"
                 checked={newExperience.isCurrentRole}
@@ -317,7 +317,7 @@ export default function Experience() {
                     endDate: e.target.checked ? null : prev.endDate,
                   }))
                 }
-                className="mr-2"
+                className="mr-2 "
               />
               <Label>Current Role</Label>
             </div>

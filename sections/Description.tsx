@@ -102,7 +102,7 @@ const ProfessionalBrandSection: React.FC = () => {
         <div className="space-y-5">
           <p className="lg:text-lg text-sm text-neutral-600 leading-relaxed">
             In today's competitive landscape, your digital presence is your most
-            powerful career accelerator. Creatify transforms your professional
+            powerful career accelerator. FolioSpace transforms your professional
             journey into a strategic, compelling narrative that opens doors to
             unprecedented opportunities.
           </p>

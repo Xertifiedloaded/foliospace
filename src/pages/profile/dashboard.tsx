@@ -21,7 +21,7 @@ interface Profile {
   createdAt?: string;
   updatedAt?: string;
   picture?: string;
-  [key: string]: any; 
+  [key: string]: any;
 }
 
 const Dashboard: React.FC = () => {
@@ -63,6 +63,22 @@ const Dashboard: React.FC = () => {
     (Array.isArray(value) && value.length === 0) ||
     (typeof value === "string" && !value.trim());
 
+  const SkeletalLoader = () => (
+    <div className="space-y-3">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <React.Fragment key={index}>
+          <div className="flex items-center space-x-2">
+            <div className="h-5 w-1/3 bg-gray-200 animate-pulse rounded"></div>
+            <div className="h-5 w-5 bg-gray-200 animate-pulse rounded-full"></div>
+          </div>
+          <div className="h-4 w-full bg-gray-200 animate-pulse rounded"></div>
+          <Separator className="my-3" />
+        </React.Fragment>
+      ))}
+      <div className="h-4 w-2/3 bg-gray-200 animate-pulse rounded"></div>
+    </div>
+  );
+
   return (
     <ProfileLayout>
       <div className="space-y-6">
@@ -76,7 +92,7 @@ const Dashboard: React.FC = () => {
               {error ? (
                 <p className="text-red-500">{error}</p>
               ) : isLoading ? (
-                <p>Loading...</p>
+                <SkeletalLoader />
               ) : profile === null ? (
                 <div className="text-center text-gray-500">
                   <p>No profile found for this user. Please complete your profile.</p>

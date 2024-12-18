@@ -70,7 +70,7 @@ const Features: React.FC = () => {
             Your Digital Brand, Fully Expressed
           </h2>
           <p className="lg:text-lg text-sm text-gray-600 max-w-2xl mx-auto">
-            Creatify transforms how you present your professional identity,
+          FolioSpace transforms how you present your professional identity,
             offering a comprehensive platform to showcase every dimension of
             your potential.
           </p>

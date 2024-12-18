@@ -111,7 +111,7 @@ export default function LinksSection() {
         </CardHeader>
         <CardContent>
           <form onSubmit={addLink} className="space-y-4">
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid lg:grid-cols-2  gap-2">
               <div>
                 <Label>URL</Label>
                 <Input
@@ -147,22 +147,22 @@ export default function LinksSection() {
           {links.length > 0 && (
             <div className="mt-4 space-y-2">
               <h3 className="text-sm font-medium">Current Links</h3>
-              {links.map((link) => (
+              {links?.map((link) => (
                 <div
-                  key={link.id}
+                  key={link?.id}
                   className="flex justify-between items-center bg-gray-100 p-2 rounded"
                 >
                   <div className="flex items-center space-x-2">
                     <LinkIcon className="h-4 w-4 text-gray-500" />
                     <div>
-                      <p className="text-sm font-medium">{link.text}</p>
+                      <p className="text-sm font-medium">{link?.text}</p>
                       <a
-                        href={link.url}
+                        href={link?.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-xs text-blue-600 hover:underline"
                       >
-                        {link.url}
+                        {link?.url}
                       </a>
                     </div>
                   </div>

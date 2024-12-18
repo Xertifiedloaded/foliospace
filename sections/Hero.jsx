@@ -49,7 +49,7 @@ export default function Hero({ portfolio }) {
           )}
           <div className="flex items-center justify-center w-full">
             <a
-              href=""
+              href={`http://localhost:3000/resume/${username}`}
               className="p-3 px-6 duration-200 rounded-full transform bg-gray-100 text-gray-900 hover:bg-gray-900 hover:text-gray-100 animate-fade-up hover:ring-2 ring-offset-2
                     animate-once animate-delay-[400ms] hover:scale-105"
             >

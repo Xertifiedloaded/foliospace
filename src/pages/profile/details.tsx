@@ -181,9 +181,6 @@ export default function ProfileDetails() {
     }
   };
 
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
 
   return (
     <ProfileLayout>

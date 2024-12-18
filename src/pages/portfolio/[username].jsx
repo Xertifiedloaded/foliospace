@@ -18,7 +18,7 @@ const PortfolioPage = () => {
   const { username } = router.query;
   const [portfolio, setPortfolio] = useState(null);
   const [loading, setLoading] = useState(true);
-console.log(portfolio);
+
   useEffect(() => {
     const fetchPortfolio = async () => {
       try {
@@ -27,7 +27,6 @@ console.log(portfolio);
           throw new Error("Portfolio not found");
         }
         const data = await response.json();
-        console.log(data);
         setPortfolio(data);
       } catch (error) {
         console.error("Portfolio fetch error:", error);
@@ -43,12 +42,38 @@ console.log(portfolio);
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Card className="w-[400px] text-center">
-          <CardHeader>
-            <CardTitle>Loading...</CardTitle>
-          </CardHeader>
-        </Card>
+      <div className="px-2 bg-gray-900 text-white py-8 max-w-4xl container mx-auto space-y-6 animate-pulse">
+        {/* Hero Skeleton */}
+        <div className="h-32 bg-gray-700 rounded-lg"></div>
+
+        {/* Links Skeleton */}
+        <div className="h-8 bg-gray-700 rounded-lg w-1/2"></div>
+
+        {/* Experience Section Skeleton */}
+        <div className="space-y-4">
+          {[...Array(3)].map((_, index) => (
+            <div key={index} className="h-16 bg-gray-700 rounded-lg"></div>
+          ))}
+        </div>
+
+        {/* Education Section Skeleton */}
+        <div className="space-y-4">
+          {[...Array(2)].map((_, index) => (
+            <div key={index} className="h-12 bg-gray-700 rounded-lg"></div>
+          ))}
+        </div>
+
+        {/* Projects Skeleton */}
+        <div className="space-y-4">
+          {[...Array(4)].map((_, index) => (
+            <div key={index} className="h-24 bg-gray-700 rounded-lg"></div>
+          ))}
+        </div>
+
+        {/* Button Skeleton */}
+        <div className="flex justify-center items-center">
+          <div className="h-10 w-32 bg-gray-700 rounded-lg"></div>
+        </div>
       </div>
     );
   }
@@ -72,8 +97,8 @@ console.log(portfolio);
   }
 
   return (
-    <div className=" px-4 bg-black text-white py-8 max-w-4xl container mx-auto space-y-6">
-      <Hero portfolio={portfolio}/>
+    <div className="px-2 bg-gray-900 text-white py-8 max-w-4xl container mx-auto space-y-6">
+      <Hero portfolio={portfolio} />
       {(portfolio.links?.length || portfolio.socials?.length) && (
         <PortfolioLink profile={portfolio.profile} links={portfolio.links} socials={portfolio.socials} />
       )}

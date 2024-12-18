@@ -70,8 +70,11 @@ Content-Type: application/json
 # Content-Type: application/json
 
 
-GET http://localhost:3000/api/portfolio/Xertifiedloaded
+GET http://localhost:3000/api/portfolio/view?username=xertifiedloaded
+
 Content-Type: application/json
+
+
 
 # {
 #   "userId": "675983486b2d0012ea586c6d",

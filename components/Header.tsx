@@ -47,7 +47,7 @@ const Header: React.FC = () => {
     <header className="sticky top-0 z-50 shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <h1 className="text-lg font-bold text-black">Creatify</h1>
+          <h1 className="text-lg font-bold text-black">FolioSpace</h1>
           <Menubar className="hidden md:flex">
             {navItems.map((item) => (
               <MenubarMenu key={item.path}>

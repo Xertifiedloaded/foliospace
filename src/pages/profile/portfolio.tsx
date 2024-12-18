@@ -212,32 +212,31 @@ export default function PortfolioSection() {
     }
   };
 
- const addTechnology = () => {
-  const techInput = document.getElementById("techInput") as HTMLInputElement;
-  const tech = techInput.value.trim();
+  const addTechnology = () => {
+    const techInput = document.getElementById("techInput") as HTMLInputElement;
+    const tech = techInput.value.trim();
 
-  if (tech) {
-    // Check if the input contains a comma or not
-    const newTechnologies = tech.includes(',')
-      ? tech.split(",").map((tech) => tech.trim()).filter((tech) => tech)
-      : [tech];
+    if (tech) {
+      const newTechnologies = tech.includes(",")
+        ? tech
+            .split(",")
+            .map((tech) => tech.trim())
+            .filter((tech) => tech)
+        : [tech];
 
-    // Update the state with new technologies
-    setNewProject((prev) => ({
-      ...prev,
-      technologies: [
-        ...(prev.technologies || []),
-        ...newTechnologies.filter(
-          (tech) => !prev.technologies?.includes(tech)
-        ),
-      ],
-    }));
+      setNewProject((prev) => ({
+        ...prev,
+        technologies: [
+          ...(prev.technologies || []),
+          ...newTechnologies.filter(
+            (tech) => !prev.technologies?.includes(tech)
+          ),
+        ],
+      }));
 
-    techInput.value = newTechnologies.length > 1 ? "" : tech + ", ";
-  }
-};
-
-  
+      techInput.value = newTechnologies.length > 1 ? "" : tech + ", ";
+    }
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -272,7 +271,7 @@ export default function PortfolioSection() {
         </CardHeader>
         <CardContent className="space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid lg:grid-cols-2 gap-4">
               <div>
                 <Label>Project Title</Label>
                 <Input
@@ -346,7 +345,7 @@ export default function PortfolioSection() {
                 {newProject.technologies?.map((tech, index) => (
                   <div
                     key={index}
-                    className="bg-gray-100 rounded-full px-3 py-1 text-sm flex items-center"
+                    className="bg-gray-100 rounded-full  py-1 text-sm flex items-center"
                   >
                     {tech}
                     <Button
@@ -393,7 +392,7 @@ export default function PortfolioSection() {
         </CardContent>
       </Card>
 
-      <div className="space-y-6">
+      <div className="space-y-6 px-2">
         {projects.map((project) => (
           <Card key={project.id} className="overflow-hidden">
             <div className="grid grid-cols-1 md:grid-cols-3">

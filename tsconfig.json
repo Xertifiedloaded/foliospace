@@ -36,7 +36,7 @@
     "app/api/projects/route.js",
     "lib/cloudinary.js",
     "server.js"
-  ],
+, "src/pages/profile/page-view.js", "sections/PageView.jsx"  ],
   "exclude": [
     "node_modules"
   ]
