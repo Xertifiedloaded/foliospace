@@ -65,7 +65,6 @@ export default function ResumePage() {
 
   return (
     <div className="">
-  
       <Card className="w-full mb-8 shadow-lg">
         <div className="bg-gradient-to-r from-primary to-secondary text-white text-center p-6">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">{name}</h1>
@@ -88,9 +87,7 @@ export default function ResumePage() {
         </div>
       </Card>
 
-
-      <div className="grid container mx-auto max-w-7xl px-4 lg:px-6 grid-cols-1 md:grid-cols-3 gap-6">
-
+      <div className=" md:grid container mx-auto max-w-7xl px-4 lg:px-6 grid-cols-1 md:grid-cols-3 gap-6">
         <div className="col-span-2 space-y-6">
           {profile.bio && (
             <section>
@@ -152,7 +149,6 @@ export default function ResumePage() {
           {education && (
             <section>
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                {/* <AcademicCapIcon className="h-5 w-5 text-primary" /> */}
                 Education
               </h2>
               <div className="space-y-4">
