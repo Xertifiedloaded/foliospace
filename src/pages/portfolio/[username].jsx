@@ -11,7 +11,6 @@ import {
   PortfolioLink,
   PortfolioProjectSections,
 } from "../../../sections/ProjectSection";
-import { PortfolioProfileCard } from "../../../components/UserProfileCard";
 import Hero from "../../../sections/Hero";
 
 const PortfolioPage = () => {
