@@ -26,6 +26,7 @@ const ProfileCompleteness = ({ profile }) => {
   const isComplete = nonEmptyFieldsCount === requiredFields?.length;
 
   return (
+  <>
     <div className="flex justify-between items-center">
       <span className="text-sm text-neutral-600">Profile Completeness</span>
 
@@ -48,6 +49,8 @@ const ProfileCompleteness = ({ profile }) => {
         {completenessPercentage.toFixed(0)}%
       </span>
     </div>
+
+  </>
   );
 };
 

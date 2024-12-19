@@ -9,6 +9,7 @@ import DashBoardSkills from "@/sections/DashBoardSkills";
 import ProfileLayout from "@/components/layout";
 import { useSession } from "next-auth/react";
 import ProfileCompleteness from "../../../components/ProfileCompleteness";
+import { DashBoardHeading } from "../../../sections/DashBoardHeading";
 
 interface Profile {
   id: string;
@@ -45,8 +46,7 @@ const Dashboard: React.FC = () => {
           }
         } else {
           const data: Profile = await response.json();
-          console.log(data);
-          
+
           setProfile(data);
         }
       } catch (err) {
@@ -121,7 +121,7 @@ const Dashboard: React.FC = () => {
 
           <div className="p-6 space-y-6">
             <ProfileCompleteness profile={profile} />
-
+            <DashBoardHeading />
             <div className="space-y-6">
               {error ? (
                 <p className="text-red-500">{error}</p>
