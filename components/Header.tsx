@@ -35,7 +35,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 shadow-md">
+    <header className="sticky bg-white top-0 z-50 shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <div className="flex items-center">

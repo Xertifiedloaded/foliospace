@@ -21,7 +21,6 @@ const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   try {
-    // Authenticate the user session
     const session = await getServerSession(req, res, authOptions);
 
     if (!session || !session.user) {

@@ -4,12 +4,11 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import DashBoardHeading from "@/sections/DashBoardHeading";
 import DashBoardSkills from "@/sections/DashBoardSkills";
 import ProfileLayout from "@/components/layout";
 import { useSession } from "next-auth/react";
+import ProfileCompleteness from "../../../components/ProfileCompleteness";
 
 interface Profile {
   id: string;
@@ -46,6 +45,8 @@ const Dashboard: React.FC = () => {
           }
         } else {
           const data: Profile = await response.json();
+          console.log(data);
+          
           setProfile(data);
         }
       } catch (err) {
@@ -89,16 +90,39 @@ const Dashboard: React.FC = () => {
 
   return (
     <ProfileLayout>
-      <div className="space-y-6">
-        <DashBoardHeading />
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-900">
-              Profile Details
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3 text-gray-700">
+      <div className="px-4 lg:flex justify-center items-center">
+        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl border border-neutral-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-bold">Profile Dashboard</h2>
+            </div>
+            <div className="mt-4 flex items-center">
+              <div className="w-12 h-12 bg-white/30 rounded-full mr-4">
+                {profile?.picture ? (
+                  <img
+                    src={profile?.picture}
+                    alt={session?.user?.name || "User Name"}
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-300 rounded-full"></div> // Placeholder
+                )}
+              </div>
+              <div>
+                <div className="text-lg font-semibold">
+                  {session?.user?.name || "User Name"}
+                </div>
+                <div className="text-xs opacity-75">
+                  {profile?.tagline || "No tagline"}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6 space-y-6">
+            <ProfileCompleteness profile={profile} />
+
+            <div className="space-y-6">
               {error ? (
                 <p className="text-red-500">{error}</p>
               ) : isLoading ? (
@@ -158,8 +182,8 @@ const Dashboard: React.FC = () => {
               )}
               <DashBoardSkills />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </ProfileLayout>
   );
