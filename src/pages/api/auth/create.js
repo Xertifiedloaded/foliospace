@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import { generateOTP } from "../../../../lib/GenerateOtp";
 import { generateEmailContent } from "../../../../utils/emailContent";
-import sendEmail from "../../../../utils/sendEmail";
 import { transporter } from "../../../../lib/nodemailer";
 
 const prisma = new PrismaClient();

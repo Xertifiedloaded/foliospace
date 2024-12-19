@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import { v4 as uuidv4 } from "uuid";
-import sendEmail from "../../../../utils/sendEmail";
 import { transporter } from "../../../../lib/nodemailer";
 
 export default async function handler(req, res) {
