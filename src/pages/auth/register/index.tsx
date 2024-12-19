@@ -18,7 +18,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/hooks/use-auth";
 
-// Signup Form Validation Schema
 const SignupSchema = z
   .object({
     username: z

@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useToast } from "./use-toast";
 
 interface User {
   id: string;
@@ -52,10 +53,12 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Create Context
+
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const { toast } = useToast();
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [status, setStatus] = useState<"loggedIn" | "loggedOut" | undefined>(
     undefined
@@ -63,36 +66,62 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const router = useRouter();
 
-  const create = useCallback(async (payload: CreatePayload) => {
-    try {
-      const res = await fetch("/api/auth/create", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
 
-      if (res.ok) {
-        const { user } = await res.json();
-        setUser(user);
-        setStatus("loggedIn");
-        setError(null);
-        router.push("/auth/login");
-      } else {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Registration failed");
+  const create = useCallback(
+    async (payload: CreatePayload): Promise<void> => {
+      try {
+        console.log("Sending payload:", payload);
+  
+        const res = await fetch("/api/auth/create", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+  
+        if (res.ok) {
+          const data = await res.json(); 
+          setError(null);
+          toast({
+            title: "Success",
+            description: data?.message,
+          });
+  
+          setTimeout(() => {
+            window.location.href = "/auth/login";
+          }, 2000);
+        } else {
+          const errorData = await res.json();
+          toast({
+            title: "Error",
+            variant: "destructive",
+            description: errorData?.message,
+          });
+    
+        }
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message || "Something went wrong. Please try again.",
+        });
       }
-    } catch (error: any) {
-      setError(error.message);
-      console.error("Registration error:", error);
-    }
-  }, [router]);
+    },
+    [router, toast]
+  );
+  
 
-  // Login User
+
+
+
+
+
+
+
+
   const login = useCallback(async (payload: LoginPayload) => {
     try {
       const res = await fetch("/api/auth/login", {

@@ -6,7 +6,9 @@ const prisma = new PrismaClient();
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
-    return res.status(405).json({ message: `Method ${req.method} Not Allowed` });
+    return res
+      .status(405)
+      .json({ message: `Method ${req.method} Not Allowed` });
   }
 
   const { username, name, email, password, confirmPassword } = req.body;
@@ -25,7 +27,7 @@ export default async function handler(req, res) {
     });
 
     if (existingUser) {
-      return res.status(409).json({ message: "User already exists." });
+      return res.status(400).json({ message: "User already exists" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
@@ -38,7 +40,7 @@ export default async function handler(req, res) {
     });
 
     return res.status(201).json({
-      message: "User created successfully. You can now log in.",
+      message: "Account created successfully. Redirecting to login....",
     });
   } catch (error) {
     console.error("Registration error:", error);

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -89,7 +88,7 @@ export default function ResumePage() {
 
       <div className=" md:grid container mx-auto max-w-7xl px-4 lg:px-6 grid-cols-1 md:grid-cols-3 gap-6">
         <div className="col-span-2 space-y-6">
-          {profile.bio && (
+          {profile?.bio && (
             <section>
               <h2 className="text-xl font-semibold mb-4">
                 Professional Summary
@@ -120,7 +119,7 @@ export default function ResumePage() {
                         : "Present"}
                     </Badge>
                     <ul className="mt-2 list-disc pl-6 text-sm">
-                      {exp?.description.split("\n").map((line, index) => (
+                      {exp?.description?.split("\n").map((line, index) => (
                         <li key={index}>{line}</li>
                       ))}
                     </ul>
@@ -153,10 +152,10 @@ export default function ResumePage() {
               </h2>
               <div className="space-y-4">
                 {education?.map((edu) => (
-                  <div key={edu.id} className="p-4 border rounded-md shadow-sm">
+                  <div key={edu?.id} className="p-4 border rounded-md shadow-sm">
                     <h3 className="text-lg font-bold">{edu?.institution}</h3>
                     <p className="text-sm text-muted-foreground">
-                      {edu.degree}
+                      {edu?.degree}
                     </p>
                     <Badge variant="secondary" className="mt-2">
                       {new Date(edu?.startDate).getFullYear()} -{" "}

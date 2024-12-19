@@ -57,23 +57,32 @@ export default function Hero({ portfolio }) {
             </a>
           </div>
 
-          {socials?.length > 0 && (
+          {Array.isArray(socials) && socials.length > 0 && (
             <div className="mt-6">
               <div className="flex justify-center space-x-4">
-                {socials.map((social, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    size="icon"
-                    className={`rounded-full ${
-                      socialColors[social?.name.toLowerCase()] ||
-                      "text-gray-500 hover:text-gray-600"
-                    }`}
-                    onClick={() => window.open(social?.url, "_blank")}
-                  >
-                    <SocialIcon type={social.name} />
-                  </Button>
-                ))}
+                {socials.map((social, index) => {
+                  const isValidUrl =
+                    social?.url && /^https?:\/\/.+/i.test(social.url);
+
+                  return (
+                    <Button
+                      key={index}
+                      variant="outline"
+                      size="icon"
+                      className={`rounded-full ${
+                        socialColors[social?.name?.toLowerCase()] ||
+                        "text-gray-500 hover:text-gray-600"
+                      }`}
+                      onClick={() => {
+                        if (isValidUrl) {
+                          window.open(social.url, "_blank");
+                        }
+                      }}
+                    >
+                      <SocialIcon type={social.name} />
+                    </Button>
+                  );
+                })}
               </div>
             </div>
           )}

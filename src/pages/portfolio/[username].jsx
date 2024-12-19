@@ -66,24 +66,24 @@ const PortfolioPage = () => {
   return (
     <div className="px-2 bg-gray-900 text-white py-8 max-w-4xl container mx-auto space-y-6">
       <Hero portfolio={portfolio} />
-      {(portfolio.links?.length || portfolio.socials?.length) && (
+      {(portfolio?.links?.length > 0 || portfolio?.socials?.length > 0) && (
         <PortfolioLink
-          profile={portfolio.profile}
-          links={portfolio.links}
-          socials={portfolio.socials}
+          profile={portfolio?.profile}
+          links={portfolio?.links}
+          socials={portfolio?.socials}
         />
       )}
 
       {portfolio.experiences?.length > 0 && (
-        <ExperienceSection experiences={portfolio.experiences} />
+        <ExperienceSection experiences={portfolio?.experiences} />
       )}
 
       {portfolio.education?.length > 0 && (
-        <EducationSection education={portfolio.education} />
+        <EducationSection education={portfolio?.education} />
       )}
 
       {portfolio.projects?.length > 0 && (
-        <PortfolioProjectSections projects={portfolio.projects} />
+        <PortfolioProjectSections projects={portfolio?.projects} />
       )}
 
       <div className="flex justify-center items-center">
