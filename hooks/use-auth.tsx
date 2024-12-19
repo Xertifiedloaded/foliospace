@@ -18,12 +18,12 @@ interface User {
   email: string;
   createdAt: string;
   updatedAt: string;
-  profile?: object; 
-  projects?: object[]; 
-  socials?: object[]; 
-  links?: object[]; 
-  experiences?: object[]; 
-  education?: object[]; 
+  profile?: object;
+  projects?: object[];
+  socials?: object[];
+  links?: object[];
+  experiences?: object[];
+  education?: object[];
   skills?: string[];
 }
 
@@ -53,7 +53,6 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
@@ -66,13 +65,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-
-
   const create = useCallback(
     async (payload: CreatePayload): Promise<void> => {
       try {
         console.log("Sending payload:", payload);
-  
+
         const res = await fetch("/api/auth/create", {
           method: "POST",
           credentials: "include",
@@ -81,17 +78,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           },
           body: JSON.stringify(payload),
         });
-  
+
         if (res.ok) {
-          const data = await res.json(); 
+          const data = await res.json();
           setError(null);
           toast({
             title: "Success",
             description: data?.message,
           });
-  
+          console.log(data);
+
           setTimeout(() => {
-            window.location.href = "/auth/login";
+            window.location.href = "/auth/otp";
           }, 2000);
         } else {
           const errorData = await res.json();
@@ -100,57 +98,50 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             variant: "destructive",
             description: errorData?.message,
           });
-    
         }
       } catch (error: any) {
         toast({
           variant: "destructive",
           title: "Error",
-          description: error.message || "Something went wrong. Please try again.",
+          description:
+            error.message || "Something went wrong. Please try again.",
         });
       }
     },
     [router, toast]
   );
-  
 
+  const login = useCallback(
+    async (payload: LoginPayload) => {
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
 
-
-
-
-
-
-
-
-  const login = useCallback(async (payload: LoginPayload) => {
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (res.ok) {
-        const { user, token } = await res.json();
-        cookies.set("token", token, { expires: 7 });
-        setUser(user);
-        setStatus("loggedIn");
-        setError(null);
-        router.push("/profile/dashboard");
-      } else {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Login failed");
+        if (res.ok) {
+          const { user, token } = await res.json();
+          cookies.set("token", token, { expires: 7 });
+          setUser(user);
+          setStatus("loggedIn");
+          setError(null);
+          router.push("/profile/dashboard");
+        } else {
+          const errorData = await res.json();
+          throw new Error(errorData.message || "Login failed");
+        }
+      } catch (error: any) {
+        setError(error.message);
+        console.error("Login error:", error);
       }
-    } catch (error: any) {
-      setError(error.message);
-      console.error("Login error:", error);
-    }
-  }, [router]);
+    },
+    [router]
+  );
 
-  // Logout User
   const logout = useCallback(async () => {
     try {
       const res = await fetch("/api/auth/logout", {
@@ -171,7 +162,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  // Fetch Session User
   useEffect(() => {
     const fetchUser = async () => {
       try {

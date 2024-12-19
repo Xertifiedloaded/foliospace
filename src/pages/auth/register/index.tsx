@@ -60,7 +60,6 @@ export default function SignupPage() {
 
       await create(data); 
     } catch (error) {
-      // Handle signup errors
       console.error("Signup failed", error);
     } finally {
       setIsLoading(false);

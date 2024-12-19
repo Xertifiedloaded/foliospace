@@ -8,25 +8,30 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  username  String   @unique
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  profile     Profile?
-  projects    Project[]
-  socials     Social[]
-  links       Link[]
-  experiences Experience[]
-  education   Education[]
-   pageViews   PageView[]
-  skills      Skill[]  @relation("UserSkills") 
-  stacks      Stack[]  @relation("UserStacks")  
+  id                      String       @id @default(auto()) @map("_id") @db.ObjectId
+  username                String       @unique
+  name                    String
+  email                   String       @unique
+  password                String
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+  // otp
+  otp                     String?
+  otpExpiry               DateTime?
+  isVerified              Boolean?     @default(false)
+  verificationToken       String?
+  verificationTokenExpiry DateTime?
+  // profile
+  profile                 Profile?
+  projects                Project[]
+  socials                 Social[]
+  links                   Link[]
+  experiences             Experience[]
+  education               Education[]
+  pageViews               PageView[]
+  skills                  Skill[]      @relation("UserSkills")
+  stacks                  Stack[]      @relation("UserStacks")
 }
-
 
 model PageView {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -36,37 +41,32 @@ model PageView {
   date      DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  user      User     @relation(fields: [username], references: [username])
-  
+
+  user User @relation(fields: [username], references: [username])
+
   @@unique([username, period, date])
 }
 
-
 model Skill {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  level     String
-  userId    String
-  user      User     @relation("UserSkills", fields: [userId], references: [id])
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  level  String
+  userId String
+  user   User   @relation("UserSkills", fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Stack {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  userId    String
-  user      User     @relation("UserStacks", fields: [userId], references: [id])
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  userId String
+  user   User   @relation("UserStacks", fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
-
-
-
 
 model Project {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId

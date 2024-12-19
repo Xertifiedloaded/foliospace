@@ -1,5 +1,10 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
+import { generateOTP } from "../../../../lib/GenerateOtp";
+import { generateEmailContent } from "../../../../utils/emailContent";
+import sendEmail from "../../../../utils/sendEmail";
+import { transporter } from "../../../../lib/nodemailer";
 
 const prisma = new PrismaClient();
 
@@ -29,18 +34,43 @@ export default async function handler(req, res) {
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
+    const otp = generateOTP(4);
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    const OTPverificationToken = jwt.sign({ otp }, process.env.JWT_SECRET, {
+      expiresIn: "10m",
+    });
+
     const user = await prisma.user.create({
       data: {
         username,
         name,
         email,
         password: hashedPassword,
+        otp,
+        otpExpiry,
       },
     });
+    // const verificationLink = `https://foliospace.vercel.app/auth/${OTPverificationToken}`;
+    const verificationLink = `https://foliospace.vercel.app`;
+    const emailContent = generateEmailContent(otp, verificationLink);
 
+    await transporter.sendMail({
+      from: "noreply@foliospace.com",
+      to: email,
+      subject: "Verify Your Account - foliospace",
+      html: emailContent,
+    });
+
+    console.log(user);
     return res.status(201).json({
-      message: "Account created successfully. Redirecting to login....",
+      message: "Account created successfully. Verification email sent.",
+      data: {
+        user,
+        verificationLink,
+        isVerified: false,
+      },
     });
   } catch (error) {
     console.error("Registration error:", error);

@@ -1,6 +1,5 @@
-import bcrypt from "bcryptjs";
+
 import { PrismaClient } from "@prisma/client";
-import { serialize } from "cookie";
 import { comparePassword, cookiesSerialize, generateToken } from "../../../../middlware/helper.js";
 
 const prisma = new PrismaClient();
