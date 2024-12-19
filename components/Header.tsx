@@ -40,7 +40,7 @@ const Header: React.FC = () => {
         <div className="flex items-center space-x-4">
           <div className="flex items-center">
             <RiCheckboxCircleLine className="mr-2 text-2xl text-blue-600" />
-            <span className="lg:text-2xl text-sm  font-black text-neutral-900 tracking-tight">
+            <span className="lg:text-xl text-sm  font-black text-neutral-900 tracking-tight">
               FolioSpace
             </span>
           </div>
