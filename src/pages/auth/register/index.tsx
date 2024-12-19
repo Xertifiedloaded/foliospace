@@ -71,8 +71,8 @@ export default function SignupPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold">
-            Create Your Follio Account
+          <CardTitle className="text-2xl font-bold">
+            Create Your foliospace
           </CardTitle>
           <CardDescription>
             Sign up to build and share your professional portfolio
@@ -87,7 +87,7 @@ export default function SignupPage() {
                 type="text"
                 placeholder="Choose a unique username"
                 {...register("username")}
-                className="mt-2"
+                className="mt-2 placeholder:text-sm"
               />
               {errors.username && (
                 <p className="text-red-500 text-sm mt-1">
@@ -102,7 +102,7 @@ export default function SignupPage() {
                 type="text"
                 placeholder="Enter your full name"
                 {...register("name")}
-                className="mt-2"
+                className="mt-2  placeholder:text-sm"
               />
               {errors.name && (
                 <p className="text-red-500 text-sm mt-1">
@@ -118,7 +118,7 @@ export default function SignupPage() {
                 type="email"
                 placeholder="you@example.com"
                 {...register("email")}
-                className="mt-2"
+                className="mt-2  placeholder:text-sm"
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">
@@ -134,7 +134,7 @@ export default function SignupPage() {
                 type="password"
                 placeholder="Create a strong password"
                 {...register("password")}
-                className="mt-2"
+                className="mt-2  placeholder:text-sm"
               />
               {errors.password && (
                 <p className="text-red-500 text-sm mt-1">
@@ -150,7 +150,7 @@ export default function SignupPage() {
                 type="password"
                 placeholder="Repeat your password"
                 {...register("confirmPassword")}
-                className="mt-2"
+                className="mt-2  placeholder:text-sm"
               />
               {errors.confirmPassword && (
                 <p className="text-red-500 text-sm mt-1">
