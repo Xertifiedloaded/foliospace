@@ -7,16 +7,10 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import {
-  LayoutDashboard,
-  Link,
-  Share2,
-  FileText,
-  Palette,
-  Menu as MenuIcon,
-  LucideIcon,
-} from "lucide-react";
+import { Home, Grid, User, Share2, FileText, Palette, Eye, FilePlus, MenuIcon } from "lucide-react";
+import { LucideIcon } from "lucide-react"; 
 import { Button } from "@/components/ui/button";
+import { RiCheckboxCircleLine } from "react-icons/ri";
 
 interface NavItem {
   path: string;
@@ -26,17 +20,14 @@ interface NavItem {
 
 const Header: React.FC = () => {
   const navItems: NavItem[] = [
-    { path: "/profile/dashboard", title: "Dashboard", icon: LayoutDashboard },
-    {
-      path: "/profile/details",
-      title: "Profile Details",
-      icon: LayoutDashboard,
-    },
-    { path: "/profile/links", title: "Links", icon: Link },
-    { path: "/profile/socials", title: "Socials", icon: Share2 },
-    { path: "/profile/resume", title: "Resume", icon: FileText },
-    { path: "/profile/portfolio", title: "Portfolio", icon: Palette },
-    { path: "/profile/page-view", title: "Page View", icon: Palette },
+    { path: "/", title: "Home", icon: Home }, 
+    { path: "/profile/dashboard", title: "Dashboard", icon: Grid }, 
+    { path: "/profile/details", title: "Profile Details", icon: User }, 
+    { path: "/profile/links", title: "Links", icon: Share2 },
+    { path: "/profile/socials", title: "Socials", icon: Share2 }, 
+    { path: "/profile/resume", title: "Resume", icon: FileText }, 
+    { path: "/profile/portfolio", title: "Portfolio", icon: Palette }, 
+    { path: "/profile/page-view", title: "Page View", icon: Eye }, 
   ];
 
   const handleNavigation = (path: string): void => {
@@ -47,7 +38,12 @@ const Header: React.FC = () => {
     <header className="sticky top-0 z-50 shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <h1 className="text-lg font-bold text-black">FolioSpace</h1>
+          <div className="flex items-center">
+            <RiCheckboxCircleLine className="mr-2 text-2xl text-blue-600" />
+            <span className="lg:text-2xl text-sm  font-black text-neutral-900 tracking-tight">
+              FolioSpace
+            </span>
+          </div>
           <Menubar className="hidden md:flex">
             {navItems.map((item) => (
               <MenubarMenu key={item.path}>

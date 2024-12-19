@@ -35,7 +35,9 @@ const Dashboard: React.FC = () => {
       try {
         if (!session?.user?.id) return;
 
-        const response = await fetch(`/api/portfolio/profile?userId=${session.user.id}`);
+        const response = await fetch(
+          `/api/portfolio/profile?userId=${session.user.id}`
+        );
         if (!response.ok) {
           if (response.status === 404) {
             setProfile(null);
@@ -56,7 +58,13 @@ const Dashboard: React.FC = () => {
     fetchProfile();
   }, [session?.user?.id]);
 
-  const excludedFields: string[] = ["id", "userId", "createdAt", "updatedAt", "picture"];
+  const excludedFields: string[] = [
+    "id",
+    "userId",
+    "createdAt",
+    "updatedAt",
+    "picture",
+  ];
 
   const isValueEmpty = (value: any): boolean =>
     !value ||
@@ -85,7 +93,9 @@ const Dashboard: React.FC = () => {
         <DashBoardHeading />
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-900">Profile Details</CardTitle>
+            <CardTitle className="text-2xl font-bold text-gray-900">
+              Profile Details
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3 text-gray-700">
@@ -95,7 +105,7 @@ const Dashboard: React.FC = () => {
                 <SkeletalLoader />
               ) : profile === null ? (
                 <div className="text-center text-gray-500">
-                  <p>No profile found for this user. Please complete your profile.</p>
+                  <SkeletalLoader />
                 </div>
               ) : (
                 Object.keys(profile)
@@ -103,11 +113,15 @@ const Dashboard: React.FC = () => {
                   .map((key) => (
                     <React.Fragment key={key}>
                       <div className="flex items-center space-x-2">
-                        <p className="font-semibold capitalize flex-grow">{key.replace(/([A-Z])/g, " $1")}</p>
+                        <p className="font-semibold capitalize flex-grow">
+                          {key.replace(/([A-Z])/g, " $1")}
+                        </p>
                         <Link href="/profile/details">
                           <ExternalLink
                             className={`w-5 h-5 ${
-                              isValueEmpty(profile[key]) ? "text-red-500" : "text-green-500"
+                              isValueEmpty(profile[key])
+                                ? "text-red-500"
+                                : "text-green-500"
                             } transition-colors duration-200`}
                           />
                         </Link>
@@ -115,20 +129,24 @@ const Dashboard: React.FC = () => {
                       <div>
                         {key === "hobbies" || key === "languages" ? (
                           <div className="flex flex-wrap gap-2">
-                            {profile[key]?.map((item: string, index: number) => (
-                              <button
-                                key={index}
-                                className="px-3 py-1 bg-gray-100 duration-200 transition-colors text-gray-700 rounded-full hover:bg-gray-200 text-sm"
-                              >
-                                {item}
-                              </button>
-                            ))}
+                            {profile[key]?.map(
+                              (item: string, index: number) => (
+                                <button
+                                  key={index}
+                                  className="px-3 py-1 bg-gray-100 duration-200 transition-colors text-gray-700 rounded-full hover:bg-gray-200 text-sm"
+                                >
+                                  {item}
+                                </button>
+                              )
+                            )}
                           </div>
                         ) : Array.isArray(profile[key]) ? (
                           <ul className="list-disc list-inside">
-                            {profile[key]?.map((item: string, index: number) => (
-                              <li key={index}>{item}</li>
-                            ))}
+                            {profile[key]?.map(
+                              (item: string, index: number) => (
+                                <li key={index}>{item}</li>
+                              )
+                            )}
                           </ul>
                         ) : (
                           <p>{profile[key] || "Not specified"}</p>

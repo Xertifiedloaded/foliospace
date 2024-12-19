@@ -6,7 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   RiDashboardLine,
   RiLogoutBoxLine,
@@ -74,14 +74,13 @@ export function UserNavigation() {
                 <span>Dashboard</span>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => router.push("/profile")}
+                onClick={() => router.push("/profile/details")}
                 className="cursor-pointer"
               >
                 <RiUserLine className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => router.push("/settings")}
                 className="cursor-pointer"
               >
                 <RiSettingsLine className="mr-2 h-4 w-4" />

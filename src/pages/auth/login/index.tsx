@@ -13,7 +13,6 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -96,7 +95,7 @@ export default function LoginPage() {
                 type="email"
                 placeholder="name@example.com"
                 {...register("email")}
-                className={errors.email ? "border-red-500" : ""}
+                className={ errors.email ? "border-red-500" : ""}
                 disabled={isLoading}
               />
               {errors.email && (
@@ -135,16 +134,6 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <Separator />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <div className="text-center text-sm">
