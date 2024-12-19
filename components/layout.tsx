@@ -1,25 +1,79 @@
-'use client';
+"use client";
 
-import { MobilePreview } from "@/components/Preview";
 import { useAuth } from "@/hooks/use-auth";
 import Header from "@/components/Header";
 import { SessionProvider, useSession } from "next-auth/react";
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode } from "react";
 import { useRouter } from "next/router";
-import { toast } from "@/hooks/use-toast"; 
+import { toast } from "@/hooks/use-toast";
 import SkeletalLoader from "./SkeletalLoader";
+import { IPhoneFrame } from "./Preview";
 
-interface ProfileLayoutProps {
-  children: ReactNode;
-}
+const MobilePreview: React.FC = () => {
+  const router = useRouter();
 
-const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
-  const { isLoading } = useAuth(); 
-  const { data: session, status } = useSession(); 
-  const router = useRouter(); 
+  const renderPreviewContent = () => {
+    switch (router.pathname) {
+      case "/profile/dashboard":
+        return <ProfilePreview />;
+      case "/profile/details":
+        return <SettingsPreview />;
+      case "/profile/links":
+        return <MessagesPreview />;
+      case "/profile/resume":
+        return <MessagesPreview />;
+      case "/profile/portfolio":
+        return <MessagesPreview />;
+      case "/profile/socials":
+        return <MessagesPreview />;
+      case "/profile/page-view":
+        return <MessagesPreview />;
+      default:
+        return <DefaultPreview />;
+    }
+  };
 
-  useEffect(() => {
-    if (status === "loading") return; 
+  return <IPhoneFrame>{renderPreviewContent()}</IPhoneFrame>;
+};
+
+const DefaultPreview: React.FC = () => (
+  <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+    <h2 className="text-xl font-bold text-gray-900 mb-4">Mobile Preview</h2>
+    <p className="text-gray-600">
+      Realistic representation of your site on an iPhone 15 Pro Max
+    </p>
+  </div>
+);
+
+const ProfilePreview: React.FC = () => (
+  <div className="p-6">
+    <h2 className="text-xl font-bold mb-4">Profile Preview</h2>
+    {/* Add your profile preview content here */}
+  </div>
+);
+
+const SettingsPreview: React.FC = () => (
+  <div className="p-6">
+    <h2 className="text-xl font-bold mb-4">Settings Preview</h2>
+    {/* Add your settings preview content here */}
+  </div>
+);
+
+const MessagesPreview: React.FC = () => (
+  <div className="p-6">
+    <h2 className="text-xl font-bold mb-4">Messages Preview</h2>
+    {/* Add your messages preview content here */}
+  </div>
+);
+
+const ProfileLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { isLoading } = useAuth();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (status === "loading") return;
+
     if (!session) {
       toast({
         title: "Unauthorized",
@@ -28,17 +82,14 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
       });
       router.push("/auth/login");
     }
-  }, [session, status, router]); 
+  }, [session, status, router]);
 
   if (isLoading || status === "loading") {
-    return (
-     <SkeletalLoader/>
-    );
+    return <SkeletalLoader />;
   }
-  
 
   if (!session) {
-    return null; 
+    return null;
   }
 
   return (
@@ -57,3 +108,4 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 };
 
 export default ProfileLayout;
+export { MobilePreview };
