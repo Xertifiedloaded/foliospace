@@ -311,7 +311,7 @@ export default function ProfileDetails() {
             </section>
           </div>
           <div className="relative">
-            <div className="sticky  top-2">
+            <div className="">
               <IPhoneFrame>
                 <ProfilePreview
                   data={formData}

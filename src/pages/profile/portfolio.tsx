@@ -266,8 +266,8 @@ export default function PortfolioSection() {
 
   return (
     <ProfileLayout>
-      <div className="bg-gray-50 min-h-screen">
-        <div className="container mx-auto py-8">
+      <div className="bg-gray-50 container mx-auto  min-h-screen">
+        <div className="py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <Card>
@@ -404,7 +404,7 @@ export default function PortfolioSection() {
               </Card>
             </div>
             <div className="relative">
-              <div className="sticky  top-2">
+              <div className="">
                 <IPhoneFrame>
                   <div className="space-y-3 p-2">
                     {projects.map((project) => (
