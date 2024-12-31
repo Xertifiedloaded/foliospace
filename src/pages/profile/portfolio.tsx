@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { IPhoneFrame } from "@/components/Preview";
 
 interface PortfolioProject {
-  id?: string;
+  id: string;
   title?: string;
   description?: string;
   technologies: string[];
@@ -380,7 +380,7 @@ export default function PortfolioSection() {
                     </div>
 
                     <div>
-                      <Label>Project Image</Label>
+                      <Label>Project Image (optional)</Label>
                       <Input
                         type="file"
                         onChange={handleImageUpload}
