@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X, Plus, Link as LinkIcon } from "lucide-react";
 import ProfileLayout from "@/components/layout";
+import { LinksDisplay } from "@/components/views/LinkDisplay";
+import { IPhoneFrame } from "@/components/Preview";
 
 interface LinkData {
   id?: string;
@@ -17,7 +19,7 @@ interface LinkData {
 }
 
 export default function LinksSection() {
-  const { data: session } = useSession(); 
+  const { data: session } = useSession();
   const [links, setLinks] = useState<LinkData[]>([]);
   const [newLink, setNewLink] = useState<{ url: string; text: string }>({
     url: "",
@@ -26,7 +28,7 @@ export default function LinksSection() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const userId = session?.user?.id; 
+  const userId = session?.user?.id;
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -105,84 +107,69 @@ export default function LinksSection() {
 
   return (
     <ProfileLayout>
-      <Card>
-        <CardHeader>
-          <CardTitle>Important Links</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={addLink} className="space-y-4">
-            <div className="grid lg:grid-cols-2  gap-2">
-              <div>
-                <Label>URL</Label>
-                <Input
-                  value={newLink.url}
-                  onChange={(e) =>
-                    setNewLink((prev) => ({ ...prev, url: e.target.value }))
-                  }
-                  placeholder="Enter website URL"
-                />
-              </div>
-              <div>
-                <Label>Title</Label>
-                <Input
-                  value={newLink.text}
-                  onChange={(e) =>
-                    setNewLink((prev) => ({ ...prev, text: e.target.value }))
-                  }
-                  placeholder="Link title"
-                />
-              </div>
-            </div>
-            <Button
-              type="submit"
-              variant="outline"
-              className="w-full"
-              disabled={isLoading}
-            >
-              <Plus className="mr-2 h-4 w-4" />{" "}
-              {isLoading ? "Adding..." : "Add Link"}
-            </Button>
-          </form>
-
-          {links.length > 0 && (
-            <div className="mt-4 space-y-2">
-              <h3 className="text-sm font-medium">Current Links</h3>
-              {links?.map((link) => (
-                <div
-                  key={link?.id}
-                  className="flex justify-between items-center bg-gray-100 p-2 rounded"
-                >
-                  <div className="flex items-center space-x-2">
-                    <LinkIcon className="h-4 w-4 text-gray-500" />
+      <div className="container mx-auto py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Important Links</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={addLink} className="space-y-4">
+                  <div className="grid lg:grid-cols-2  gap-2">
                     <div>
-                      <p className="text-sm font-medium">{link?.text}</p>
-                      <a
-                        href={link?.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-blue-600 hover:underline"
-                      >
-                        {link?.url}
-                      </a>
+                      <Label>URL</Label>
+                      <Input
+                        value={newLink.url}
+                        onChange={(e) =>
+                          setNewLink((prev) => ({
+                            ...prev,
+                            url: e.target.value,
+                          }))
+                        }
+                        placeholder="Enter website URL"
+                      />
+                    </div>
+                    <div>
+                      <Label>Title</Label>
+                      <Input
+                        value={newLink.text}
+                        onChange={(e) =>
+                          setNewLink((prev) => ({
+                            ...prev,
+                            text: e.target.value,
+                          }))
+                        }
+                        placeholder="Link title"
+                      />
                     </div>
                   </div>
                   <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeLink(link)}
+                    type="submit"
+                    variant="outline"
+                    className="w-full"
+                    disabled={isLoading}
                   >
-                    <X className="h-4 w-4" />
+                    <Plus className="mr-2 h-4 w-4" />{" "}
+                    {isLoading ? "Adding..." : "Add Link"}
                   </Button>
-                </div>
-              ))}
-            </div>
-          )}
+                </form>
 
-          {error && (
-            <div className="text-red-500 text-sm mt-2">{error}</div>
-          )}
-        </CardContent>
-      </Card>
+                {error && (
+                  <div className="text-red-500 text-sm mt-2">{error}</div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+          <div className="relative container mx-auto">
+            <div className="sticky  top-2">
+              <IPhoneFrame>
+                <LinksDisplay links={links} removeLink={removeLink} />
+              </IPhoneFrame>
+            </div>
+          </div>
+        </div>
+      </div>
     </ProfileLayout>
   );
 }

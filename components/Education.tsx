@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { X, Plus, Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
+import { IPhoneFrame } from "./Preview";
 
 interface Education {
   id: string;
@@ -136,129 +137,155 @@ export default function Education() {
 
   return (
     <section>
-      <h2 className="text-lg font-semibold mb-4 flex items-center">
-        <Calendar className="mr-2" /> Education
-      </h2>
-      <form onSubmit={addEducation} className="space-y-3">
-        <div className="grid lg:grid-cols-2 gap-2">
-          <div>
-            <label htmlFor="institution">Institution Name</label>
-            <Input
-              id="institution"
-              value={newEducation.institution || ""}
-              onChange={(e) =>
-                setNewEducation((prev) => ({
-                  ...prev,
-                  institution: e.target.value,
-                }))
-              }
-              placeholder="Institution Name"
-            />
-          </div>
-          <div>
-            <label htmlFor="degree">Degree</label>
-            <Input
-              id="degree"
-              value={newEducation.degree || ""}
-              onChange={(e) =>
-                setNewEducation((prev) => ({
-                  ...prev,
-                  degree: e.target.value,
-                }))
-              }
-              placeholder="Degree"
-            />
-          </div>
-        </div>
-        <div className="grid lg:grid-cols-2 gap-2">
-          <div>
-            <label htmlFor="start-date">Start Date</label>
-            <Input
-              id="start-date"
-              type="date"
-              value={
-                newEducation.startDate
-                  ? format(new Date(newEducation.startDate), "yyyy-MM-dd")
-                  : ""
-              }
-              onChange={(e) =>
-                setNewEducation((prev) => ({
-                  ...prev,
-                  startDate: new Date(e.target.value),
-                }))
-              }
-            />
-          </div>
-          <div>
-            <label htmlFor="end-date">End Date</label>
-            <Input
-              id="end-date"
-              type="date"
-              value={
-                newEducation.endDate
-                  ? format(new Date(newEducation.endDate), "yyyy-MM-dd")
-                  : ""
-              }
-              onChange={(e) =>
-                setNewEducation((prev) => ({
-                  ...prev,
-                  endDate: new Date(e.target.value),
-                }))
-              }
-            />
-          </div>
-        </div>
-        <Button type="submit" variant="outline" className="w-full">
-          <Plus className="mr-2" /> Add Education
-        </Button>
-      </form>
-
-      {isEditing && (
-        <div className="mt-4">
-          <Button onClick={handleSave} className="w-full">
-            Save Changes
-          </Button>
-        </div>
-      )}
-
-      <div className="mt-6">
-        {education.map((edu) => (
-          <Card key={edu.id} className="mb-4">
-            <CardHeader>
-              <CardTitle>{edu.institution}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{edu.degree}</p>
-              <p>
-                {format(new Date(edu.startDate), "yyyy-MM-dd")} -{" "}
-                {edu.endDate
-                  ? format(new Date(edu.endDate), "yyyy-MM-dd")
-                  : "Present"}
-              </p>
-              <div className="flex mt-2 items-center space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-blue-600 hover:bg-blue-50 border-blue-200"
-                  onClick={() => {
-                    setIsEditing(edu.id);
-                    setNewEducation({ ...edu });
-                  }}
-                >
-                  Edit Education
+      <div className="bg-gray-50 min-h-screen">
+        <div className="container mx-auto py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold mb-4 flex items-center">
+                <Calendar className="mr-2" /> Education
+              </h2>
+              <form onSubmit={addEducation} className="space-y-3">
+                <div className="grid lg:grid-cols-2 gap-2">
+                  <div>
+                    <label htmlFor="institution">Institution Name</label>
+                    <Input
+                      id="institution"
+                      value={newEducation.institution || ""}
+                      onChange={(e) =>
+                        setNewEducation((prev) => ({
+                          ...prev,
+                          institution: e.target.value,
+                        }))
+                      }
+                      placeholder="Institution Name"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="degree">Degree</label>
+                    <Input
+                      id="degree"
+                      value={newEducation.degree || ""}
+                      onChange={(e) =>
+                        setNewEducation((prev) => ({
+                          ...prev,
+                          degree: e.target.value,
+                        }))
+                      }
+                      placeholder="Degree"
+                    />
+                  </div>
+                </div>
+                <div className="grid lg:grid-cols-2 gap-2">
+                  <div>
+                    <label htmlFor="start-date">Start Date</label>
+                    <Input
+                      id="start-date"
+                      type="date"
+                      value={
+                        newEducation.startDate
+                          ? format(
+                              new Date(newEducation.startDate),
+                              "yyyy-MM-dd"
+                            )
+                          : ""
+                      }
+                      onChange={(e) =>
+                        setNewEducation((prev) => ({
+                          ...prev,
+                          startDate: new Date(e.target.value),
+                        }))
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="end-date">End Date</label>
+                    <Input
+                      id="end-date"
+                      type="date"
+                      value={
+                        newEducation.endDate
+                          ? format(new Date(newEducation.endDate), "yyyy-MM-dd")
+                          : ""
+                      }
+                      onChange={(e) =>
+                        setNewEducation((prev) => ({
+                          ...prev,
+                          endDate: new Date(e.target.value),
+                        }))
+                      }
+                    />
+                  </div>
+                </div>
+                <Button type="submit" variant="outline" className="w-full">
+                  <Plus className="mr-2" /> Add Education
                 </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="hover:bg-red-600/90"
-                  onClick={() => deleteEducation(edu.id)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+              </form>
+
+              {isEditing && (
+                <div className="mt-4">
+                  <Button onClick={handleSave} className="w-full">
+                    Save Changes
+                  </Button>
+                </div>
+              )}
+            </div>
+            <div className="relative">
+              <div className="sticky  top-2">
+                <IPhoneFrame>
+                  <div className="space-y-3 p-2">
+                    {education.map((edu) => (
+                      <div
+                        key={edu.id}
+                        className="bg-white rounded-lg border border-gray-100 overflow-hidden"
+                      >
+                        <div className="p-3">
+                          <div className="flex justify-between items-start mb-1">
+                            <div className="flex-1">
+                              <h3 className="text-sm font-medium line-clamp-1">
+                                {edu.institution}
+                              </h3>
+                              <p className="text-xs text-gray-600 line-clamp-1">
+                                {edu.degree}
+                              </p>
+                            </div>
+                            <div className="text-[10px] text-gray-500 flex-shrink-0 ml-2">
+                              {format(new Date(edu.startDate), "MM/yy")} -{" "}
+                              {edu.endDate
+                                ? format(new Date(edu.endDate), "MM/yy")
+                                : "Present"}
+                            </div>
+                          </div>
+
+                          <div className="flex gap-1.5 mt-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 text-xs px-2 flex-1 text-blue-600 hover:bg-blue-50 border-blue-200"
+                              onClick={() => {
+                                setIsEditing(edu.id);
+                                setNewEducation({ ...edu });
+                              }}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="h-7 w-7 p-0"
+                              onClick={() => deleteEducation(edu.id)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </IPhoneFrame>
               </div>
-            </CardContent>
-          </Card>
-        ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

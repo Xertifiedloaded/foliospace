@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { toast } from "@/hooks/use-toast";
 import ProfileLayout from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
+import { IPhoneFrame } from "@/components/Preview";
 
 interface PortfolioProject {
   id?: string;
@@ -265,186 +266,199 @@ export default function PortfolioSection() {
 
   return (
     <ProfileLayout>
-      <Card>
-        <CardHeader>
-          <CardTitle>Portfolio Projects</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid lg:grid-cols-2 gap-4">
-              <div>
-                <Label>Project Title</Label>
-                <Input
-                  value={newProject.title || ""}
-                  onChange={(e) =>
-                    setNewProject((prev) => ({
-                      ...prev,
-                      title: e.target.value,
-                    }))
-                  }
-                  placeholder="Project Name"
-                />
-              </div>
-              <div>
-                <Label>Project Link</Label>
-                <Input
-                  value={newProject.link || ""}
-                  onChange={(e) =>
-                    setNewProject((prev) => ({ ...prev, link: e.target.value }))
-                  }
-                  placeholder="Live project URL"
-                />
-              </div>
-            </div>
+      <div className="bg-gray-50 min-h-screen">
+        <div className="container mx-auto py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Portfolio Projects</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid lg:grid-cols-2 gap-4">
+                      <div>
+                        <Label>Project Title</Label>
+                        <Input
+                          value={newProject.title || ""}
+                          onChange={(e) =>
+                            setNewProject((prev) => ({
+                              ...prev,
+                              title: e.target.value,
+                            }))
+                          }
+                          placeholder="Project Name"
+                        />
+                      </div>
+                      <div>
+                        <Label>Project Link</Label>
+                        <Input
+                          value={newProject.link || ""}
+                          onChange={(e) =>
+                            setNewProject((prev) => ({
+                              ...prev,
+                              link: e.target.value,
+                            }))
+                          }
+                          placeholder="Live project URL"
+                        />
+                      </div>
+                    </div>
 
-            <div>
-              <Label>Project Description</Label>
-              <Textarea
-                value={newProject.description || ""}
-                onChange={(e) =>
-                  setNewProject((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }))
-                }
-                placeholder="Describe your project"
-                rows={4}
-              />
-            </div>
+                    <div>
+                      <Label>Project Description</Label>
+                      <Textarea
+                        value={newProject.description || ""}
+                        onChange={(e) =>
+                          setNewProject((prev) => ({
+                            ...prev,
+                            description: e.target.value,
+                          }))
+                        }
+                        placeholder="Describe your project"
+                        rows={4}
+                      />
+                    </div>
 
-            <div>
-              <Label>Technologies Used</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="techInput"
-                  value={
-                    newProject.technologies?.[
-                      newProject.technologies.length - 1
-                    ] || ""
-                  }
-                  onChange={(e) =>
-                    setNewProject((prev) => ({
-                      ...prev,
-                      technologies: prev.technologies
-                        ? [...prev.technologies.slice(0, -1), e.target.value]
-                        : [e.target.value],
-                    }))
-                  }
-                  placeholder="Add technology"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={addTechnology}
-                  disabled={isLoading}
-                >
-                  <Plus className="mr-2" /> Add
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {newProject.technologies?.map((tech, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-100 rounded-full  py-1 text-sm flex items-center"
-                  >
-                    {tech}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="ml-2 h-5 w-5"
-                      onClick={() =>
-                        setNewProject((prev) => ({
-                          ...prev,
-                          technologies: prev.technologies?.filter(
-                            (t) => t !== tech
-                          ),
-                        }))
-                      }
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+                    <div>
+                      <Label>Technologies Used</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          id="techInput"
+                          value={
+                            newProject.technologies?.[
+                              newProject.technologies.length - 1
+                            ] || ""
+                          }
+                          onChange={(e) =>
+                            setNewProject((prev) => ({
+                              ...prev,
+                              technologies: prev.technologies
+                                ? [
+                                    ...prev.technologies.slice(0, -1),
+                                    e.target.value,
+                                  ]
+                                : [e.target.value],
+                            }))
+                          }
+                          placeholder="Add technology"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={addTechnology}
+                          disabled={isLoading}
+                        >
+                          <Plus className="mr-2" /> Add
+                        </Button>
+                      </div>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {newProject.technologies?.map((tech, index) => (
+                          <div
+                            key={index}
+                            className="bg-gray-100 rounded-full  py-1 text-sm flex items-center"
+                          >
+                            {tech}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="ml-2 h-5 w-5"
+                              onClick={() =>
+                                setNewProject((prev) => ({
+                                  ...prev,
+                                  technologies: prev.technologies?.filter(
+                                    (t) => t !== tech
+                                  ),
+                                }))
+                              }
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Project Image</Label>
+                      <Input
+                        type="file"
+                        onChange={handleImageUpload}
+                        accept="image/*"
+                      />
+                    </div>
+
+                    <div className="flex justify-end">
+                      <Button type="submit" disabled={isLoading}>
+                        {isLoading ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : editIndex !== null ? (
+                          "Save Changes"
+                        ) : (
+                          "Add Project"
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="relative">
+              <div className="sticky  top-2">
+                <IPhoneFrame>
+                  <div className="space-y-3 p-2">
+                    {projects.map((project) => (
+                      <div
+                        key={project.id}
+                        className="bg-white rounded-lg border border-gray-100 overflow-hidden"
+                      >
+                        {project.image && (
+                          <div className="w-full h-32">
+                            <img
+                              src={project.image}
+                              alt={project.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+
+                        <div className="p-3">
+                          <div className="mb-1.5">
+                            <h3 className="text-sm font-medium line-clamp-1">
+                              {project.title}
+                            </h3>
+                            <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                              {project.description}
+                            </p>
+                          </div>
+
+                          <div className="flex gap-1.5 mt-3">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 text-xs px-2 flex-1"
+                              onClick={() => editProject(project.id)}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="h-7 text-xs px-2 flex-1"
+                              onClick={() => deleteProject(project)}
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </IPhoneFrame>
               </div>
             </div>
-
-            <div>
-              <Label>Project Image</Label>
-              <Input
-                type="file"
-                onChange={handleImageUpload}
-                accept="image/*"
-              />
-            </div>
-
-            <div className="flex justify-end">
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : editIndex !== null ? (
-                  "Save Changes"
-                ) : (
-                  "Add Project"
-                )}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-
-      <div className="space-y-6 px-2">
-        {projects.map((project) => (
-          <Card key={project.id} className="overflow-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-3">
-              {project.image && (
-                <div className="md:col-span-1 h-full">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-28 lg:h-full object-cover"
-                  />
-                </div>
-              )}
-
-              <div
-                className={`
-          ${project.image ? "md:col-span-2" : "md:col-span-3"}
-          p-6 flex flex-col justify-between
-        `}
-              >
-                <div>
-                  <CardHeader className="p-0 mb-4">
-                    <CardTitle className="text-xl">{project.title}</CardTitle>
-                  </CardHeader>
-
-                  <CardContent className="p-0 space-y-4">
-                    <p className="text-muted-foreground line-clamp-3">
-                      {project.description}
-                    </p>
-                  </CardContent>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex justify-end space-x-2 mt-4">
-                  <Button
-                    onClick={() => editProject(project.id!)}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    onClick={() => deleteProject(project)}
-                    variant="destructive"
-                    size="sm"
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Card>
-        ))}
+          </div>
+        </div>
       </div>
     </ProfileLayout>
   );

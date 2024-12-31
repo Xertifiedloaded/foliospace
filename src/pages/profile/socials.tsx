@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { X, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import ProfileLayout from "@/components/layout";
+import { IPhoneFrame } from "@/components/Preview";
 
 interface SocialMediaData {
   id: string;
@@ -18,15 +19,16 @@ interface SocialMediaData {
 export default function SocialMediaSection() {
   const [socials, setSocials] = useState<SocialMediaData[]>([]);
   const { data: session, status } = useSession();
-  const [newSocial, setNewSocial] = useState<Omit<SocialMediaData, "isVisible" | "id">>({
+  const [newSocial, setNewSocial] = useState<
+    Omit<SocialMediaData, "isVisible" | "id">
+  >({
     name: "",
     link: "",
   });
-  const [loading, setLoading] = useState(false); 
-  const [error, setError] = useState<string | null>(null);  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const userId = session?.user?.id;
-
 
   useEffect(() => {
     const fetchSocials = async () => {
@@ -53,7 +55,6 @@ export default function SocialMediaSection() {
     }
   }, [session, status, userId]);
 
-
   const addSocial = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newSocial.name.trim() || !newSocial.link.trim()) {
@@ -64,7 +65,9 @@ export default function SocialMediaSection() {
     const formattedSocial: Omit<SocialMediaData, "id"> = {
       ...newSocial,
       isVisible: true,
-      link: newSocial.link.startsWith("http") ? newSocial.link : `https://${newSocial.link}`,
+      link: newSocial.link.startsWith("http")
+        ? newSocial.link
+        : `https://${newSocial.link}`,
     };
 
     setLoading(true);
@@ -95,9 +98,12 @@ export default function SocialMediaSection() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/portfolio/socials?id=${id}&userId=${userId}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `/api/portfolio/socials?id=${id}&userId=${userId}`,
+        {
+          method: "DELETE",
+        }
+      );
       const data = await res.json();
       if (data.success) {
         setSocials((prev) => prev.filter((social) => social.id !== id));
@@ -110,7 +116,6 @@ export default function SocialMediaSection() {
       setLoading(false);
     }
   };
-
 
   const toggleVisibility = async (id: string) => {
     const social = socials.find((item) => item.id === id);
@@ -149,91 +154,121 @@ export default function SocialMediaSection() {
 
   return (
     <ProfileLayout>
-      <Card>
-        <CardHeader>
-          <CardTitle>Social Media</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={addSocial} className="space-y-4">
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Label>Name</Label>
-                <Input
-                  value={newSocial.name}
-                  onChange={(e) =>
-                    setNewSocial((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                  placeholder="Enter platform name"
-                />
-              </div>
-              <div>
-                <Label>Profile Link</Label>
-                <Input
-                  value={newSocial.link}
-                  onChange={(e) =>
-                    setNewSocial((prev) => ({
-                      ...prev,
-                      link: e.target.value,
-                    }))
-                  }
-                  placeholder="Full profile URL"
-                />
-              </div>
-            </div>
-            <Button type="submit" variant="outline" className="w-full" disabled={loading}>
-              {loading ? "Adding..." : <><Plus className="mr-2 h-4 w-4" /> Add Social Link</>}
-            </Button>
-          </form>
-
-          {error && <p className="text-red-500 mt-4">{error}</p>}
-
-          {socials.length > 0 && (
-            <div className="mt-4 space-y-2">
-              <h3 className="text-sm font-medium">Current Social Links</h3>
-              {socials.map((social) => (
-                <div
-                  key={social.id}
-                  className="flex justify-between items-center bg-gray-100 p-2 rounded"
-                >
-                  <div className="flex items-center space-x-2">
-                    <div>
-                      <a
-                        href={social.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-blue-600 hover:underline"
+      {
+        <div className="bg-gray-50 min-h-screen">
+          <div className="container mx-auto py-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Social Media</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={addSocial} className="space-y-4">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <Label>Name</Label>
+                          <Input
+                            value={newSocial.name}
+                            onChange={(e) =>
+                              setNewSocial((prev) => ({
+                                ...prev,
+                                name: e.target.value,
+                              }))
+                            }
+                            placeholder="Enter platform name"
+                          />
+                        </div>
+                        <div>
+                          <Label>Profile Link</Label>
+                          <Input
+                            value={newSocial.link}
+                            onChange={(e) =>
+                              setNewSocial((prev) => ({
+                                ...prev,
+                                link: e.target.value,
+                              }))
+                            }
+                            placeholder="Full profile URL"
+                          />
+                        </div>
+                      </div>
+                      <Button
+                        type="submit"
+                        variant="outline"
+                        className="w-full"
+                        disabled={loading}
                       >
-                        {social.name}
-                      </a>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      variant={social.isVisible ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => toggleVisibility(social.id)}
-                      disabled={loading}
-                    >
-                      {social.isVisible ? "Visible" : "Hidden"}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeSocial(social.id)}
-                      disabled={loading}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
+                        {loading ? (
+                          "Adding..."
+                        ) : (
+                          <>
+                            <Plus className="mr-2 h-4 w-4" /> Add Social Link
+                          </>
+                        )}
+                      </Button>
+                    </form>
+
+                    {error && <p className="text-red-500 mt-4">{error}</p>}
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="relative">
+                <div className="sticky  top-2">
+                  <IPhoneFrame>
+                    {socials.length > 0 && (
+                     <div className="space-y-6 p-4">
+                        <h3 className="text-sm font-medium">
+                          Current Social Links
+                        </h3>
+                        {socials.map((social) => (
+                          <div
+                            key={social.id}
+                            className="flex justify-between items-center bg-gray-100 p-2 rounded"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <div>
+                                <a
+                                  href={social.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs text-blue-600 hover:underline"
+                                >
+                                  {social.name}
+                                </a>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Button
+                                variant={
+                                  social.isVisible ? "default" : "outline"
+                                }
+                                size="sm"
+                                onClick={() => toggleVisibility(social.id)}
+                                disabled={loading}
+                              >
+                                {social.isVisible ? "Visible" : "Hidden"}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => removeSocial(social.id)}
+                                disabled={loading}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </IPhoneFrame>
                 </div>
-              ))}
+              </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        </div>
+      }
     </ProfileLayout>
   );
 }
