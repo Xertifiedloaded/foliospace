@@ -74,7 +74,6 @@ model Project {
   user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   title        String?
   description  String?
-  technologies String[]
   link         String?
   githubLink   String?
   image        String?

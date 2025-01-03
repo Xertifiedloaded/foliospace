@@ -1,26 +1,49 @@
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../../lib/NextOption";
-import { v2 as cloudinary } from "cloudinary";
-
-cloudinary.config({
-  cloud_name: "djknvzync",
-  api_key: "569228811476594",
-  api_secret: "di4UhIUKiZ1QnmpSQLdKU8I9Oko",
-});
+import { mkdir, writeFile, readFile, unlink } from 'fs/promises';
+import path from 'path';
+import formidable from 'formidable';
 
 const prisma = new PrismaClient();
+
 export const config = {
   api: {
-    bodyParser: {
-      sizeLimit: "50mb",
-    },
+    bodyParser: false,
   },
+};
+
+const createRequiredDirectories = async () => {
+  const tmpDir = path.join(process.cwd(), 'tmp');
+  const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'projects');
+  
+  await mkdir(tmpDir, { recursive: true });
+  await mkdir(uploadsDir, { recursive: true });
+  
+  return tmpDir;
+};
+
+const parseForm = async (req) => {
+  const tmpDir = await createRequiredDirectories();
+  
+  const form = formidable({
+    maxFileSize: 50 * 1024 * 1024, 
+    uploadDir: tmpDir,
+    keepExtensions: true,
+    multiples: false,
+  });
+  
+  return new Promise((resolve, reject) => {
+    form.parse(req, (err, fields, files) => {
+      if (err) return reject(err);
+      resolve({ fields, files });
+    });
+  });
 };
 
 export default async function handler(req, res) {
   try {
-    const { method, query, body } = req;
+    const { method, query } = req;
 
     const session = await getServerSession(req, res, authOptions);
     if (!session || !session.user) {
@@ -30,29 +53,37 @@ export default async function handler(req, res) {
     const userId = session.user.id;
 
     if (method === "POST") {
-      const { title, description, technologies, link, githubLink, image } =
-        body;
+      const { fields, files } = await parseForm(req);
+      const title = Array.isArray(fields.title) ? fields.title[0] : fields.title;
+      const description = Array.isArray(fields.description) ? fields.description[0] : fields.description;
+      const link = Array.isArray(fields.link) ? fields.link[0] : fields.link;
+      const githubLink = Array.isArray(fields.githubLink) ? fields.githubLink[0] : fields.githubLink;
 
       if (!title || !description) {
-        return res
-          .status(400)
-          .json({ error: "Title, description are required" });
+        return res.status(400).json({ error: "Title and description are required" });
       }
 
-      let imageUrl = null;
-      if (image) {
+      let imagePath = null;
+      const uploadedFile = files.image && files.image[0];
+
+      if (uploadedFile) {
         try {
-          const uploadResponse = await cloudinary.uploader.upload_large(image, {
-            folder: "projects",
-            chunk_size: 6000000, // Split files into chunks of 6MB
-            quality: "auto:eco", // Automatically adjust quality for compression
-            format: "jpg",
-          });
-          imageUrl = uploadResponse.secure_url;
+          const userUploadDir = path.join(process.cwd(), 'public', 'uploads', 'projects');
+          await mkdir(userUploadDir, { recursive: true });
+
+          const fileExtension = path.extname(uploadedFile.originalFilename || uploadedFile.newFilename || '.jpg');
+          const fileName = `${Date.now()}${fileExtension}`;
+          const finalPath = path.join(userUploadDir, fileName);
+
+          const fileData = await readFile(uploadedFile.filepath);
+          await writeFile(finalPath, fileData);
+          await unlink(uploadedFile.filepath).catch(console.error);
+          
+          imagePath = `/uploads/projects/${fileName}`;
         } catch (uploadError) {
-          console.error("Error uploading large file:", uploadError);
+          console.error("Error saving file:", uploadError);
           return res.status(400).json({
-            error: "Image upload failed",
+            error: "File save failed",
             details: uploadError.message,
           });
         }
@@ -63,10 +94,9 @@ export default async function handler(req, res) {
           userId,
           title,
           description,
-          technologies,
           link,
           githubLink,
-          image: imageUrl,
+          image: imagePath,
         },
       });
 
@@ -77,9 +107,7 @@ export default async function handler(req, res) {
       const { userId: queryUserId } = query;
 
       if (queryUserId && queryUserId !== userId) {
-        return res
-          .status(403)
-          .json({ error: "You can only access your own projects" });
+        return res.status(403).json({ error: "You can only access your own projects" });
       }
 
       const projects = await prisma.project.findMany({
@@ -101,32 +129,33 @@ export default async function handler(req, res) {
       });
 
       if (projectToDelete && projectToDelete.image) {
-        const publicId = projectToDelete.image.split("/").pop().split(".")[0];
-        await cloudinary.uploader.destroy(`projects/${publicId}`);
+        const imagePath = path.join(process.cwd(), 'public', projectToDelete.image);
+        await unlink(imagePath).catch(console.error);
       }
 
       const deletedProject = await prisma.project.delete({
         where: { id },
       });
 
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "Project deleted successfully",
-          id: deletedProject.id,
-        });
+      return res.status(200).json({
+        success: true,
+        message: "Project deleted successfully",
+        id: deletedProject.id,
+      });
     }
 
     if (method === "PATCH") {
+      const { fields, files } = await parseForm(req);
       const { id } = query;
-      const { title, description, technologies, link, githubLink, image } =
-        body;
+      
+      const title = Array.isArray(fields.title) ? fields.title[0] : fields.title;
+      const description = Array.isArray(fields.description) ? fields.description[0] : fields.description;
+      const link = Array.isArray(fields.link) ? fields.link[0] : fields.link;
+      const githubLink = Array.isArray(fields.githubLink) ? fields.githubLink[0] : fields.githubLink;
+   
 
       if (!id || !title || !description) {
-        return res
-          .status(400)
-          .json({ error: "id, title, and description are required" });
+        return res.status(400).json({ error: "id, title, and description are required" });
       }
 
       const existingProject = await prisma.project.findUnique({
@@ -137,20 +166,30 @@ export default async function handler(req, res) {
         return res.status(404).json({ error: "Project not found" });
       }
 
-      let imageUrl = existingProject.image;
-      if (image) {
+      let imagePath = existingProject.image;
+      const uploadedFile = files.image && files.image[0];
+
+      if (uploadedFile) {
         try {
-          const uploadResponse = await cloudinary.uploader.upload_large(image, {
-            folder: "projects",
-            chunk_size: 6000000, // Split files into chunks of 6MB
-            quality: "auto:eco", // Automatically adjust quality for compression
-            format: "jpg",
-          });
-          imageUrl = uploadResponse.secure_url;
+          if (existingProject.image) {
+            const oldImagePath = path.join(process.cwd(), 'public', existingProject.image);
+            await unlink(oldImagePath).catch(console.error);
+          }
+
+          const userUploadDir = path.join(process.cwd(), 'public', 'uploads', 'projects');
+          const fileExtension = path.extname(uploadedFile.originalFilename || uploadedFile.newFilename || '.jpg');
+          const fileName = `${Date.now()}${fileExtension}`;
+          const finalPath = path.join(userUploadDir, fileName);
+
+          const fileData = await readFile(uploadedFile.filepath);
+          await writeFile(finalPath, fileData);
+          await unlink(uploadedFile.filepath).catch(console.error);
+          
+          imagePath = `/uploads/projects/${fileName}`;
         } catch (uploadError) {
-          console.error("Error uploading large file:", uploadError);
+          console.error("Error saving file:", uploadError);
           return res.status(400).json({
-            error: "Image upload failed",
+            error: "File save failed",
             details: uploadError.message,
           });
         }
@@ -162,10 +201,9 @@ export default async function handler(req, res) {
           userId,
           title,
           description,
-          technologies,
           link,
           githubLink,
-          image: imageUrl,
+          image: imagePath,
         },
       });
 
@@ -174,6 +212,7 @@ export default async function handler(req, res) {
 
     return res.status(405).json({ error: "Method Not Allowed" });
   } catch (error) {
+    console.error('API Error:', error);
     return res.status(500).json({ error: error.message });
   }
 }

@@ -55,21 +55,6 @@ export const PortfolioProjectSections = ({ projects }) => (
               </h3>
               <p className="text-gray-300 mb-6">{project.description}</p>
 
-              {/* Technologies */}
-              <div className="mb-6">
-                <h4 className="font-semibold mb-3">Technologies Used</h4>
-                <div className="flex flex-wrap gap-2">
-                  {project.technologies?.map((tech, index) => (
-                    <span
-                      key={index}
-                      className="bg-gray-800 text-white px-3 py-1 rounded-full text-xs"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
               {/* Project Links */}
               <div className="flex space-x-4">
                 {project.link && (

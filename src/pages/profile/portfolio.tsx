@@ -9,14 +9,12 @@ import { X, Plus, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { toast } from "@/hooks/use-toast";
 import ProfileLayout from "@/components/layout";
-import { Badge } from "@/components/ui/badge";
 import { IPhoneFrame } from "@/components/Preview";
 
 interface PortfolioProject {
   id: string;
   title?: string;
   description?: string;
-  technologies: string[];
   link?: string;
   githubLink?: string;
   image?: string;
@@ -27,9 +25,7 @@ export default function PortfolioSection() {
   const userId = session?.user?.id;
 
   const [projects, setProjects] = useState<PortfolioProject[]>([]);
-  const [newProject, setNewProject] = useState<Partial<PortfolioProject>>({
-    technologies: [],
-  });
+  const [newProject, setNewProject] = useState<Partial<PortfolioProject>>({});
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -60,65 +56,63 @@ export default function PortfolioSection() {
   const addProject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newProject.title && newProject.description && userId) {
-      const projectToAdd = {
-        ...newProject,
-        userId,
-      };
-
       setIsLoading(true);
-
+  
       try {
+        const formData = new FormData();
+        formData.append('title', newProject.title);
+        formData.append('description', newProject.description);
+        if (newProject.link) formData.append('link', newProject.link);
+        if (newProject.githubLink) formData.append('githubLink', newProject.githubLink);
+        if (newProject.image) {
+          if (typeof newProject.image === 'string' && newProject.image.startsWith('data:')) {
+            const response = await fetch(newProject.image);
+            const blob = await response.blob();
+            formData.append('image', blob, 'project-image.jpg');
+          } else {
+            formData.append('image', newProject.image);
+          }
+        }
+  
         const response = await fetch("/api/portfolio/projects", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(projectToAdd),
+          body: formData,
         });
-
-        if (response.ok) {
-          const addedProject = await response.json();
-          const fullProject: PortfolioProject = {
-            id: addedProject.id,
-            title: projectToAdd.title,
-            description: projectToAdd.description,
-            technologies: projectToAdd.technologies || [],
-            link: projectToAdd.link || "",
-            githubLink: projectToAdd.githubLink || "",
-            image: projectToAdd.image || "",
-          };
-
-          setProjects((prevProjects) => [...prevProjects, fullProject]);
-          setNewProject({ technologies: [] });
-          toast({
-            description: "Project added successfully",
-            variant: "default",
-          });
-        } else {
-          const errorText = await response.text();
-          console.error("Failed to add project");
-          toast({
-            description: errorText || "Failed to add project",
-            variant: "destructive",
-          });
+  
+        if (!response.ok) {
+          throw new Error(await response.text());
         }
+  
+        const { id } = await response.json();
+        
+        const newProjectComplete: PortfolioProject = {
+          id,
+          title: newProject.title,
+          description: newProject.description,
+          link: newProject.link,
+          githubLink: newProject.githubLink,
+          image: newProject.image,
+        };
+  
+        setProjects(prevProjects => [...prevProjects, newProjectComplete]);
+        setNewProject({});
+  
+        toast({
+          description: "Project added successfully",
+          variant: "default",
+        });
       } catch (error) {
         console.error("Error adding project:", error);
-        toast({ description: "Error adding project", variant: "destructive" });
+        toast({ 
+          description: error instanceof Error ? error.message : "Error adding project", 
+          variant: "destructive" 
+        });
       } finally {
         setIsLoading(false);
       }
     }
   };
-
-  const editProject = (projectId: string) => {
-    const projectToEdit = projects.find((p) => p.id === projectId);
-    if (projectToEdit) {
-      setEditIndex(projects.indexOf(projectToEdit));
-      setNewProject({ ...projectToEdit });
-    }
-  };
-
+  
   const saveEditedProject = async () => {
     if (editIndex !== null && newProject.id) {
       if (!newProject.title || !newProject.description) {
@@ -128,54 +122,69 @@ export default function PortfolioSection() {
         });
         return;
       }
-
-      const updatedProject = {
-        ...newProject,
-        userId,
-      };
-
+  
+      setIsLoading(true);
+  
       try {
+        const formData = new FormData();
+        formData.append('title', newProject.title);
+        formData.append('description', newProject.description);
+        if (newProject.link) formData.append('link', newProject.link);
+        if (newProject.githubLink) formData.append('githubLink', newProject.githubLink);
+        if (newProject.image) {
+          if (typeof newProject.image === 'string' && newProject.image.startsWith('data:')) {
+            const response = await fetch(newProject.image);
+            const blob = await response.blob();
+            formData.append('image', blob, 'project-image.jpg');
+          } else {
+            formData.append('image', newProject.image);
+          }
+        }
+  
         const response = await fetch(
           `/api/portfolio/projects?id=${newProject.id}`,
           {
             method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedProject),
+            body: formData,
           }
         );
-
+  
         if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || "Failed to update project");
+          throw new Error(await response.text());
         }
-
-        const data = await response.json();
-
-        const updatedProjects = projects.map((p) =>
-          p.id === newProject.id ? { ...data.updatedProject } : p
+  
+        const { updatedProject } = await response.json();
+        
+        setProjects(prevProjects => 
+          prevProjects.map(project => 
+            project.id === newProject.id ? updatedProject : project
+          )
         );
-
-        setProjects(updatedProjects);
+        
         setEditIndex(null);
-        setNewProject({ technologies: [] });
-
+        setNewProject({});
+  
         toast({
           description: "Project updated successfully",
           variant: "default",
         });
       } catch (error) {
         console.error("Error updating project:", error);
-
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-
         toast({
-          description: errorMessage || "Failed to update project",
+          description: error instanceof Error ? error.message : "Failed to update project",
           variant: "destructive",
         });
+      } finally {
+        setIsLoading(false);
       }
+    }
+  };
+  
+  const editProject = (projectId: string) => {
+    const projectToEdit = projects.find((p) => p.id === projectId);
+    if (projectToEdit) {
+      setEditIndex(projects.indexOf(projectToEdit));
+      setNewProject({ ...projectToEdit });
     }
   };
 
@@ -210,32 +219,6 @@ export default function PortfolioSection() {
       toast({ description: "Error deleting project", variant: "destructive" });
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const addTechnology = () => {
-    const techInput = document.getElementById("techInput") as HTMLInputElement;
-    const tech = techInput.value.trim();
-
-    if (tech) {
-      const newTechnologies = tech.includes(",")
-        ? tech
-            .split(",")
-            .map((tech) => tech.trim())
-            .filter((tech) => tech)
-        : [tech];
-
-      setNewProject((prev) => ({
-        ...prev,
-        technologies: [
-          ...(prev.technologies || []),
-          ...newTechnologies.filter(
-            (tech) => !prev.technologies?.includes(tech)
-          ),
-        ],
-      }));
-
-      techInput.value = newTechnologies.length > 1 ? "" : tech + ", ";
     }
   };
 
@@ -321,65 +304,6 @@ export default function PortfolioSection() {
                     </div>
 
                     <div>
-                      <Label>Technologies Used</Label>
-                      <div className="flex gap-2">
-                        <Input
-                          id="techInput"
-                          value={
-                            newProject.technologies?.[
-                              newProject.technologies.length - 1
-                            ] || ""
-                          }
-                          onChange={(e) =>
-                            setNewProject((prev) => ({
-                              ...prev,
-                              technologies: prev.technologies
-                                ? [
-                                    ...prev.technologies.slice(0, -1),
-                                    e.target.value,
-                                  ]
-                                : [e.target.value],
-                            }))
-                          }
-                          placeholder="Add technology"
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={addTechnology}
-                          disabled={isLoading}
-                        >
-                          <Plus className="mr-2" /> Add
-                        </Button>
-                      </div>
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {newProject.technologies?.map((tech, index) => (
-                          <div
-                            key={index}
-                            className="bg-gray-100 rounded-full  py-1 text-sm flex items-center"
-                          >
-                            {tech}
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="ml-2 h-5 w-5"
-                              onClick={() =>
-                                setNewProject((prev) => ({
-                                  ...prev,
-                                  technologies: prev.technologies?.filter(
-                                    (t) => t !== tech
-                                  ),
-                                }))
-                              }
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
                       <Label>Project Image (optional)</Label>
                       <Input
                         type="file"
@@ -403,59 +327,32 @@ export default function PortfolioSection() {
                 </CardContent>
               </Card>
             </div>
-            <div className="relative">
-              <div className="">
-                <IPhoneFrame>
-                  <div className="space-y-3 p-2">
-                    {projects.map((project) => (
-                      <div
-                        key={project.id}
-                        className="bg-white rounded-lg border border-gray-100 overflow-hidden"
+
+            <div className="space-y-6">
+              {projects.map((project) => (
+                <div key={project.id} className="border border-gray-300 rounded-md p-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold">{project.title}</h3>
+                    <div className="space-x-2">
+                      <Button
+                        onClick={() => editProject(project.id)}
+                        size="icon"
+                        variant="ghost"
                       >
-                        {project.image && (
-                          <div className="w-full h-32">
-                            <img
-                              src={project.image}
-                              alt={project.title}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        )}
-
-                        <div className="p-3">
-                          <div className="mb-1.5">
-                            <h3 className="text-sm font-medium line-clamp-1">
-                              {project.title}
-                            </h3>
-                            <p className="text-xs text-gray-600 mt-1 line-clamp-2">
-                              {project.description}
-                            </p>
-                          </div>
-
-                          <div className="flex gap-1.5 mt-3">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="h-7 text-xs px-2 flex-1"
-                              onClick={() => editProject(project.id)}
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              className="h-7 text-xs px-2 flex-1"
-                              onClick={() => deleteProject(project)}
-                            >
-                              Delete
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                        <Plus />
+                      </Button>
+                      <Button
+                        onClick={() => deleteProject(project)}
+                        size="icon"
+                        variant="ghost"
+                      >
+                        <X />
+                      </Button>
+                    </div>
                   </div>
-                </IPhoneFrame>
-              </div>
+                  <p className="text-sm">{project.description}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
