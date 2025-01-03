@@ -17,7 +17,7 @@ export const config = {
 const prisma = new PrismaClient();
 
 const createRequiredDirectories = async () => {
-  const tmpDir = path.join(process.cwd(), 'tmp');
+  const tmpDir = path.join(process.cwd(), 'public', 'uploads', 'tmp')
   const uploadsDir = path.join(process.cwd(), 'public', 'uploads','profile-picture',);
   
   await mkdir(tmpDir, { recursive: true });

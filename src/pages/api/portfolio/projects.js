@@ -14,7 +14,7 @@ export const config = {
 };
 
 const createRequiredDirectories = async () => {
-  const tmpDir = path.join(process.cwd(), 'tmp');
+  const tmpDir = path.join(process.cwd(), 'public', 'uploads', 'tmp')
   const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'projects');
   
   await mkdir(tmpDir, { recursive: true });
