@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { toast } from "@/hooks/use-toast";
 import ProfileLayout from "@/components/layout";
 import { IPhoneFrame } from "@/components/Preview";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface PortfolioProject {
   id: string;
@@ -28,6 +29,7 @@ export default function PortfolioSection() {
   const [newProject, setNewProject] = useState<Partial<PortfolioProject>>({});
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loadingProjects, setLoadingProjects] = useState<boolean>(true);
 
   const fetchProjects = async () => {
     if (userId) {
@@ -43,6 +45,8 @@ export default function PortfolioSection() {
         }
       } catch (error) {
         console.error("Error fetching projects:", error);
+      } finally {
+        setLoadingProjects(false); 
       }
     }
   };
@@ -311,14 +315,36 @@ export default function PortfolioSection() {
             </div>
 
             <IPhoneFrame>
-              <div className="space-y-6 ">
-                {projects.map((project) => (
-                  <div
-                    key={project.id}
-                    className="border border-gray-300 rounded-md p-4"
-                  >
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-lg font-semibold">{project.title}</h3>
+              <div className="space-y-6">
+                {loadingProjects ? (
+                  // Skeleton loader while fetching projects
+                  <div className="space-y-4">
+                    {[...Array(3)].map((_, index) => (
+                      <div
+                        key={index}
+                        className="border border-gray-300 rounded-md p-4"
+                      >
+                        <Skeleton className="h-6 w-full mb-4" />
+                        <Skeleton className="h-4 w-3/4 mb-4" />
+                        <Skeleton className="h-4 w-1/2" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  // Render actual projects
+                  projects.map((project) => (
+                    <div
+                      key={project.id}
+                      className="border border-gray-300 rounded-md p-4"
+                    >
+                      <div className="">
+                        <h3 className="text-lg font-semibold sm:text-base">
+                          {project.title}
+                        </h3>
+                      </div>
+                      <p className="text-sm sm:text-xs my-2">
+                        {project.description}
+                      </p>
                       <div className="space-x-2">
                         <Button
                           onClick={() => editProject(project.id)}
@@ -336,9 +362,8 @@ export default function PortfolioSection() {
                         </Button>
                       </div>
                     </div>
-                    <p className="text-sm">{project.description}</p>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </IPhoneFrame>
           </div>

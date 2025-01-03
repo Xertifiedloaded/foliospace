@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react"; // Use NextAuth session
+import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,7 @@ export default function LinksSection() {
     text: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const userId = session?.user?.id;
@@ -33,6 +34,8 @@ export default function LinksSection() {
   useEffect(() => {
     const fetchLinks = async () => {
       if (!userId) return;
+
+      setIsFetching(true);
 
       try {
         const response = await fetch(`/api/portfolio/links`);
@@ -44,6 +47,8 @@ export default function LinksSection() {
       } catch (err) {
         console.error("Failed to fetch links", err);
         setError("Could not load existing links");
+      } finally {
+        setIsFetching(false);
       }
     };
 
@@ -116,7 +121,7 @@ export default function LinksSection() {
               </CardHeader>
               <CardContent>
                 <form onSubmit={addLink} className="space-y-4">
-                  <div className="grid lg:grid-cols-2  gap-2">
+                  <div className="grid lg:grid-cols-2 gap-2">
                     <div>
                       <Label>URL</Label>
                       <Input
@@ -161,13 +166,13 @@ export default function LinksSection() {
               </CardContent>
             </Card>
           </div>
-          <div className="relative container mx-auto">
-            <div className="">
-              <IPhoneFrame>
-                <LinksDisplay links={links} removeLink={removeLink} />
-              </IPhoneFrame>
-            </div>
-          </div>
+          <IPhoneFrame>
+            {isFetching ? (
+              <div className="h-80 w-full bg-gray-200 animate-pulse rounded-lg" />
+            ) : (
+              <LinksDisplay links={links} removeLink={removeLink} />
+            )}
+          </IPhoneFrame>
         </div>
       </div>
     </ProfileLayout>

@@ -29,9 +29,11 @@ export default function Experience() {
   });
   const [editExperience, setEditExperience] =
     useState<Partial<Experience> | null>(null);
+  const [loading, setLoading] = useState<boolean>(true); 
 
   const fetchExperiences = async () => {
     if (!userId) return;
+    setLoading(true); 
     try {
       const response = await fetch(
         `/api/portfolio/experience?userId=${userId}`
@@ -40,6 +42,8 @@ export default function Experience() {
       setExperiences(data);
     } catch (error) {
       console.error("Failed to fetch experiences:", error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -360,16 +364,16 @@ export default function Experience() {
                         />
                       </div>
                     )}
-                    <div className="flex mt-2 lg:mt-0 items-center">
+                    <div className="flex items-center">
                       <input
                         id="add-current-role"
                         type="checkbox"
-                        checked={newExperience.isCurrentRole}
+                        checked={newExperience.isCurrentRole || false}
                         onChange={(e) =>
                           setNewExperience((prev) => ({
                             ...prev,
                             isCurrentRole: e.target.checked,
-                            endDate: e.target.checked ? null : prev.endDate,
+                            endDate: e.target.checked ? null : prev?.endDate,
                           }))
                         }
                         className="mr-2"
@@ -391,68 +395,70 @@ export default function Experience() {
                       placeholder="Job Description"
                     />
                   </div>
-                  <Button type="submit" variant="outline" className="w-full">
-                    <Plus className="mr-2" /> Add Experience
-                  </Button>
+                  <div className="flex space-x-4">
+                    <Button type="submit" variant="outline" className="w-full">
+                      Add Experience
+                    </Button>
+                  </div>
                 </form>
               )}
             </div>
-            <div className="relative">
-              <div className="">
-                <IPhoneFrame>
-                  <div className="space-y-3 ">
+            {/* Render Skeleton Loader if loading */}
+            <IPhoneFrame>
+              <div className="space-y-6">
+                <h2 className="text-lg font-semibold mb-4 flex items-center">
+                  <Briefcase className="mr-2" /> Work Experience
+                </h2>
+                {loading ? (
+                  <div className="space-y-4">
+                    <div className="animate-pulse flex space-x-4">
+                      <div className="w-16 h-4 bg-gray-300 rounded-md"></div>
+                      <div className="w-1/4 h-4 bg-gray-300 rounded-md"></div>
+                    </div>
+                    <div className="animate-pulse flex space-x-4">
+                      <div className="w-32 h-4 bg-gray-300 rounded-md"></div>
+                      <div className="w-1/4 h-4 bg-gray-300 rounded-md"></div>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
                     {experiences.map((exp) => (
-                      <div
-                        key={exp.id}
-                        className="bg-white rounded-lg border border-gray-100 overflow-hidden"
-                      >
-                        <div className="p-3">
-                          <div className="flex justify-between items-start mb-1">
-                            <div className="flex-1">
-                              <h3 className="text-sm font-medium line-clamp-1">
-                                {exp.company}
-                              </h3>
-                              <p className="text-xs text-gray-600 line-clamp-1">
-                                {exp.position}
-                              </p>
-                            </div>
-                            <div className="text-[10px] text-gray-500 flex-shrink-0 ml-2">
-                              {format(new Date(exp.startDate), "MM/yy")} -{" "}
-                              {exp.endDate
-                                ? format(new Date(exp.endDate), "MM/yy")
-                                : "Present"}
-                            </div>
+                      <div key={exp.id} className="space-y-2 mb-5">
+                        <div className="flex justify-between">
+                          <div>
+                            <h3 className="font-semibold">{exp.position}</h3>
+                            <p className="text-sm">{exp.company}</p>
                           </div>
-
-                          <p className="text-xs text-gray-700 line-clamp-2 mb-2">
-                            {exp.description}
-                          </p>
-
-                          <div className="flex gap-1.5">
+                          <div className="flex space-x-2">
                             <Button
-                              variant="destructive"
-                              size="sm"
-                              className="h-7 text-xs px-2 flex-1"
-                              onClick={() => deleteExperience(exp.id)}
+                              variant="outline"
+                              className="w-8 h-8"
+                              onClick={() => handleEditClick(exp)}
                             >
-                              <X className="w-3 h-3 mr-1" /> Delete
+                              <Plus />
                             </Button>
                             <Button
                               variant="outline"
-                              size="sm"
-                              className="h-7 text-xs px-2 flex-1"
-                              onClick={() => handleEditClick(exp)}
+                              className="w-8 h-8"
+                              onClick={() => deleteExperience(exp.id)}
                             >
-                              <Plus className="w-3 h-3 mr-1" /> Edit
+                              <X />
                             </Button>
                           </div>
                         </div>
+                        <p className="text-sm">
+                          {format(new Date(exp.startDate), "MMM yyyy")} -{" "}
+                          {exp.endDate
+                            ? format(new Date(exp.endDate), "MMM yyyy")
+                            : "Present"}
+                        </p>
+                        <p className="text-xs">{exp.description}</p>
                       </div>
                     ))}
                   </div>
-                </IPhoneFrame>
+                )}
               </div>
-            </div>
+            </IPhoneFrame>
           </div>
         </div>
       </div>

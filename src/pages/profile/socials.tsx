@@ -92,7 +92,6 @@ export default function SocialMediaSection() {
     }
   };
 
-  // Remove social link
   const removeSocial = async (id: string) => {
     if (!userId) return;
     setLoading(true);
@@ -154,70 +153,83 @@ export default function SocialMediaSection() {
 
   return (
     <ProfileLayout>
-      {
-        <div className="bg-gray-50 min-h-screen">
-          <div className="container mx-auto py-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Social Media</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={addSocial} className="space-y-4">
-                      <div className="grid grid-cols-2 gap-2">
-                        <div>
-                          <Label>Name</Label>
-                          <Input
-                            value={newSocial.name}
-                            onChange={(e) =>
-                              setNewSocial((prev) => ({
-                                ...prev,
-                                name: e.target.value,
-                              }))
-                            }
-                            placeholder="Enter platform name"
-                          />
-                        </div>
-                        <div>
-                          <Label>Profile Link</Label>
-                          <Input
-                            value={newSocial.link}
-                            onChange={(e) =>
-                              setNewSocial((prev) => ({
-                                ...prev,
-                                link: e.target.value,
-                              }))
-                            }
-                            placeholder="Full profile URL"
-                          />
-                        </div>
+      <div className="bg-gray-50 min-h-screen">
+        <div className="container mx-auto py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Social Media</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={addSocial} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Label>Name</Label>
+                        <Input
+                          value={newSocial.name}
+                          onChange={(e) =>
+                            setNewSocial((prev) => ({
+                              ...prev,
+                              name: e.target.value,
+                            }))
+                          }
+                          placeholder="Enter platform name"
+                        />
                       </div>
-                      <Button
-                        type="submit"
-                        variant="outline"
-                        className="w-full"
-                        disabled={loading}
-                      >
-                        {loading ? (
-                          "Adding..."
-                        ) : (
-                          <>
-                            <Plus className="mr-2 h-4 w-4" /> Add Social Link
-                          </>
-                        )}
-                      </Button>
-                    </form>
+                      <div>
+                        <Label>Profile Link</Label>
+                        <Input
+                          value={newSocial.link}
+                          onChange={(e) =>
+                            setNewSocial((prev) => ({
+                              ...prev,
+                              link: e.target.value,
+                            }))
+                          }
+                          placeholder="Full profile URL"
+                        />
+                      </div>
+                    </div>
+                    <Button
+                      type="submit"
+                      variant="outline"
+                      className="w-full"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        "Adding..."
+                      ) : (
+                        <>
+                          <Plus className="mr-2 h-4 w-4" /> Add Social Link
+                        </>
+                      )}
+                    </Button>
+                  </form>
 
-                    {error && <p className="text-red-500 mt-4">{error}</p>}
-                  </CardContent>
-                </Card>
-              </div>
-              <div className="relative">
-                <div className="sticky  top-2">
-                  <IPhoneFrame>
-                    {socials.length > 0 && (
-                     <div className="space-y-6 p-4">
+                  {error && <p className="text-red-500 mt-4">{error}</p>}
+                </CardContent>
+              </Card>
+            </div>
+            <div className="relative">
+              <div className="sticky top-2">
+                <IPhoneFrame>
+                  {loading ? (
+                    <div className="space-y-6">
+                      {/* Skeleton loader for each social link */}
+                      {[...Array(3)].map((_, idx) => (
+                        <div
+                          key={idx}
+                          className="animate-pulse flex justify-between items-center bg-gray-100 p-2 rounded"
+                        >
+                          <div className="w-24 h-4 bg-gray-300 rounded"></div>
+                          <div className="w-12 h-4 bg-gray-300 rounded"></div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    socials.length > 0 && (
+                      <div className="space-y-6">
                         <h3 className="text-sm font-medium">
                           Current Social Links
                         </h3>
@@ -261,14 +273,14 @@ export default function SocialMediaSection() {
                           </div>
                         ))}
                       </div>
-                    )}
-                  </IPhoneFrame>
-                </div>
+                    )
+                  )}
+                </IPhoneFrame>
               </div>
             </div>
           </div>
         </div>
-      }
+      </div>
     </ProfileLayout>
   );
 }
