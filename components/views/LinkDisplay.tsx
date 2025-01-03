@@ -23,7 +23,7 @@ export const LinksDisplay: React.FC<{
   if (links?.length === 0) return null;
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6 ">
       <h3 className="text-sm font-medium">Current Links</h3>
       {links?.map((link) => (
         <div

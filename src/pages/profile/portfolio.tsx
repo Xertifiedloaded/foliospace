@@ -17,7 +17,7 @@ interface PortfolioProject {
   description?: string;
   link?: string;
   githubLink?: string;
-  image?: string;
+  image?: File;
 }
 
 export default function PortfolioSection() {
@@ -57,34 +57,27 @@ export default function PortfolioSection() {
     e.preventDefault();
     if (newProject.title && newProject.description && userId) {
       setIsLoading(true);
-  
+
       try {
         const formData = new FormData();
-        formData.append('title', newProject.title);
-        formData.append('description', newProject.description);
-        if (newProject.link) formData.append('link', newProject.link);
-        if (newProject.githubLink) formData.append('githubLink', newProject.githubLink);
-        if (newProject.image) {
-          if (typeof newProject.image === 'string' && newProject.image.startsWith('data:')) {
-            const response = await fetch(newProject.image);
-            const blob = await response.blob();
-            formData.append('image', blob, 'project-image.jpg');
-          } else {
-            formData.append('image', newProject.image);
-          }
-        }
-  
+        formData.append("title", newProject.title);
+        formData.append("description", newProject.description);
+        if (newProject.link) formData.append("link", newProject.link);
+        if (newProject.githubLink)
+          formData.append("githubLink", newProject.githubLink);
+        if (newProject.image) formData.append("image", newProject.image);
+
         const response = await fetch("/api/portfolio/projects", {
           method: "POST",
           body: formData,
         });
-  
+
         if (!response.ok) {
           throw new Error(await response.text());
         }
-  
+
         const { id } = await response.json();
-        
+
         const newProjectComplete: PortfolioProject = {
           id,
           title: newProject.title,
@@ -93,26 +86,27 @@ export default function PortfolioSection() {
           githubLink: newProject.githubLink,
           image: newProject.image,
         };
-  
-        setProjects(prevProjects => [...prevProjects, newProjectComplete]);
+
+        setProjects((prevProjects) => [...prevProjects, newProjectComplete]);
         setNewProject({});
-  
+
         toast({
           description: "Project added successfully",
           variant: "default",
         });
       } catch (error) {
         console.error("Error adding project:", error);
-        toast({ 
-          description: error instanceof Error ? error.message : "Error adding project", 
-          variant: "destructive" 
+        toast({
+          description:
+            error instanceof Error ? error.message : "Error adding project",
+          variant: "destructive",
         });
       } finally {
         setIsLoading(false);
       }
     }
   };
-  
+
   const saveEditedProject = async () => {
     if (editIndex !== null && newProject.id) {
       if (!newProject.title || !newProject.description) {
@@ -122,25 +116,18 @@ export default function PortfolioSection() {
         });
         return;
       }
-  
+
       setIsLoading(true);
-  
+
       try {
         const formData = new FormData();
-        formData.append('title', newProject.title);
-        formData.append('description', newProject.description);
-        if (newProject.link) formData.append('link', newProject.link);
-        if (newProject.githubLink) formData.append('githubLink', newProject.githubLink);
-        if (newProject.image) {
-          if (typeof newProject.image === 'string' && newProject.image.startsWith('data:')) {
-            const response = await fetch(newProject.image);
-            const blob = await response.blob();
-            formData.append('image', blob, 'project-image.jpg');
-          } else {
-            formData.append('image', newProject.image);
-          }
-        }
-  
+        formData.append("title", newProject.title);
+        formData.append("description", newProject.description);
+        if (newProject.link) formData.append("link", newProject.link);
+        if (newProject.githubLink)
+          formData.append("githubLink", newProject.githubLink);
+        if (newProject.image) formData.append("image", newProject.image);
+
         const response = await fetch(
           `/api/portfolio/projects?id=${newProject.id}`,
           {
@@ -148,22 +135,22 @@ export default function PortfolioSection() {
             body: formData,
           }
         );
-  
+
         if (!response.ok) {
           throw new Error(await response.text());
         }
-  
+
         const { updatedProject } = await response.json();
-        
-        setProjects(prevProjects => 
-          prevProjects.map(project => 
+
+        setProjects((prevProjects) =>
+          prevProjects.map((project) =>
             project.id === newProject.id ? updatedProject : project
           )
         );
-        
+
         setEditIndex(null);
         setNewProject({});
-  
+
         toast({
           description: "Project updated successfully",
           variant: "default",
@@ -171,7 +158,8 @@ export default function PortfolioSection() {
       } catch (error) {
         console.error("Error updating project:", error);
         toast({
-          description: error instanceof Error ? error.message : "Failed to update project",
+          description:
+            error instanceof Error ? error.message : "Failed to update project",
           variant: "destructive",
         });
       } finally {
@@ -179,7 +167,7 @@ export default function PortfolioSection() {
       }
     }
   };
-  
+
   const editProject = (projectId: string) => {
     const projectToEdit = projects.find((p) => p.id === projectId);
     if (projectToEdit) {
@@ -225,16 +213,10 @@ export default function PortfolioSection() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (reader.result) {
-          setNewProject((prev) => ({
-            ...prev,
-            image: reader.result as string,
-          }));
-        }
-      };
-      reader.readAsDataURL(file);
+      setNewProject((prev) => ({
+        ...prev,
+        image: file,
+      }));
     }
   };
 
@@ -249,7 +231,7 @@ export default function PortfolioSection() {
 
   return (
     <ProfileLayout>
-      <div className="bg-gray-50 container mx-auto  min-h-screen">
+      <div className="bg-gray-50 container mx-auto min-h-screen">
         <div className="py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
@@ -328,32 +310,37 @@ export default function PortfolioSection() {
               </Card>
             </div>
 
-            <div className="space-y-6">
-              {projects.map((project) => (
-                <div key={project.id} className="border border-gray-300 rounded-md p-4">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold">{project.title}</h3>
-                    <div className="space-x-2">
-                      <Button
-                        onClick={() => editProject(project.id)}
-                        size="icon"
-                        variant="ghost"
-                      >
-                        <Plus />
-                      </Button>
-                      <Button
-                        onClick={() => deleteProject(project)}
-                        size="icon"
-                        variant="ghost"
-                      >
-                        <X />
-                      </Button>
+            <IPhoneFrame>
+              <div className="space-y-6 ">
+                {projects.map((project) => (
+                  <div
+                    key={project.id}
+                    className="border border-gray-300 rounded-md p-4"
+                  >
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-lg font-semibold">{project.title}</h3>
+                      <div className="space-x-2">
+                        <Button
+                          onClick={() => editProject(project.id)}
+                          size="icon"
+                          variant="ghost"
+                        >
+                          <Plus />
+                        </Button>
+                        <Button
+                          onClick={() => deleteProject(project)}
+                          size="icon"
+                          variant="ghost"
+                        >
+                          <X />
+                        </Button>
+                      </div>
                     </div>
+                    <p className="text-sm">{project.description}</p>
                   </div>
-                  <p className="text-sm">{project.description}</p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </IPhoneFrame>
           </div>
         </div>
       </div>

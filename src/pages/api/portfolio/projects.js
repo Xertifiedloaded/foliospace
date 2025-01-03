@@ -1,11 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../../lib/NextOption";
-import { mkdir, writeFile, readFile, unlink } from 'fs/promises';
-import path from 'path';
-import formidable from 'formidable';
+import formidable from "formidable";
+import cloudinary from "cloudinary";
 
 const prisma = new PrismaClient();
+
+cloudinary.v2.config({
+  cloud_name: 'djknvzync',
+  api_key: "569228811476594",
+  api_secret: "di4UhIUKiZ1QnmpSQLdKU8I9Oko",
+});
 
 export const config = {
   api: {
@@ -13,32 +18,28 @@ export const config = {
   },
 };
 
-const createRequiredDirectories = async () => {
-  const tmpDir = path.join(process.cwd(), 'public', 'uploads', 'tmp')
-  const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'projects');
-  
-  await mkdir(tmpDir, { recursive: true });
-  await mkdir(uploadsDir, { recursive: true });
-  
-  return tmpDir;
-};
-
 const parseForm = async (req) => {
-  const tmpDir = await createRequiredDirectories();
-  
   const form = formidable({
     maxFileSize: 50 * 1024 * 1024, 
-    uploadDir: tmpDir,
     keepExtensions: true,
     multiples: false,
   });
-  
+
   return new Promise((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
       if (err) return reject(err);
       resolve({ fields, files });
     });
   });
+};
+
+const uploadToCloudinary = async (file) => {
+  const result = await cloudinary.v2.uploader.upload(file.filepath, {
+    folder: "projects",
+    use_filename: true,
+    unique_filename: false,
+  });
+  return result.secure_url; 
 };
 
 export default async function handler(req, res) {
@@ -54,38 +55,26 @@ export default async function handler(req, res) {
 
     if (method === "POST") {
       const { fields, files } = await parseForm(req);
+      console.log("Files:", files);
+      console.log("fields:", fields);
       const title = Array.isArray(fields.title) ? fields.title[0] : fields.title;
       const description = Array.isArray(fields.description) ? fields.description[0] : fields.description;
       const link = Array.isArray(fields.link) ? fields.link[0] : fields.link;
       const githubLink = Array.isArray(fields.githubLink) ? fields.githubLink[0] : fields.githubLink;
+      const image = files.image ? files.image[0] : null;
 
       if (!title || !description) {
         return res.status(400).json({ error: "Title and description are required" });
       }
 
       let imagePath = null;
-      const uploadedFile = files.image && files.image[0];
 
-      if (uploadedFile) {
+      if (image) {
         try {
-          const userUploadDir = path.join(process.cwd(), 'public', 'uploads', 'projects');
-          await mkdir(userUploadDir, { recursive: true });
-
-          const fileExtension = path.extname(uploadedFile.originalFilename || uploadedFile.newFilename || '.jpg');
-          const fileName = `${fields.title}${fileExtension}`;
-          const finalPath = path.join(userUploadDir, fileName);
-
-          const fileData = await readFile(uploadedFile.filepath);
-          await writeFile(finalPath, fileData);
-          await unlink(uploadedFile.filepath).catch(console.error);
-          
-          imagePath = `/uploads/projects/${fileName}`;
+          imagePath = await uploadToCloudinary(image); 
         } catch (uploadError) {
-          console.error("Error saving file:", uploadError);
-          return res.status(400).json({
-            error: "File save failed",
-            details: uploadError.message,
-          });
+          console.error("Cloudinary upload error:", uploadError);
+          return res.status(500).json({ error: "Image upload failed", details: uploadError.message });
         }
       }
 
@@ -96,7 +85,7 @@ export default async function handler(req, res) {
           description,
           link,
           githubLink,
-          image: imagePath,
+          image: imagePath, 
         },
       });
 
@@ -128,9 +117,9 @@ export default async function handler(req, res) {
         where: { id },
       });
 
-      if (projectToDelete && projectToDelete.image) {
-        const imagePath = path.join(process.cwd(), 'public', projectToDelete.image);
-        await unlink(imagePath).catch(console.error);
+      if (projectToDelete?.image) {
+        const publicId = projectToDelete.image.split("/").pop().split(".")[0];
+        await cloudinary.v2.uploader.destroy(`projects/${publicId}`); // Delete the image from Cloudinary
       }
 
       const deletedProject = await prisma.project.delete({
@@ -147,15 +136,14 @@ export default async function handler(req, res) {
     if (method === "PATCH") {
       const { fields, files } = await parseForm(req);
       const { id } = query;
-      
+
       const title = Array.isArray(fields.title) ? fields.title[0] : fields.title;
       const description = Array.isArray(fields.description) ? fields.description[0] : fields.description;
       const link = Array.isArray(fields.link) ? fields.link[0] : fields.link;
       const githubLink = Array.isArray(fields.githubLink) ? fields.githubLink[0] : fields.githubLink;
-   
 
       if (!id || !title || !description) {
-        return res.status(400).json({ error: "id, title, and description are required" });
+        return res.status(400).json({ error: "ID, title, and description are required" });
       }
 
       const existingProject = await prisma.project.findUnique({
@@ -167,31 +155,19 @@ export default async function handler(req, res) {
       }
 
       let imagePath = existingProject.image;
-      const uploadedFile = files.image && files.image[0];
 
-      if (uploadedFile) {
+      if (files.image) {
         try {
+        
           if (existingProject.image) {
-            const oldImagePath = path.join(process.cwd(), 'public', existingProject.image);
-            await unlink(oldImagePath).catch(console.error);
+            const publicId = existingProject.image.split("/").pop().split(".")[0];
+            await cloudinary.v2.uploader.destroy(`projects/${publicId}`);
           }
 
-          const userUploadDir = path.join(process.cwd(), 'public', 'uploads', 'projects');
-          const fileExtension = path.extname(uploadedFile.originalFilename || uploadedFile.newFilename || '.jpg');
-          const fileName = `${fields.title}${fileExtension}`;
-          const finalPath = path.join(userUploadDir, fileName);
-
-          const fileData = await readFile(uploadedFile.filepath);
-          await writeFile(finalPath, fileData);
-          await unlink(uploadedFile.filepath).catch(console.error);
-          
-          imagePath = `/uploads/projects/${fileName}`;
+          imagePath = await uploadToCloudinary(files.image[0]); 
         } catch (uploadError) {
-          console.error("Error saving file:", uploadError);
-          return res.status(400).json({
-            error: "File save failed",
-            details: uploadError.message,
-          });
+          console.error("Cloudinary upload error:", uploadError);
+          return res.status(500).json({ error: "Image upload failed", details: uploadError.message });
         }
       }
 
@@ -203,7 +179,7 @@ export default async function handler(req, res) {
           description,
           link,
           githubLink,
-          image: imagePath,
+          image: imagePath, 
         },
       });
 
@@ -212,7 +188,8 @@ export default async function handler(req, res) {
 
     return res.status(405).json({ error: "Method Not Allowed" });
   } catch (error) {
-    console.error('API Error:', error);
+    console.error("API Error:", error);
     return res.status(500).json({ error: error.message });
   }
 }
+

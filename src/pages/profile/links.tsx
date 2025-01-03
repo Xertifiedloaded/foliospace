@@ -162,7 +162,7 @@ export default function LinksSection() {
             </Card>
           </div>
           <div className="relative container mx-auto">
-            <div className="sticky  top-2">
+            <div className="">
               <IPhoneFrame>
                 <LinksDisplay links={links} removeLink={removeLink} />
               </IPhoneFrame>

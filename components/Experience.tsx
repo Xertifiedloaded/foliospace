@@ -400,56 +400,56 @@ export default function Experience() {
             <div className="relative">
               <div className="">
                 <IPhoneFrame>
-                <div className="space-y-3 p-2">
-      {experiences.map((exp) => (
-        <div
-          key={exp.id}
-          className="bg-white rounded-lg border border-gray-100 overflow-hidden"
-        >
-          <div className="p-3">
-            <div className="flex justify-between items-start mb-1">
-              <div className="flex-1">
-                <h3 className="text-sm font-medium line-clamp-1">
-                  {exp.company}
-                </h3>
-                <p className="text-xs text-gray-600 line-clamp-1">
-                  {exp.position}
-                </p>
-              </div>
-              <div className="text-[10px] text-gray-500 flex-shrink-0 ml-2">
-                {format(new Date(exp.startDate), "MM/yy")} -{" "}
-                {exp.endDate
-                  ? format(new Date(exp.endDate), "MM/yy")
-                  : "Present"}
-              </div>
-            </div>
+                  <div className="space-y-3 ">
+                    {experiences.map((exp) => (
+                      <div
+                        key={exp.id}
+                        className="bg-white rounded-lg border border-gray-100 overflow-hidden"
+                      >
+                        <div className="p-3">
+                          <div className="flex justify-between items-start mb-1">
+                            <div className="flex-1">
+                              <h3 className="text-sm font-medium line-clamp-1">
+                                {exp.company}
+                              </h3>
+                              <p className="text-xs text-gray-600 line-clamp-1">
+                                {exp.position}
+                              </p>
+                            </div>
+                            <div className="text-[10px] text-gray-500 flex-shrink-0 ml-2">
+                              {format(new Date(exp.startDate), "MM/yy")} -{" "}
+                              {exp.endDate
+                                ? format(new Date(exp.endDate), "MM/yy")
+                                : "Present"}
+                            </div>
+                          </div>
 
-            <p className="text-xs text-gray-700 line-clamp-2 mb-2">
-              {exp.description}
-            </p>
-            
-            <div className="flex gap-1.5">
-              <Button
-                variant="destructive"
-                size="sm"
-                className="h-7 text-xs px-2 flex-1"
-                onClick={() => deleteExperience(exp.id)}
-              >
-                <X className="w-3 h-3 mr-1" /> Delete
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 text-xs px-2 flex-1"
-                onClick={() => handleEditClick(exp)}
-              >
-                <Plus className="w-3 h-3 mr-1" /> Edit
-              </Button>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
+                          <p className="text-xs text-gray-700 line-clamp-2 mb-2">
+                            {exp.description}
+                          </p>
+
+                          <div className="flex gap-1.5">
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="h-7 text-xs px-2 flex-1"
+                              onClick={() => deleteExperience(exp.id)}
+                            >
+                              <X className="w-3 h-3 mr-1" /> Delete
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 text-xs px-2 flex-1"
+                              onClick={() => handleEditClick(exp)}
+                            >
+                              <Plus className="w-3 h-3 mr-1" /> Edit
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </IPhoneFrame>
               </div>
             </div>

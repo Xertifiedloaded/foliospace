@@ -4,7 +4,7 @@ import { Loader2 } from 'lucide-react';
 const ProfilePreview = ({ data, loading }) => {
   if (loading) {
     return (
-      <div className="space-y-4 p-4">
+      <div className="space-y-4">
         <div className="flex flex-col items-center">
           <div className="w-24 h-24 rounded-full bg-gray-200 animate-pulse" />
           <div className="h-6 w-48 bg-gray-200 animate-pulse mt-4" />
@@ -21,7 +21,7 @@ const ProfilePreview = ({ data, loading }) => {
   }
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6">
       <div className="flex flex-col items-center text-center">
         {data?.previewUrl ? (
           <img 

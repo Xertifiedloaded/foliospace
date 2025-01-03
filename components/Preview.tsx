@@ -1,4 +1,4 @@
-import { BatteryCharging, SignalHigh, WifiHigh } from "lucide-react";
+import { BatteryCharging, WifiHigh } from "lucide-react";
 import React, { ReactNode } from "react";
 
 export const IPhoneFrame: React.FC<{ children: ReactNode }> = ({
@@ -18,7 +18,7 @@ export const IPhoneFrame: React.FC<{ children: ReactNode }> = ({
               <BatteryCharging />
             </div>
           </div>
-          <div className="flex flex-col h-full pt-16 overflow-y-auto">
+          <div className="flex p-4 flex-col h-full pt-16 overflow-y-auto">
             {children}
           </div>
         </div>
