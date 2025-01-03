@@ -16,7 +16,7 @@ export default function MyApp({
         <div className={` antialiased`}>
           <Toaster />
           <AuthProvider>
-            <GoogleAnalytics gaId="G-4NR3CMEKVW"/>
+            <GoogleAnalytics gaId="G-RS55P974EC"/>
             <Component {...pageProps} />
             <Analytics />
           </AuthProvider>
