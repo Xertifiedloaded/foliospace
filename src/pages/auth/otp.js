@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Lock, AlertCircle } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
+import AuthLayout from '../../../components/AuthLayout';
 
 const OtpPage = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -62,7 +63,8 @@ const OtpPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4">
+<AuthLayout>
+<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
         <div className="text-center mb-8">
           <div className="flex flex-col items-center gap-2">
@@ -102,6 +104,7 @@ const OtpPage = () => {
         </form>
       </div>
     </div>
+</AuthLayout>
   );
 };
 

@@ -30,7 +30,29 @@ model User {
   education               Education[]
   pageViews               PageView[]
   skills                  Skill[]      @relation("UserSkills")
-  stacks                  Stack[]      @relation("UserStacks")
+}
+
+model Skill {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+level     SkillLevel
+  userId    String   @db.ObjectId
+  user      User     @relation("UserSkills", fields: [userId], references: [id]) // Relates to User via userId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String?  @unique @db.ObjectId
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  picture     String?
+  tagline     String?
+  bio         String?
+  hobbies     String[]
+  languages   String[]
+  address     String?
+  phoneNumber String?
 }
 
 model PageView {
@@ -47,49 +69,15 @@ model PageView {
   @@unique([username, period, date])
 }
 
-model Skill {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  name   String
-  level  String
-  userId String
-  user   User   @relation("UserSkills", fields: [userId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Stack {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  name   String
-  userId String
-  user   User   @relation("UserStacks", fields: [userId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Project {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId       String?  @db.ObjectId
-  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title        String?
-  description  String?
-  link         String?
-  githubLink   String?
-  image        String?
-}
-
-model Profile {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String?  @unique @db.ObjectId
-  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  picture     String?
-  tagline     String?
-  bio         String?
-  hobbies     String[]
-  languages   String[]
-  address     String?
-  phoneNumber String?
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String? @db.ObjectId
+  user        User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String?
+  description String?
+  link        String?
+  githubLink  String?
+  image       String?
 }
 
 model Link {
@@ -131,4 +119,10 @@ model Education {
   degree      String?
   startDate   DateTime?
   endDate     DateTime?
+}
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
 }

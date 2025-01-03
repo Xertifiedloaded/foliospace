@@ -243,7 +243,7 @@ export default function Experience() {
                       <input
                         id="edit-current-role"
                         type="checkbox"
-                        checked={editExperience.isCurrentRole || false}
+                        checked={editExperience?.isCurrentRole || false}
                         onChange={(e) =>
                           setEditExperience((prev) => ({
                             ...prev,
@@ -260,7 +260,7 @@ export default function Experience() {
                     <Label htmlFor="edit-description">Job Description</Label>
                     <Textarea
                       id="edit-description"
-                      value={editExperience.description || ""}
+                      value={editExperience?.description || ""}
                       onChange={(e) =>
                         setEditExperience((prev) => ({
                           ...prev,
@@ -291,7 +291,7 @@ export default function Experience() {
                       <Label htmlFor="add-company">Company Name</Label>
                       <Input
                         id="add-company"
-                        value={newExperience.company || ""}
+                        value={newExperience?.company || ""}
                         onChange={(e) =>
                           setNewExperience((prev) => ({
                             ...prev,
@@ -422,7 +422,7 @@ export default function Experience() {
                   </div>
                 ) : (
                   <div>
-                    {experiences.map((exp) => (
+                    {experiences?.map((exp) => (
                       <div key={exp.id} className="space-y-2 mb-5">
                         <div className="flex justify-between">
                           <div>

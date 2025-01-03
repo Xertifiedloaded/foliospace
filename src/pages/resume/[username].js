@@ -99,7 +99,7 @@ export default function ResumePage() {
             </section>
           )}
 
-          {experiences && (
+          {experiences?.length && (
             <section>
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 <BriefcaseIcon className="h-5 w-5 text-primary" />
@@ -107,7 +107,10 @@ export default function ResumePage() {
               </h2>
               <div className="space-y-6">
                 {experiences?.map((exp) => (
-                  <div key={exp?.id} className="p-4 border rounded-md shadow-sm">
+                  <div
+                    key={exp?.id}
+                    className="p-4 border rounded-md shadow-sm"
+                  >
                     <h3 className="text-lg font-bold">{exp?.position}</h3>
                     <p className="text-sm text-muted-foreground">
                       {exp?.company}
@@ -132,27 +135,38 @@ export default function ResumePage() {
 
         {/* Right Column */}
         <div className="space-y-6">
-          {skills && (
-            <section>
+          {skills?.length > 0 && (
+            <section className="lg:mt-0 mt-3">
               <h2 className="text-xl font-semibold mb-4">Technical Skills</h2>
               <div className="flex flex-wrap gap-2">
                 {skills?.map((skill, index) => (
-                  <Badge key={index} variant="outline" className="text-sm">
-                    {skill}
-                  </Badge>
+                  <span
+                    key={index}
+                    className="px-2 py-1 mr-2 bg-gray-100 text-black rounded-full text-xs"
+                  >
+                    <span className="font-bold mr-2 text-gray-700">
+                      {skill?.name}
+                    </span>
+                    <span className="text-xs text-gray-500 mt-1">
+                      {skill?.level}
+                    </span>
+                  </span>
                 ))}
               </div>
             </section>
           )}
 
-          {education && (
+          {education?.length > 0 && (
             <section>
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 Education
               </h2>
               <div className="space-y-4">
                 {education?.map((edu) => (
-                  <div key={edu?.id} className="p-4 border rounded-md shadow-sm">
+                  <div
+                    key={edu?.id}
+                    className="p-4 border rounded-md shadow-sm"
+                  >
                     <h3 className="text-lg font-bold">{edu?.institution}</h3>
                     <p className="text-sm text-muted-foreground">
                       {edu?.degree}
@@ -170,6 +184,15 @@ export default function ResumePage() {
           )}
         </div>
       </div>
+      <footer className="mt-8 mb-4 text-center">
+        <small className="text-gray-500 font-light flex items-center justify-center gap-1">
+          © {new Date().getFullYear()}{" "}
+          <span className="font-medium text-gray-700 hover:text-blue-600 transition-colors">
+            Makinde Olaitan
+          </span>
+          <span className="text-gray-400">•</span> All rights reserved
+        </small>
+      </footer>
     </div>
   );
 }

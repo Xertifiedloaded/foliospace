@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useToast } from '@/hooks/use-toast';
+import AuthLayout from "../../../components/AuthLayout";
 
 
 export default function ForgetPassword() {
@@ -57,7 +58,8 @@ export default function ForgetPassword() {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-500 p-4">
+<AuthLayout>
+<section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-500 p-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
         <div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-gray-900">Forgot Password</h2>
@@ -105,5 +107,6 @@ export default function ForgetPassword() {
         </div>
       </div>
     </section>
+</AuthLayout>
   );
 }

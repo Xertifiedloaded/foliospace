@@ -1,7 +1,7 @@
-import React from 'react';
-import { Loader2 } from 'lucide-react';
+import React from "react";
+import { Loader2 } from "lucide-react";
 
-const ProfilePreview = ({ data, loading }) => {
+const ProfilePreview = ({ data, loading, skills }) => {
   if (loading) {
     return (
       <div className="space-y-4">
@@ -9,7 +9,7 @@ const ProfilePreview = ({ data, loading }) => {
           <div className="w-24 h-24 rounded-full bg-gray-200 animate-pulse" />
           <div className="h-6 w-48 bg-gray-200 animate-pulse mt-4" />
         </div>
-        
+
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="space-y-2">
             <div className="h-4 w-20 bg-gray-200 animate-pulse" />
@@ -24,9 +24,9 @@ const ProfilePreview = ({ data, loading }) => {
     <div className="space-y-6">
       <div className="flex flex-col items-center text-center">
         {data?.previewUrl ? (
-          <img 
-            src={data.previewUrl} 
-            alt="Profile" 
+          <img
+            src={data.previewUrl}
+            alt="Profile"
             className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
           />
         ) : (
@@ -34,20 +34,38 @@ const ProfilePreview = ({ data, loading }) => {
             <span className="text-2xl text-gray-500">👤</span>
           </div>
         )}
-        <h2 className="mt-4 font-semibold text-lg">{data?.tagline || 'No tagline set'}</h2>
+        <h2 className="mt-4 font-semibold text-lg">
+          {data?.tagline || "No tagline set"}
+        </h2>
       </div>
+
+      {skills.length > 0 && (
+        <section>
+          <h3 className="text-sm font-medium text-gray-500">Skills</h3>
+          <ul>
+            {skills.map((skill, index) => (
+              <span
+                key={index}
+                className="px-2 py-1 bg-gray-100 rounded-full text-xs"
+              >
+                <span>{skill.name}</span>
+              </span>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div className="space-y-4">
         <section>
           <h3 className="text-sm font-medium text-gray-500">About</h3>
-          <p className="mt-1 text-sm">{data?.bio || 'No bio added yet'}</p>
+          <p className="mt-1 text-sm">{data?.bio || "No bio added yet"}</p>
         </section>
 
         <section>
           <h3 className="text-sm font-medium text-gray-500">Contact</h3>
           <div className="mt-1 text-sm">
-            <p>{data?.phoneNumber || 'No phone number added'}</p>
-            <p>{data?.address || 'No address added'}</p>
+            <p>{data?.phoneNumber || "No phone number added"}</p>
+            <p>{data?.address || "No address added"}</p>
           </div>
         </section>
 
@@ -55,8 +73,11 @@ const ProfilePreview = ({ data, loading }) => {
           <h3 className="text-sm font-medium text-gray-500">Hobbies</h3>
           <div className="mt-1 flex flex-wrap gap-2">
             {data?.hobbies ? (
-              (typeof data.hobbies === 'string' ? data.hobbies.split(',') : data.hobbies).map((hobby, index) => (
-                <span 
+              (typeof data.hobbies === "string"
+                ? data.hobbies.split(",")
+                : data.hobbies
+              ).map((hobby, index) => (
+                <span
                   key={index}
                   className="px-2 py-1 bg-gray-100 rounded-full text-xs"
                 >
@@ -73,8 +94,11 @@ const ProfilePreview = ({ data, loading }) => {
           <h3 className="text-sm font-medium text-gray-500">Languages</h3>
           <div className="mt-1 flex flex-wrap gap-2">
             {data?.languages ? (
-              (typeof data.languages === 'string' ? data.languages.split(',') : data.languages).map((language, index) => (
-                <span 
+              (typeof data.languages === "string"
+                ? data.languages.split(",")
+                : data.languages
+              ).map((language, index) => (
+                <span
                   key={index}
                   className="px-2 py-1 bg-gray-100 rounded-full text-xs"
                 >

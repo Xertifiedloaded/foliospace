@@ -42,11 +42,27 @@ export default function Hero({ portfolio }) {
               )}
             </div>
           </div>
+          {/* sskills */}
+          {portfolio?.skills?.length > 0 && (
+            <section className="text-center my-5">
+              <ul>
+                {portfolio?.skills?.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="px-2 py-1 mr-2 bg-gray-100 text-black rounded-full text-xs"
+                  >
+                    <span>{skill?.name}</span>
+                  </span>
+                ))}
+              </ul>
+            </section>
+          )}
           {profile?.bio && (
             <div className="text-sm my-10 text-center text-gray-300 animate-fade-up animate-once animate-delay-300">
               {profile?.bio}
             </div>
           )}
+
           <div className="flex items-center justify-center w-full">
             <a
               href={`${window.location.origin}/resume/${username}`}

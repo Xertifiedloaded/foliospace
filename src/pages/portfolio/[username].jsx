@@ -66,6 +66,7 @@ const PortfolioPage = () => {
   return (
     <div className="px-2 bg-gray-900 text-white py-8 max-w-4xl container mx-auto space-y-6">
       <Hero portfolio={portfolio} />
+
       {(portfolio?.links?.length > 0 || portfolio?.socials?.length > 0) && (
         <PortfolioLink
           profile={portfolio?.profile}
@@ -97,6 +98,15 @@ const PortfolioPage = () => {
           </a>
         </Button>
       </div>
+      <footer className="mt-8 mb-4 text-center">
+        <small className="text-gray-500 font-light flex items-center justify-center gap-1">
+          © {new Date().getFullYear()}{" "}
+          <span className="font-medium text-gray-700 hover:text-blue-600 transition-colors">
+            Makinde Olaitan
+          </span>
+          <span className="text-gray-400">•</span> All rights reserved
+        </small>
+      </footer>
     </div>
   );
 };

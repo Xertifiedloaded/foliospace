@@ -1,7 +1,5 @@
 "use client";
 import React, { ReactNode, useEffect, useState } from "react";
-import { Github, Twitter, Linkedin, Link as LinkIcon } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
 import Header from "@/components/Header";
 import { useSession } from "next-auth/react";
@@ -42,19 +40,3 @@ const ProfileLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 export default ProfileLayout;
-
-{
-  /* <div className="bg-gray-50 min-h-screen">
-
-<div className="container mx-auto py-8">
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div className="space-y-6">{children}</div>
-    <div className="relative">
-      <div className="sticky  top-2">
-        <MobilePreview />
-      </div>
-    </div>
-  </div>
-</div>
-</div> */
-}

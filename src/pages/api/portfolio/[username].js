@@ -20,6 +20,7 @@ export default async function handler(req, res) {
           education: { 
             orderBy: { startDate: 'desc' } 
           },
+          skills: true, // Include skills
         },
       });
 
@@ -36,6 +37,7 @@ export default async function handler(req, res) {
         links: user.links || [],
         experiences: user.experiences || [],
         education: user.education || [],
+        skills: user.skills || [], 
       };
 
       return res.status(200).json(sanitizedUserData);
@@ -49,3 +51,5 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 }
+
+

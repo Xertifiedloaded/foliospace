@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import AuthLayout from "@/components/AuthLayout";
 
 const LoginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -76,7 +77,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-slate-50 dark:bg-slate-900 px-4">
+ <AuthLayout>
+     <div className="flex flex-col justify-center items-center min-h-screen bg-slate-50 dark:bg-slate-900 px-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
@@ -148,5 +150,6 @@ export default function LoginPage() {
         </CardFooter>
       </Card>
     </div>
+ </AuthLayout>
   );
 }

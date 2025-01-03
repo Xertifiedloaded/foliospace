@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -15,6 +13,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { IPhoneFrame } from "@/components/Preview";
 import ProfilePreview from "../../../components/ProfilePreview";
+import UploadSkillForm from "@/components/AddSkill";
 
 interface ProfileData {
   userId?: string;
@@ -27,11 +26,21 @@ interface ProfileData {
   phoneNumber?: string;
   address?: string;
 }
+interface Skill {
+  id: string;
+  name: string;
+  level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "EXPERT";
+}
 
 export default function ProfileDetails() {
   const { data: session, status } = useSession();
   const [info, setInfo] = useState([]);
-  
+  const [name, setName] = useState<string>("");
+  const [level, setLevel] = useState<
+    "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "EXPERT"
+  >("BEGINNER");
+  const [skills, setSkills] = useState<Skill[]>([]);
+
   const [formData, setFormData] = useState<ProfileData>({
     userId: "",
     tagline: "",
@@ -128,20 +137,30 @@ export default function ProfileDetails() {
     try {
       const submitFormData = new FormData();
 
-      submitFormData.append('tagline', formData.tagline);
-      submitFormData.append('bio', formData.bio);
-      submitFormData.append('address', formData.address || '');
-      submitFormData.append('phoneNumber', formData.phoneNumber || '');
-      
-      submitFormData.append('hobbies', JSON.stringify(
-        formData.hobbies ? formData.hobbies.split(',').map(hobby => hobby.trim()) : []
-      ));
-      submitFormData.append('languages', JSON.stringify(
-        formData.languages ? formData.languages.split(',').map(lang => lang.trim()) : []
-      ));
+      submitFormData.append("tagline", formData.tagline);
+      submitFormData.append("bio", formData.bio);
+      submitFormData.append("address", formData.address || "");
+      submitFormData.append("phoneNumber", formData.phoneNumber || "");
+
+      submitFormData.append(
+        "hobbies",
+        JSON.stringify(
+          formData.hobbies
+            ? formData.hobbies.split(",").map((hobby) => hobby.trim())
+            : []
+        )
+      );
+      submitFormData.append(
+        "languages",
+        JSON.stringify(
+          formData.languages
+            ? formData.languages.split(",").map((lang) => lang.trim())
+            : []
+        )
+      );
 
       if (formData.picture) {
-        submitFormData.append('file', formData.picture);
+        submitFormData.append("file", formData.picture);
       }
 
       const response = await fetch("/api/portfolio/profile", {
@@ -174,6 +193,68 @@ export default function ProfileDetails() {
       }
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await fetch("/api/portfolio/skill");
+        if (response.ok) {
+          const data: Skill[] = await response.json();
+          setSkills(data);
+        } else {
+          console.error("Failed to fetch skills");
+        }
+      } catch (error) {
+        console.error("Error fetching skills:", error);
+      }
+    };
+
+    fetchSkills();
+  }, []);
+
+  const handleSubmitSkills = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const skillData = { name, level };
+
+    try {
+      const response = await fetch("/api/portfolio/skill", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(skillData),
+      });
+
+      if (!response.ok) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to add the skill. Please try again.",
+        });
+        return;
+      }
+
+      const newSkill: Skill = await response.json();
+
+      toast({
+        variant: "default",
+        title: "Skill Added",
+        description: `The skill "${name}" with level "${level}" has been successfully added.`,
+      });
+
+      setSkills((prevSkills) => [...prevSkills, newSkill]); // Update local state
+      setName("");
+      setLevel("BEGINNER");
+    } catch (error) {
+      console.error("Error uploading skill:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to add the skill. Please try again.",
+      });
     }
   };
 
@@ -297,6 +378,14 @@ export default function ProfileDetails() {
                       )}
                     </Button>
                   </form>
+                  <UploadSkillForm
+                    name={name}
+                    level={level}
+                    setLevel={setLevel}
+                    setName={setName}
+                    skills={skills}
+                    handleSubmitSkills={handleSubmitSkills}
+                  />
                 </CardContent>
               </Card>
             </section>
@@ -305,6 +394,7 @@ export default function ProfileDetails() {
             <div className="">
               <IPhoneFrame>
                 <ProfilePreview
+                  skills={skills}
                   data={formData}
                   loading={status === "loading"}
                 />

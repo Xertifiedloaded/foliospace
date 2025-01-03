@@ -251,16 +251,16 @@ export default function Education() {
                     <SkeletonLoader /> 
                   ) : (
                     <div className="space-y-3 p-2">
-                      {education.map((edu) => (
+                      {education?.map((edu) => (
                         <div
-                          key={edu.id}
+                          key={edu?.id}
                           className="bg-white rounded-lg border border-gray-100 overflow-hidden"
                         >
                           <div className="p-3">
                             <div className="flex justify-between items-start mb-1">
                               <div className="flex-1">
                                 <h3 className="text-sm font-medium line-clamp-1">
-                                  {edu.institution}
+                                  {edu?.institution}
                                 </h3>
                                 <p className="text-xs text-gray-600 line-clamp-1">
                                   {edu.degree}

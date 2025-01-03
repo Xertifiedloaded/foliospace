@@ -1,9 +1,8 @@
 import React from 'react'
-import Header from "@/components/Header";
+
 export default function SkeletalLoader() {
   return (
     <div className="bg-gray-50 wrapper min-h-screen">
-    <Header />
     <div className="container mx-auto py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
