@@ -72,7 +72,7 @@ export default async function handler(req, res) {
           await mkdir(userUploadDir, { recursive: true });
 
           const fileExtension = path.extname(uploadedFile.originalFilename || uploadedFile.newFilename || '.jpg');
-          const fileName = `${Date.now()}${fileExtension}`;
+          const fileName = `${fields.title}${fileExtension}`;
           const finalPath = path.join(userUploadDir, fileName);
 
           const fileData = await readFile(uploadedFile.filepath);
@@ -178,7 +178,7 @@ export default async function handler(req, res) {
 
           const userUploadDir = path.join(process.cwd(), 'public', 'uploads', 'projects');
           const fileExtension = path.extname(uploadedFile.originalFilename || uploadedFile.newFilename || '.jpg');
-          const fileName = `${Date.now()}${fileExtension}`;
+          const fileName = `${fields.title}${fileExtension}`;
           const finalPath = path.join(userUploadDir, fileName);
 
           const fileData = await readFile(uploadedFile.filepath);

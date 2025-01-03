@@ -53,6 +53,7 @@ export default async function handler(req, res) {
     }
 
     const userIdFromSession = session.user.id;
+    const username = session.user.name;
 
     if (req.method === "PATCH") {
       await createRequiredDirectories();
@@ -68,7 +69,7 @@ export default async function handler(req, res) {
           await mkdir(userUploadDir, { recursive: true });
 
           const fileExtension = path.extname(uploadedFile.originalFilename || uploadedFile.newFilename || '.jpg');
-          const fileName = `${Date.now()}${fileExtension}`;
+          const fileName = `${username}${fileExtension}`;
           const finalPath = path.join(userUploadDir, fileName);
 
           const fileData = await readFile(uploadedFile.filepath);
