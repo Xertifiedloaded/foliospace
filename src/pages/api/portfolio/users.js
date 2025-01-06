@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 export default async function handler(req, res) {
   try {
     const users = await prisma.user.findMany({
-      take: 6,
+      take: 8,
       select: {
         name: true,
         username: true,

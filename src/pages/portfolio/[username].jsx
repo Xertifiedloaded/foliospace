@@ -19,7 +19,7 @@ const PortfolioPage = () => {
   const { username } = router.query;
   const [portfolio, setPortfolio] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [visitCount, setVisitCount] = useState(0);
   useEffect(() => {
     const fetchPortfolio = async () => {
       try {
@@ -40,6 +40,33 @@ const PortfolioPage = () => {
       fetchPortfolio();
     }
   }, [username]);
+
+  useEffect(() => {
+    const trackVisit = async () => {
+      if (username) {
+        try {
+         
+          const response = await fetch(`/api/track-visitor?username=${username}`);
+          if (response.ok) {
+            const data = await response.json();
+            setVisitCount(data.visits);  
+          } else {
+            console.error("Error tracking visit");
+          }
+        } catch (error) {
+          console.error("Error tracking visit:", error);
+        }
+      }
+    };
+
+    trackVisit();  
+
+  }, [username]);
+
+
+
+
+
 
   if (loading) {
     return <SkeletalLoader />;

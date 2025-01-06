@@ -32,6 +32,16 @@ model User {
   skills                  Skill[]      @relation("UserSkills")
 }
 
+
+
+model PageVisit {
+  id                      String       @id @default(auto()) @map("_id") @db.ObjectId
+  path      String
+  username  String
+  visitedAt DateTime @default(now())
+}
+
+
 model Skill {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String

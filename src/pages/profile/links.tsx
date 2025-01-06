@@ -20,6 +20,7 @@ interface LinkData {
 
 export default function LinksSection() {
   const { data: session } = useSession();
+  const userId = session?.user?.id;
   const [links, setLinks] = useState<LinkData[]>([]);
   const [newLink, setNewLink] = useState<{ url: string; text: string }>({
     url: "",
@@ -29,7 +30,7 @@ export default function LinksSection() {
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const userId = session?.user?.id;
+
 
   useEffect(() => {
     const fetchLinks = async () => {

@@ -1,60 +1,125 @@
 import React from "react";
 import Image from "next/image";
-import { LinkedinIcon, GithubIcon, TwitterIcon } from "lucide-react";
+import {
+  LinkedinIcon,
+  GithubIcon,
+  TwitterIcon,
+  FacebookIcon,
+  InstagramIcon,
+  YoutubeIcon,
+  Share2Icon,
+  Globe2Icon,
+  LinkIcon,
+  MessageCircleIcon,
+  VideoIcon,
+} from "lucide-react";
+import { FaDiscord, FaTiktok, FaTwitch } from "react-icons/fa";
+
 import { Button } from "@/components/ui/button";
+
 const SocialIcon = ({ type }) => {
   const icons = {
     linkedin: LinkedinIcon,
     github: GithubIcon,
     twitter: TwitterIcon,
+    facebook: FacebookIcon,
+    twitch: FaTwitch,
+    discord: FaDiscord,
+    tiktok: FaTiktok,
+    instagram: InstagramIcon,
+    youtube: YoutubeIcon,
   };
 
-  const Icon = icons[type.toLowerCase()] || null;
-  return Icon ? <Icon className="w-5 h-5" /> : null;
+  const Icon = icons[type?.toLowerCase()] || LinkIcon;
+  return <Icon className="w-5 h-5" />;
 };
+
 const socialColors = {
-  linkedin: "text-blue-600 hover:text-blue-700",
+  linkedin: "text-[#0077B5] hover:text-[#004d77]",
   github: "text-gray-800 hover:text-gray-900",
-  twitter: "text-sky-500 hover:text-sky-600",
+  twitter: "text-[#1DA1F2] hover:text-[#0d8bda]",
+  facebook: "text-[#1877F2] hover:text-[#0d65d9]",
+  twitch: "text-[#9146FF] hover:text-[#7a29ff]",
+  discord: "text-[#5865F2] hover:text-[#4752c4]",
+  tiktok: "text-[#000000] hover:text-gray-700",
+  instagram: "text-[#E4405F] hover:text-[#d81c3f]",
+  youtube: "text-[#FF0000] hover:text-[#cc0000]",
 };
+
 export default function Hero({ portfolio }) {
   const { profile, socials, name, email, username } = portfolio || {};
+  const handleSocialClick = (url) => {
+    if (!url) return;
+
+    let validUrl = url;
+
+    if (!/^http[s]?:\/\//.test(validUrl)) {
+      if (/^www\./.test(validUrl)) {
+        validUrl = `https://${validUrl}`;
+      } else {
+        validUrl = `https://www.${validUrl}`;
+      }
+    }
+
+    try {
+      new URL(validUrl);
+      window.open(validUrl, "_blank", "noopener,noreferrer");
+    } catch (e) {
+      console.error("Invalid URL:", url);
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col items-center justify-center max-w-6xl px-6 py-20 mx-auto space-y-8 sm:flex-row sm:space-y-0">
         <div>
           {profile?.picture && (
-            <div className="flex  justify-center">
+            <div className="flex justify-center">
               <Image
                 src={profile?.picture || "/default-avatar.png"}
                 height={100}
                 width={100}
                 alt={username || "User"}
-                className="duration-300 object-cover w-[200px] transform rounded-full  h-[200px] hover:shadow-2xl animate-jump-in animate-duration-[300ms] animate-ease-in-out"
+                className="duration-300 object-cover w-[200px] transform rounded-full h-[200px] hover:shadow-2xl animate-jump-in animate-duration-[300ms] animate-ease-in-out"
               />
             </div>
           )}
           <div className="flex justify-center">
-            <div className="max-w-2xl mt-8 text-3xl  lg:text-6xl font-bold text-center text-transparent  animate-fade-up bg-gradient-to-r from-indigo-500 to-orange-500 bg-clip-text">
+            <div className="max-w-2xl mt-8 text-3xl lg:text-6xl font-bold text-center text-transparent animate-fade-up bg-gradient-to-r from-indigo-500 to-orange-500 bg-clip-text">
               {name},{" "}
               {profile?.tagline && (
-                <span class="text-gray-400 ">{profile?.tagline}</span>
+                <span className="text-gray-400">{profile?.tagline}</span>
               )}
             </div>
           </div>
-          {/* sskills */}
+          {/* Skills */}
           {portfolio?.skills?.length > 0 && (
-            <section className="text-center my-5">
-              <ul>
+            <section className="my-8">
+              <div className="flex justify-center flex-wrap gap-2 max-w-2xl mx-auto px-4">
                 {portfolio?.skills?.map((skill, index) => (
-                  <span
+                  <div
                     key={index}
-                    className="px-2 py-1 mr-2 bg-gray-100 text-black rounded-full text-xs"
+                    className="inline-flex items-center bg-gray-100/80 hover:bg-gray-200/80 
+          text-gray-800 rounded-full px-3 py-1.5 transition-all duration-200
+          max-w-[200px] group"
                   >
-                    <span>{skill?.name}</span>
-                  </span>
+                    <span
+                      className="text-sm font-medium truncate"
+                      title={skill?.name}
+                    >
+                      {skill?.name}
+                    </span>
+                    {skill?.name?.length > 20 && (
+                      <div
+                        className="hidden group-hover:block absolute mt-8 bg-gray-800 
+            text-white text-xs rounded-md py-1 px-2 z-10"
+                      >
+                        {skill?.name}
+                      </div>
+                    )}
+                  </div>
                 ))}
-              </ul>
+              </div>
             </section>
           )}
           {profile?.bio && (
@@ -66,8 +131,7 @@ export default function Hero({ portfolio }) {
           <div className="flex items-center justify-center w-full">
             <a
               href={`${window.location.origin}/resume/${username}`}
-              className="p-3 px-6 duration-200 rounded-full transform bg-gray-100 text-gray-900 hover:bg-gray-900 hover:text-gray-100 animate-fade-up hover:ring-2 ring-offset-2
-                    animate-once animate-delay-[400ms] hover:scale-105"
+              className="p-3 px-6 duration-200 rounded-full transform bg-gray-100 text-gray-900 hover:bg-gray-900 hover:text-gray-100 animate-fade-up hover:ring-2 ring-offset-2 animate-once animate-delay-[400ms] hover:scale-105"
             >
               Show My Resume
             </a>
@@ -75,30 +139,22 @@ export default function Hero({ portfolio }) {
 
           {Array.isArray(socials) && socials.length > 0 && (
             <div className="mt-6">
-              <div className="flex justify-center space-x-4">
-                {socials.map((social, index) => {
-                  const isValidUrl =
-                    social?.url && /^https?:\/\/.+/i.test(social.url);
-
-                  return (
-                    <Button
-                      key={index}
-                      variant="outline"
-                      size="icon"
-                      className={`rounded-full ${
-                        socialColors[social?.name?.toLowerCase()] ||
-                        "text-gray-500 hover:text-gray-600"
-                      }`}
-                      onClick={() => {
-                        if (isValidUrl) {
-                          window.open(social.url, "_blank");
-                        }
-                      }}
-                    >
-                      <SocialIcon type={social.name} />
-                    </Button>
-                  );
-                })}
+              <div className="flex justify-center space-x-4 flex-wrap gap-y-2">
+                {socials.map((social, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    size="icon"
+                    className={`rounded-full ${
+                      socialColors[social?.name?.toLowerCase()] ||
+                      "text-gray-500 hover:text-gray-600"
+                    } transition-colors duration-200`}
+                    onClick={() => handleSocialClick(social.url)}
+                    title={social.name || "Social Link"}
+                  >
+                    <SocialIcon type={social.name} />
+                  </Button>
+                ))}
               </div>
             </div>
           )}

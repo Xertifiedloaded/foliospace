@@ -4,8 +4,8 @@ import { SessionProvider } from "next-auth/react";
 import { Analytics } from '@vercel/analytics/next';
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { AuthProvider } from "../../hooks/use-auth";
-
-export default function MyApp({
+import { appWithTranslation } from 'next-i18next';
+function MyApp({
   Component,
   pageProps: { session, ...pageProps },
 }) {
@@ -25,3 +25,4 @@ export default function MyApp({
     </>
   );
 }
+export default appWithTranslation(MyApp);
