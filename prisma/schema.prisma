@@ -32,24 +32,21 @@ model User {
   skills                  Skill[]      @relation("UserSkills")
 }
 
-
-
 model PageVisit {
-  id                      String       @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   path      String
   username  String
   visitedAt DateTime @default(now())
 }
 
-
 model Skill {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
   name      String
-level     SkillLevel
-  userId    String   @db.ObjectId
-  user      User     @relation("UserSkills", fields: [userId], references: [id]) // Relates to User via userId
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  level     SkillLevel
+  userId    String     @db.ObjectId
+  user      User       @relation("UserSkills", fields: [userId], references: [id]) // Relates to User via userId
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Profile {
@@ -130,9 +127,16 @@ model Education {
   startDate   DateTime?
   endDate     DateTime?
 }
+
 enum SkillLevel {
   BEGINNER
   INTERMEDIATE
   ADVANCED
   EXPERT
+}
+
+model Waitlist {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  createdAt DateTime @default(now())
 }
