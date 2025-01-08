@@ -1,36 +1,33 @@
-import React, { useState } from 'react';
-import { Twitter, Instagram, Linkedin, Mail } from 'lucide-react';
-import { submitEmail } from '../hooks/waitlist';
+import React, { useState } from "react";
+import { Twitter, Instagram, Linkedin, Mail } from "lucide-react";
+import { submitEmail } from "../hooks/waitlist";
 
 const ComingSoon = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email) {
-      setError('Email is required.');
+      setError("Email is required.");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const success = await submitEmail(email);
+      const success = await submitEmail(email, setError);
       if (success) {
         setSubmitted(true);
-        setEmail('');
-      } else {
-        throw new Error('Submission failed');
+        setEmail("");
+        setError("");
       }
     } catch (error) {
-      setError('Failed to join waitlist. Please try again.');
+      console.error("Submission error:", error);
     } finally {
       setLoading(false);
     }
@@ -45,10 +42,14 @@ const ComingSoon = () => {
           </h1>
 
           <p className="text-sm md:text-2xl text-white/90">
-            Your all-in-one portfolio platform for creative professionals. Showcase your work, connect with clients, and grow your career.
+            Your all-in-one portfolio platform for creative professionals.
+            Showcase your work, connect with clients, and grow your career.
           </p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4 justify-center mt-8">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col md:flex-row gap-4 justify-center mt-8"
+          >
             <input
               type="email"
               value={email}
@@ -74,12 +75,12 @@ const ComingSoon = () => {
           </form>
 
           {submitted && (
-            <p className="text-green-300">Thanks for joining our waitlist! We'll notify you when we launch.</p>
+            <p className="text-green-300">
+              Thanks for joining our waitlist! We'll notify you when we launch.
+            </p>
           )}
 
-          {error && (
-            <p className="text-red-500">{error}</p>
-          )}
+          {error && <p className="text-red-500">{error}</p>}
 
           <div className="flex justify-center space-x-6 mt-8">
             <Twitter className="w-8 h-8 text-white/80 hover:text-white cursor-pointer" />
