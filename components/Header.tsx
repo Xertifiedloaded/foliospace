@@ -7,7 +7,7 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { Home, Grid, User, Share2, FileText, Palette, Eye, FilePlus, MenuIcon } from "lucide-react";
+import { Home, Grid, User, Share2, FileText, Palette, Eye, FilePlus, MenuIcon, Settings, Search } from "lucide-react";
 import { LucideIcon } from "lucide-react"; 
 import { Button } from "@/components/ui/button";
 import { RiCheckboxCircleLine } from "react-icons/ri";
@@ -27,6 +27,8 @@ const Header: React.FC = () => {
     { path: "/profile/socials", title: "Socials", icon: Share2 }, 
     { path: "/profile/resume", title: "Resume", icon: FileText }, 
     { path: "/profile/portfolio", title: "Portfolio", icon: Palette }, 
+    { path: "/settings", title: "Settings", icon: Settings }, 
+    { path: "/profile/collaboration", title: "Collaborate", icon: Search }, 
   ];
 
   const handleNavigation = (path: string): void => {

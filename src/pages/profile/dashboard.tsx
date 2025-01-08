@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
-
 import { Separator } from "@/components/ui/separator";
 import DashBoardSkills from "@/sections/DashBoardSkills";
 import ProfileLayout from "@/components/layout";
 import { useSession } from "next-auth/react";
 import ProfileCompleteness from "../../../components/ProfileCompleteness";
 import { DashBoardHeading } from "../../../sections/DashBoardHeading";
+import PortfolioAnalytic from '../../../components/Analytics/PortfolioAnalytic';
 
 interface Profile {
   id: string;
@@ -90,7 +90,15 @@ const Dashboard: React.FC = () => {
 
   return (
     <ProfileLayout>
-      <div className="px-4 lg:flex justify-center items-center">
+  
+
+
+
+
+      <div className="container mx-auto py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+        <div className="px-4 lg:flex justify-center items-center">
         <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl border border-neutral-200 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
             <div className="flex justify-between items-center">
@@ -185,6 +193,14 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+
+
+
+<PortfolioAnalytic/>
+        </div>
+      </div>
+
     </ProfileLayout>
   );
 };

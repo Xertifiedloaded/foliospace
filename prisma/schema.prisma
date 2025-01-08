@@ -32,6 +32,7 @@ model User {
   skills                  Skill[]      @relation("UserSkills")
   template                Template     @default(BASIC)
 }
+
 enum Template {
   BASIC
   MODERN
@@ -39,11 +40,12 @@ enum Template {
   MINIMAL
 }
 
-model PageVisit {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  path      String
-  username  String
-  visitedAt DateTime @default(now())
+model VisitLog {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  portfolioOwner String
+  timestamp      DateTime @default(now())
+  userAgent      String
+  ipAddress      String
 }
 
 model Skill {
@@ -57,16 +59,18 @@ model Skill {
 }
 
 model Profile {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String?  @unique @db.ObjectId
-  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  picture     String?
-  tagline     String?
-  bio         String?
-  hobbies     String[]
-  languages   String[]
-  address     String?
-  phoneNumber String?
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String?  @unique @db.ObjectId
+  user              User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  picture           String?
+  tagline           String?
+  bio               String?
+  hobbies           String[]
+  languages         String[]
+  address           String?
+  phoneNumber       String?
+  levelOfExperience Level?
+  yearsOfExperience Int?
 }
 
 model PageView {
@@ -98,14 +102,14 @@ model Link {
   id     String  @id @default(auto()) @map("_id") @db.ObjectId
   userId String? @db.ObjectId
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  url  String?
-  text String?
+  url    String?
+  text   String?
 }
 
 model Social {
-  id     String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId String? @db.ObjectId
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String? @db.ObjectId
+  user      User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   name      String?
   link      String?
   isVisible Boolean @default(false)
@@ -140,7 +144,6 @@ enum SkillLevel {
   EXPERT
 }
 
-
 model Waitlist {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
@@ -151,4 +154,10 @@ model ScamEmail {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
   createdAt DateTime @default(now())
+}
+
+enum Level {
+  Junior
+  Mid
+  Senior
 }

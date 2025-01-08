@@ -66,3 +66,7 @@ type FAQItem = {
       answer: "Yes, we provide free customer support through our help center and contact form. If you encounter any issues or have questions, we're here to help!"
     }
   ];
+
+
+
+

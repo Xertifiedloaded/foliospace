@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -25,7 +27,10 @@ interface ProfileData {
   previewUrl?: string;
   phoneNumber?: string;
   address?: string;
+  levelOfExperience?: "Junior" | "Mid" | "Senior";
+  yearsOfExperience?: number;
 }
+
 interface Skill {
   id: string;
   name: string;
@@ -51,6 +56,8 @@ export default function ProfileDetails() {
     previewUrl: "",
     phoneNumber: "",
     address: "",
+    levelOfExperience: "Junior", 
+    yearsOfExperience: 0, 
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -89,6 +96,8 @@ export default function ProfileDetails() {
               : data.languages || "",
             picture: null,
             previewUrl: data.picture || "",
+            levelOfExperience: data.levelOfExperience || "Junior", // Set level of experience
+            yearsOfExperience: data.yearsOfExperience || 0, // Set years of experience
           });
           setInfo(data);
         } else {
@@ -110,7 +119,7 @@ export default function ProfileDetails() {
   }, [session, status]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const target = e.target as HTMLInputElement;
     const { name, value, files } = target;
@@ -141,6 +150,8 @@ export default function ProfileDetails() {
       submitFormData.append("bio", formData.bio);
       submitFormData.append("address", formData.address || "");
       submitFormData.append("phoneNumber", formData.phoneNumber || "");
+      submitFormData.append("levelOfExperience", formData.levelOfExperience || "Junior");
+      submitFormData.append("yearsOfExperience", formData.yearsOfExperience?.toString() || "0");
 
       submitFormData.append(
         "hobbies",
@@ -353,43 +364,48 @@ export default function ProfileDetails() {
                     </div>
 
                     <div>
-                      <Label htmlFor="picture">Profile Image</Label>
-                      <Input
-                        id="picture"
-                        name="picture"
-                        type="file"
+                      <Label htmlFor="levelOfExperience">Level of Experience</Label>
+                      <select
+                        id="levelOfExperience"
+                        name="levelOfExperience"
+                        value={formData.levelOfExperience}
                         onChange={handleChange}
-                        accept="image/*"
+                        className="w-full p-2 border rounded"
+                      >
+                        <option value="Junior">Junior</option>
+                        <option value="Mid">Mid</option>
+                        <option value="Senior">Senior</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="yearsOfExperience">Years of Experience</Label>
+                      <Input
+                        id="yearsOfExperience"
+                        name="yearsOfExperience"
+                        type="number"
+                        value={formData.yearsOfExperience}
+                        onChange={handleChange}
+                        placeholder="Enter your years of experience"
                       />
                     </div>
 
                     <Button
                       type="submit"
-                      className="w-full"
                       disabled={isSubmitting}
+                      className="w-full"
                     >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Saving...
-                        </>
-                      ) : (
-                        "Save Profile"
-                      )}
+                      {isSubmitting ? <Loader2 className="animate-spin" /> : "Save Changes"}
                     </Button>
                   </form>
-                  <UploadSkillForm
-                    name={name}
-                    level={level}
-                    setLevel={setLevel}
-                    setName={setName}
-                    skills={skills}
-                    handleSubmitSkills={handleSubmitSkills}
-                  />
                 </CardContent>
               </Card>
             </section>
           </div>
+
+          <div>
+
+
           <div className="relative">
             <div className="">
               <IPhoneFrame>
@@ -400,6 +416,7 @@ export default function ProfileDetails() {
                 />
               </IPhoneFrame>
             </div>
+          </div>
           </div>
         </div>
       </div>
