@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -56,8 +55,8 @@ export default function ProfileDetails() {
     previewUrl: "",
     phoneNumber: "",
     address: "",
-    levelOfExperience: "Junior", 
-    yearsOfExperience: 0, 
+    levelOfExperience: "Junior", // Default value
+    yearsOfExperience: 0, // Default value
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -119,7 +118,9 @@ export default function ProfileDetails() {
   }, [session, status]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const target = e.target as HTMLInputElement;
     const { name, value, files } = target;
@@ -150,8 +151,14 @@ export default function ProfileDetails() {
       submitFormData.append("bio", formData.bio);
       submitFormData.append("address", formData.address || "");
       submitFormData.append("phoneNumber", formData.phoneNumber || "");
-      submitFormData.append("levelOfExperience", formData.levelOfExperience || "Junior");
-      submitFormData.append("yearsOfExperience", formData.yearsOfExperience?.toString() || "0");
+      submitFormData.append(
+        "levelOfExperience",
+        formData.levelOfExperience || "Junior"
+      );
+      submitFormData.append(
+        "yearsOfExperience",
+        formData.yearsOfExperience?.toString() || "0"
+      );
 
       submitFormData.append(
         "hobbies",
@@ -364,7 +371,9 @@ export default function ProfileDetails() {
                     </div>
 
                     <div>
-                      <Label htmlFor="levelOfExperience">Level of Experience</Label>
+                      <Label htmlFor="levelOfExperience">
+                        Level of Experience
+                      </Label>
                       <select
                         id="levelOfExperience"
                         name="levelOfExperience"
@@ -379,7 +388,9 @@ export default function ProfileDetails() {
                     </div>
 
                     <div>
-                      <Label htmlFor="yearsOfExperience">Years of Experience</Label>
+                      <Label htmlFor="yearsOfExperience">
+                        Years of Experience
+                      </Label>
                       <Input
                         id="yearsOfExperience"
                         name="yearsOfExperience"
@@ -389,13 +400,26 @@ export default function ProfileDetails() {
                         placeholder="Enter your years of experience"
                       />
                     </div>
-
+                    <div>
+                      <Label htmlFor="picture">Profile Image</Label>
+                      <Input
+                        id="picture"
+                        name="picture"
+                        type="file"
+                        onChange={handleChange}
+                        accept="image/*"
+                      />
+                    </div>
                     <Button
                       type="submit"
                       disabled={isSubmitting}
                       className="w-full"
                     >
-                      {isSubmitting ? <Loader2 className="animate-spin" /> : "Save Changes"}
+                      {isSubmitting ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        "Save Changes"
+                      )}
                     </Button>
                   </form>
                 </CardContent>
@@ -404,19 +428,17 @@ export default function ProfileDetails() {
           </div>
 
           <div>
-
-
-          <div className="relative">
-            <div className="">
-              <IPhoneFrame>
-                <ProfilePreview
-                  skills={skills}
-                  data={formData}
-                  loading={status === "loading"}
-                />
-              </IPhoneFrame>
+            <div className="relative">
+              <div className="">
+                <IPhoneFrame>
+                  <ProfilePreview
+                    skills={skills}
+                    data={formData}
+                    loading={status === "loading"}
+                  />
+                </IPhoneFrame>
+              </div>
             </div>
-          </div>
           </div>
         </div>
       </div>
