@@ -10,6 +10,8 @@ import ProfessionalTemplate from "../../../components/templates/Professional";
 import MinimalTemplate from "../../../components/templates/Minimal";
 import ModernTemplate from "../../../components/templates/Modern";
 import Hero from "../../../sections/Hero";
+import Link from "next/link";
+
 
 const PortfolioPage = () => {
   const router = useRouter();
