@@ -23,6 +23,7 @@ export default async function handler(req, res) {
           include: {
             profile: true, 
             skills: true, 
+            socials:true,
           },
         });
       } else {
@@ -30,6 +31,7 @@ export default async function handler(req, res) {
           include: {
             profile: true,
             skills: true,
+            socials:true,
           },
         });
       }

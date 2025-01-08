@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useRouter } from "next/router"; // Import useRouter
 import { settingsCategories } from "../../../utils";
 import SettingsLayout from "../../../components/SettingsLayout";
+import UserBackupButton from "../../../components/UserDownloadButton";
+import LanguageSwitcher from "../../../components/LanguageSwitcher";
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("account");
@@ -126,7 +128,24 @@ const SettingsHeader = ({ isNavOpen, toggleNav }) => {
 };
 
 const SettingsContent = ({ activeCategory }) => {
-  const router = useRouter();
+  const renderFeatureAction = (feature) => {
+    switch (feature.name) {
+      case "Export Data":
+        return <UserBackupButton/>;
+      case "Account Deletion":
+        return <span>Account Deletion Component</span>;
+      case "Dark Mode":
+        return <span>Dark Mode Component</span>;
+      case "Content Language":
+        return <LanguageSwitcher/>
+      default:
+        return (
+          <button className="text-blue-600 dark:text-blue-400 hover:underline">
+            <a href={feature.path}>Configure</a>
+          </button>
+        );
+    }
+  };
 
   const renderSection = (section) => (
     <div key={section.title} className="mb-8">
@@ -138,13 +157,7 @@ const SettingsContent = ({ activeCategory }) => {
             className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
           >
             <span>{feature.name}</span>
-            <button
-              className="text-blue-600 dark:text-blue-400 hover:underline"
-            >
-           <a href={feature.path}>
-            Configure
-           </a>
-            </button>
+            {renderFeatureAction(feature)}
           </div>
         ))}
       </div>

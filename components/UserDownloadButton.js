@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
 const UserBackupButton = () => {
   const { data: session } = useSession();
   const userId = session?.user?.id;
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleDownload = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(
         `/api/portfolio/export-data?userId=${userId}`,
@@ -21,12 +24,18 @@ const UserBackupButton = () => {
       link.click();
     } catch (error) {
       console.error("Error generating PDF:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <Button onClick={handleDownload} className="btn btn-primary">
-      Download Portfolio PDF
+    <Button
+      onClick={handleDownload}
+      disabled={isLoading}
+      className={`btn btn-primary ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
+    >
+      {isLoading ? "Generating..." : "Download Portfolio PDF"}
     </Button>
   );
 };

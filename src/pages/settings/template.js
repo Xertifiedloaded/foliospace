@@ -17,9 +17,9 @@ const TemplateSelector = () => {
   const [template, setTemplate] = useState("BASIC");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const [isClient, setIsClient] = useState(false); // To prevent hydration errors
+  const [isClient, setIsClient] = useState(false); 
 
-  // To ensure that loading state isn't rendered until the client-side
+
   useEffect(() => {
     setIsClient(true);
   }, []);

@@ -1,7 +1,52 @@
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Search, Filter, Users, X } from "lucide-react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  FaGithub,
+  FaLinkedin,
+  FaTwitter,
+  FaInstagram,
+  FaFacebook,
+  FaDribbble,
+  FaBehance,
+  FaMedium,
+  FaYoutube,
+  FaTiktok,
+} from "react-icons/fa";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Search,
+  Users2,
+  X,
+  Mail,
+  Phone,
+  ExternalLink,
+  Globe2,
+} from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 import ProfileLayout from "../../../components/layout";
 
 const UserSkillsDisplay = () => {
@@ -11,6 +56,25 @@ const UserSkillsDisplay = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const getSocialIcon = (platform) => {
+    const icons = {
+      github: <FaGithub className="h-2 w-2" />,
+      linkedin: <FaLinkedin className="h-4 w-4" />,
+      twitter: <FaTwitter className="h-4 w-4" />,
+      instagram: <FaInstagram className="h-4 w-4" />,
+      facebook: <FaFacebook className="h-4 w-4" />,
+      dribbble: <FaDribbble className="h-4 w-4" />,
+      behance: <FaBehance className="h-4 w-4" />,
+      medium: <FaMedium className="h-4 w-4" />,
+      youtube: <FaYoutube className="h-4 w-4" />,
+      tiktok: <FaTiktok className="h-4 w-4" />,
+      default: <Globe2 className="h-4 w-4" />,
+    };
+
+    const platformLower = platform?.toLowerCase();
+    return icons[platformLower] || icons.default;
+  };
+
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -18,7 +82,6 @@ const UserSkillsDisplay = () => {
         ? `?skills=${selectedSkills.join(",")}`
         : "";
       const response = await axios.get(`/api/user/userskills${queryParams}`);
-      console.log(response);
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -74,111 +137,220 @@ const UserSkillsDisplay = () => {
 
   return (
     <ProfileLayout>
-      <div className="container mx-auto p-6">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-4">Team Skills Directory</h1>
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
+      <div className="container mx-auto p-6 space-y-8">
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">
+                Team Directory
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                Browse and connect with team members based on their skills and
+                expertise
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={clearFilters}
+              disabled={!searchTerm && !selectedSkills.length && !selectedLevel}
+              className="gap-2"
+            >
+              <X className="h-4 w-4" />
+              Reset Filters
+            </Button>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <input
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
                 type="text"
                 placeholder="Search by name, role, or skill..."
-                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
               />
             </div>
-            <select
-              className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              value={selectedLevel}
-              onChange={(e) => setSelectedLevel(e.target.value)}
-            >
-              <option value="Junior">Junior</option>
-              <option value="Mid">Mid</option>
-              <option value="Senior">Senior</option>
-            </select>
-            {(searchTerm || selectedSkills.length || selectedLevel) && (
-              <button
-                onClick={clearFilters}
-                className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-              >
-                <X className="h-4 w-4" />
-                Clear Filters
-              </button>
-            )}
+            <Select value={selectedLevel} onValueChange={setSelectedLevel}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Experience Level" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={null}>All Levels</SelectItem>
+                <SelectItem value="Junior">Junior</SelectItem>
+                <SelectItem value="Mid">Mid-Level</SelectItem>
+                <SelectItem value="Senior">Senior</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-4">
-            {allSkills.map((skill) => (
-              <button
-                key={skill}
-                onClick={() => handleSkillToggle(skill)}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                  selectedSkills.includes(skill)
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {skill}
-              </button>
-            ))}
+          <div className="space-y-2">
+            <h2 className="text-sm font-medium">Filter by Skills</h2>
+            <div className="flex flex-wrap gap-2">
+              {allSkills.map((skill) => (
+                <Button
+                  key={skill}
+                  variant={
+                    selectedSkills.includes(skill) ? "default" : "outline"
+                  }
+                  size="sm"
+                  onClick={() => handleSkillToggle(skill)}
+                  className="rounded-full"
+                >
+                  {skill}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
-        {/* Users Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading ? (
-            <div className="text-center py-12">
-              <p>Loading users...</p>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="space-y-4 text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
+              <p className="text-muted-foreground">Loading team members...</p>
             </div>
-          ) : filteredUsers.length > 0 ? (
-            filteredUsers.map((user) => (
-              <Card key={user.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="flex flex-row items-center gap-4">
-                  <img
-                    src={user?.profile?.picture ?? "/images/user.jpg"}
-                    alt={user.name}
-                    className="w-12 h-12 rounded-full"
-                  />
-                  <div>
-                    <CardTitle className="text-lg">{user.name}</CardTitle>
-                    <p className="text-sm text-gray-500">
-                      {user?.profile?.tagline ?? "No Tagline"}
-                    </p>
+          </div>
+        ) : filteredUsers.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredUsers.map((user) => (
+              <Card
+                key={user.id}
+                className="group hover:shadow-lg transition-all"
+              >
+                <CardHeader>
+                  <div className="flex items-start gap-4">
+                    <img
+                      src={user?.profile?.picture ?? "/images/user.jpg"}
+                      alt={user.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <div className="space-y-1">
+                      <CardTitle className="text-lg">{user.name}</CardTitle>
+                      <CardDescription>
+                        {user?.profile?.tagline ?? "No Tagline"}
+                      </CardDescription>
+                    </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-sm font-medium text-gray-600">
-                    {user?.profile?.levelOfExperience &&
-                    user?.profile?.yearsOfExperience
-                      ? `${user.profile.levelOfExperience} • ${user.profile.yearsOfExperience} years experience`
-                      : null}
-                  </p>
+                <CardContent className="space-y-4">
+                  {user?.profile?.levelOfExperience && (
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary">
+                        {user.profile.levelOfExperience}
+                      </Badge>
+                      {user?.profile?.yearsOfExperience && (
+                        <span className="text-sm text-muted-foreground">
+                          {user.profile.yearsOfExperience} years experience
+                        </span>
+                      )}
+                    </div>
+                  )}
 
-                  <div className="flex flex-wrap gap-2 mt-2">
+                  <div className="flex flex-wrap gap-1.5">
                     {user.skills.map((skill) => (
-                      <span
-                        key={skill.id}
-                        className="px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700"
-                      >
+                      <Badge key={skill.id} variant="outline">
                         {skill.name}
-                      </span>
+                      </Badge>
                     ))}
                   </div>
                 </CardContent>
+                <CardFooter>
+                  <div className="flex items-center gap-3 text-sm">
+                    <TooltipProvider>
+                      {user?.email && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              asChild
+                              className="h-8 w-8"
+                            >
+                              <a href={`mailto:${user.email}`}>
+                                <Mail className="h-4 w-4" />
+                              </a>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Send email</TooltipContent>
+                        </Tooltip>
+                      )}
+
+                      {user?.profile?.phoneNumber && (
+                        <>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                asChild
+                                className="h-8 w-8 text-green-600"
+                              >
+                                <a
+                                  href={`https://wa.me/${user.profile.phoneNumber}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <FaWhatsapp className="h-4 w-4" />
+                                </a>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>WhatsApp</TooltipContent>
+                          </Tooltip>
+
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                asChild
+                                className="h-8 w-8"
+                              >
+                                <a href={`tel:${user.profile.phoneNumber}`}>
+                                  <Phone className="h-4 w-4" />
+                                </a>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Call</TooltipContent>
+                          </Tooltip>
+                        </>
+                      )}
+
+                      {user.socials.length > 0 &&
+                        user?.socials.map((social) => (
+                          <Tooltip key={social.id}>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                asChild
+                                className="h-8 w-8"
+                              >
+                                <a
+                                  href={social?.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-muted-foreground hover:text-foreground transition-colors"
+                                >
+                                  {getSocialIcon(social?.name)}
+                                </a>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>{social.name}</TooltipContent>
+                          </Tooltip>
+                        ))}
+                    </TooltipProvider>
+                  </div>
+                </CardFooter>
               </Card>
-            ))
-          ) : (
-            <div className="text-center py-12">
-              <Users className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No users found
-              </h3>
-              <p className="text-gray-500">
-                Try adjusting your search or filters
-              </p>
-            </div>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <Users2 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">No users found</p>
+          </div>
+        )}
       </div>
     </ProfileLayout>
   );
