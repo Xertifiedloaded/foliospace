@@ -20,7 +20,7 @@ export default async function handler(req, res) {
           education: { 
             orderBy: { startDate: 'desc' } 
           },
-          skills: true, // Include skills
+          skills: true, 
         },
       });
 
@@ -31,6 +31,7 @@ export default async function handler(req, res) {
       const { password, ...safeUserData } = user;
       const sanitizedUserData = {
         ...safeUserData,
+        template: user.template || "BASIC",
         profile: user.profile || null,
         projects: user.projects || [],
         socials: user.socials || [],

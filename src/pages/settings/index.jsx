@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import UserBackupButton from "../../../components/UserDownloadButton";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
+import TemplateSelector from "../../../components/Template";
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("personalization");
@@ -29,12 +30,7 @@ const SettingsPage = () => {
         return (
           <div>
             <h2 className="text-xl font-bold mb-4">Personalization</h2>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>Themes and Templates</li>
-              <li>Drag-and-Drop Builder</li>
-              <li>Custom Fonts and Colors</li>
-              <li>Custom Domains</li>
-            </ul>
+            <TemplateSelector />
           </div>
         );
       case "social":

@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-import {
-  EducationSection,
-  ExperienceSection,
-  PortfolioLink,
-  PortfolioProjectSections,
-} from "../../../sections/ProjectSection";
-import Hero from "../../../sections/Hero";
 import SkeletalLoader from "../../../components/SkeletalLoader";
+import Basic from "../../../components/templates/Basic";
+import ProfessionalTemplate from "../../../components/templates/Professional";
+import MinimalTemplate from "../../../components/templates/Minimal";
+import ModernTemplate from "../../../components/templates/Modern";
+import Hero from "../../../sections/Hero";
 
 const PortfolioPage = () => {
   const router = useRouter();
   const { username } = router.query;
   const [portfolio, setPortfolio] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [visitCount, setVisitCount] = useState(0);
+
   useEffect(() => {
     const fetchPortfolio = async () => {
       try {
@@ -27,7 +24,9 @@ const PortfolioPage = () => {
         if (!response.ok) {
           throw new Error("Portfolio not found");
         }
+
         const data = await response.json();
+        console.log(data);
         setPortfolio(data);
       } catch (error) {
         console.error("Portfolio fetch error:", error);
@@ -41,32 +40,19 @@ const PortfolioPage = () => {
     }
   }, [username]);
 
-  useEffect(() => {
-    const trackVisit = async () => {
-      if (username) {
-        try {
-         
-          const response = await fetch(`/api/track-visitor?username=${username}`);
-          if (response.ok) {
-            const data = await response.json();
-            setVisitCount(data.visits);  
-          } else {
-            console.error("Error tracking visit");
-          }
-        } catch (error) {
-          console.error("Error tracking visit:", error);
-        }
-      }
-    };
-
-    trackVisit();  
-
-  }, [username]);
-
-
-
-
-
+  const renderTemplateContent = () => {
+    switch (portfolio?.template) {
+      case "PROFESSIONAL":
+        return <ProfessionalTemplate portfolio={portfolio}  />;
+      case "MINIMAL":
+        return <MinimalTemplate portfolio={portfolio}  />;
+      case "MODERN":
+        return <ModernTemplate portfolio={portfolio}  />;
+      case "BASIC":
+      default:
+        return <Basic portfolio={portfolio} />;
+    }
+  };
 
   if (loading) {
     return <SkeletalLoader />;
@@ -91,40 +77,9 @@ const PortfolioPage = () => {
   }
 
   return (
-    <div className="px-2 bg-gray-900 text-white py-8 max-w-4xl container mx-auto space-y-6">
-      <Hero portfolio={portfolio} />
-
-      {(portfolio?.links?.length > 0 || portfolio?.socials?.length > 0) && (
-        <PortfolioLink
-          profile={portfolio?.profile}
-          links={portfolio?.links}
-          socials={portfolio?.socials}
-        />
-      )}
-
-      {portfolio.experiences?.length > 0 && (
-        <ExperienceSection experiences={portfolio?.experiences} />
-      )}
-
-      {portfolio.education?.length > 0 && (
-        <EducationSection education={portfolio?.education} />
-      )}
-
-      {portfolio.projects?.length > 0 && (
-        <PortfolioProjectSections projects={portfolio?.projects} />
-      )}
-
-      <div className="flex justify-center items-center">
-        <Button>
-          <a
-            href={`${window.location.origin}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Create your Portfolio
-          </a>
-        </Button>
-      </div>
+    <div className=" max-w-4xl container mx-auto space-y-6">
+      <Hero portfolio={portfolio} template={portfolio?.template}  />
+      {renderTemplateContent()}
       <footer className="mt-8 mb-4 text-center">
         <small className="text-gray-500 font-light flex items-center justify-center gap-1">
           © {new Date().getFullYear()}{" "}

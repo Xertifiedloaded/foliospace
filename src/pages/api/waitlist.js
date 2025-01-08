@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+
 import { transporter } from "../../../lib/nodemailer"; 
 import dns from "dns";
 import { promisify } from "util";
@@ -7,7 +8,9 @@ const prisma = new PrismaClient();
 const resolveMx = promisify(dns.resolveMx);
 // List of specific scam domains and emails
 const scamDomains = ["ourtimesupport.com", "slclogin.com"];
-const specificScamEmails = ["nick10@ourtimesupport.com", "emmie72@ourtimesupport.com","carlos67@slclogin.com","nick67@slclogin.com","casey.swiftt@aol.com","brandonfarmer75@outlook.com","evans58@slclogin.com"];
+const specificScamEmails = ["nick10@ourtimesupport.com", "emmie72@ourtimesupport.com",
+"carlos67@slclogin.com","nick67@slclogin.com","casey.swiftt@aol.com",
+"brandonfarmer75@outlook.com","evans58@slclogin.com"];
 
 // flagged scammy emails
 const scammyPatterns = [

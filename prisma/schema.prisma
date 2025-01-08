@@ -30,6 +30,13 @@ model User {
   education               Education[]
   pageViews               PageView[]
   skills                  Skill[]      @relation("UserSkills")
+  template                Template     @default(BASIC)
+}
+enum Template {
+  BASIC
+  MODERN
+  PROFESSIONAL
+  MINIMAL
 }
 
 model PageVisit {
@@ -44,7 +51,7 @@ model Skill {
   name      String
   level     SkillLevel
   userId    String     @db.ObjectId
-  user      User       @relation("UserSkills", fields: [userId], references: [id]) // Relates to User via userId
+  user      User       @relation("UserSkills", fields: [userId], references: [id])
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
@@ -91,7 +98,6 @@ model Link {
   id     String  @id @default(auto()) @map("_id") @db.ObjectId
   userId String? @db.ObjectId
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   url  String?
   text String?
 }
@@ -100,7 +106,6 @@ model Social {
   id     String  @id @default(auto()) @map("_id") @db.ObjectId
   userId String? @db.ObjectId
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   name      String?
   link      String?
   isVisible Boolean @default(false)
@@ -135,15 +140,15 @@ enum SkillLevel {
   EXPERT
 }
 
+
 model Waitlist {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
   createdAt DateTime @default(now())
 }
 
-
 model ScamEmail {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email String @unique
+  email     String   @unique
   createdAt DateTime @default(now())
 }
