@@ -1,94 +1,113 @@
-import React, { useState } from "react";
+import React from "react";
 import { Twitter, Instagram, Linkedin, Mail } from "lucide-react";
 import { submitEmail } from "../hooks/waitlist";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useToast } from "../hooks/use-toast";
+
 
 const ComingSoon = () => {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [email, setEmail] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email) {
-      setError("Email is required.");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Email is required.",
+      });
       return;
     }
 
     setLoading(true);
-    setError("");
 
     try {
-      const success = await submitEmail(email, setError);
+      const success = await submitEmail(email);
       if (success) {
-        setSubmitted(true);
         setEmail("");
-        setError("");
+        toast({
+          title: "Success!",
+          description: "Thanks for joining our waitlist! We'll notify you when we launch.",
+        });
       }
     } catch (error) {
       console.error("Submission error:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center px-4">
-      <div className="max-w-3xl w-full bg-white/10 backdrop-blur-lg rounded-2xl p-8 md:p-12 shadow-2xl">
-        <div className="text-center space-y-6">
-          <h1 className="text-2xl md:text-6xl font-extrabold text-white tracking-tight">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-indigo-950 dark:to-purple-950 flex items-center justify-center p-4">
+      <Card className="max-w-3xl w-full bg-white/10 dark:bg-black/10 backdrop-blur-lg border-0">
+        <CardHeader className="space-y-6 text-center">
+          <CardTitle className="text-2xl md:text-6xl font-extrabold text-white dark:text-white tracking-tight">
             Welcome to Foliospace
-          </h1>
-
-          <p className="text-sm md:text-2xl text-white/90">
+          </CardTitle>
+          <CardDescription className="text-sm md:text-2xl text-white/90 dark:text-white/80">
             Your all-in-one portfolio platform for creative professionals.
             Showcase your work, connect with clients, and grow your career.
-          </p>
+          </CardDescription>
+        </CardHeader>
 
-          <form
+        <CardContent>
+          <form 
             onSubmit={handleSubmit}
             className="flex flex-col md:flex-row gap-4 justify-center mt-8"
           >
-            <input
+            <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
-              className="px-6 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100"
               required
             />
-            <button
-              type="submit"
-              className="px-8 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-white/90 transition-colors"
+            <Button 
+              type="submit" 
               disabled={loading}
+              className="bg-white dark:bg-gray-950 text-purple-600 dark:text-purple-400 hover:bg-white/90 dark:hover:bg-gray-900"
             >
               {loading ? (
-                <span>Loading...</span>
+                "Loading..."
               ) : (
                 <>
-                  <Mail className="w-5 h-5 inline mr-2" />
+                  <Mail className="w-5 h-5 mr-2" />
                   Join Waitlist
                 </>
               )}
-            </button>
+            </Button>
           </form>
 
-          {submitted && (
-            <p className="text-green-300">
-              Thanks for joining our waitlist! We'll notify you when we launch.
-            </p>
-          )}
-
-          {error && <p className="text-red-500">{error}</p>}
-
           <div className="flex justify-center space-x-6 mt-8">
-            <Twitter className="w-8 h-8 text-white/80 hover:text-white cursor-pointer" />
-            <Instagram className="w-8 h-8 text-white/80 hover:text-white cursor-pointer" />
-            <Linkedin className="w-8 h-8 text-white/80 hover:text-white cursor-pointer" />
+            <Button variant="ghost" size="icon" className="text-white/80 hover:text-white dark:text-white/80 dark:hover:text-white">
+              <Twitter className="w-5 h-5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="text-white/80 hover:text-white dark:text-white/80 dark:hover:text-white">
+              <Instagram className="w-5 h-5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="text-white/80 hover:text-white dark:text-white/80 dark:hover:text-white">
+              <Linkedin className="w-5 h-5" />
+            </Button>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
