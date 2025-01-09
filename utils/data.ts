@@ -1,4 +1,5 @@
-
+import { Home, Grid, User, Share2, FileText, Palette, Eye, FilePlus, MenuIcon, Settings, Search } from "lucide-react";
+import { LucideIcon } from "lucide-react"; 
 type FAQItem = {
     question: string;
     answer: string;
@@ -69,4 +70,19 @@ type FAQItem = {
 
 
 
-
+  interface NavItem {
+    path: string;
+    title: string;
+    icon: LucideIcon;
+  }
+  export const navItems: NavItem[] = [
+    { path: "/", title: "Home", icon: Home }, 
+    { path: "/profile/dashboard", title: "Dashboard", icon: Grid }, 
+    { path: "/profile/details", title: "Profile Details", icon: User }, 
+    { path: "/profile/links", title: "Links", icon: Share2 },
+    { path: "/profile/socials", title: "Socials", icon: Share2 }, 
+    { path: "/profile/resume", title: "Resume", icon: FileText }, 
+    { path: "/profile/portfolio", title: "Portfolio", icon: Palette }, 
+    { path: "/settings", title: "Settings", icon: Settings }, 
+    { path: "/profile/collaboration", title: "Collaborate", icon: Search }, 
+  ];

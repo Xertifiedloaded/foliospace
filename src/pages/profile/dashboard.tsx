@@ -9,7 +9,7 @@ import ProfileLayout from "@/components/layout";
 import { useSession } from "next-auth/react";
 import ProfileCompleteness from "../../../components/ProfileCompleteness";
 import { DashBoardHeading } from "../../../sections/DashBoardHeading";
-import PortfolioAnalytic from '../../../components/Analytics/PortfolioAnalytic';
+import PortfolioAnalytic from "../../../components/Analytics/PortfolioAnalytic";
 
 interface Profile {
   id: string;
@@ -28,6 +28,7 @@ const Dashboard: React.FC = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -90,117 +91,120 @@ const Dashboard: React.FC = () => {
 
   return (
     <ProfileLayout>
-  
-
-
-
-
-      <div className="container mx-auto py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      
-        <div className="px-4 lg:flex justify-center items-center">
-        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl border border-neutral-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold">Profile Dashboard</h2>
-            </div>
-            <div className="mt-4 flex items-center">
-              <div className="w-12 h-12 bg-white/30 rounded-full mr-4">
-                {profile?.picture ? (
-                  <img
-                    src={profile?.picture}
-                    alt={session?.user?.name || "User Name"}
-                    className="w-full h-full object-cover rounded-full"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-300 rounded-full"></div> // Placeholder
-                )}
-              </div>
-              <div>
-                <div className="text-lg font-semibold">
-                  {session?.user?.name || "User Name"}
-                </div>
-                <div className="text-xs opacity-75">
-                  {profile?.tagline || "No tagline"}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-6 space-y-6">
-            <ProfileCompleteness profile={profile} />
-            <DashBoardHeading />
-            <div className="space-y-6">
-              {error ? (
-                <p className="text-red-500">{error}</p>
-              ) : isLoading ? (
-                <SkeletalLoader />
-              ) : profile === null ? (
-                <div className="text-center text-gray-500">
-                  <SkeletalLoader />
-                </div>
-              ) : (
-                Object.keys(profile)
-                  .filter((key) => !excludedFields.includes(key))
-                  .map((key) => (
-                    <React.Fragment key={key}>
-                      <div className="flex items-center space-x-2">
-                        <p className="font-semibold capitalize flex-grow">
-                          {key.replace(/([A-Z])/g, " $1")}
-                        </p>
-                        <Link href="/profile/details">
-                          <ExternalLink
-                            className={`w-5 h-5 ${
-                              isValueEmpty(profile[key])
-                                ? "text-red-500"
-                                : "text-green-500"
-                            } transition-colors duration-200`}
-                          />
-                        </Link>
+      <div
+        className={`min-h-screen transition-colors duration-300 dark:bg-black dark:text-gray-200 `}
+      >
+        <div className="container mx-auto py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="px-4 lg:flex justify-center items-center">
+              <div
+                className="w-full dark:bg-black dark:text-white max-w-4xl rounded-2xl shadow-2xl border dark:border-gray-700 
+             "
+              >
+                <div
+                  className={`p-6 ${
+                    isDarkMode
+                      ? "bg-gradient-to-r from-gray-700 to-gray-600"
+                      : "bg-gradient-to-r from-blue-600 to-purple-600"
+                  } text-white`}
+                >
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-lg font-bold">Profile Dashboard</h2>
+                  </div>
+                  <div className="mt-4 flex items-center">
+                    <div className="w-12 h-12 bg-white/30 rounded-full mr-4">
+                      {profile?.picture ? (
+                        <img
+                          src={profile?.picture}
+                          alt={session?.user?.name || "User Name"}
+                          className="w-full h-full object-cover rounded-full"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-300 rounded-full"></div>
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-lg font-semibold">
+                        {session?.user?.name || "User Name"}
                       </div>
-                      <div>
-                        {key === "hobbies" || key === "languages" ? (
-                          <div className="flex flex-wrap gap-2">
-                            {profile[key]?.map(
-                              (item: string, index: number) => (
-                                <button
-                                  key={index}
-                                  className="px-3 py-1 bg-gray-100 duration-200 transition-colors text-gray-700 rounded-full hover:bg-gray-200 text-sm"
-                                >
-                                  {item}
-                                </button>
-                              )
-                            )}
-                          </div>
-                        ) : Array.isArray(profile[key]) ? (
-                          <ul className="list-disc list-inside">
-                            {profile[key]?.map(
-                              (item: string, index: number) => (
-                                <li key={index}>{item}</li>
-                              )
-                            )}
-                          </ul>
-                        ) : (
-                          <p>{profile[key] || "Not specified"}</p>
-                        )}
+                      <div className="text-xs opacity-75">
+                        {profile?.tagline || "No tagline"}
                       </div>
-                      <Separator className="my-3" />
-                    </React.Fragment>
-                  ))
-              )}
-              <DashBoardSkills />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-6 space-y-6">
+                  <ProfileCompleteness profile={profile} />
+                  <DashBoardHeading />
+                  <div className="space-y-6">
+                    {error ? (
+                      <p className="text-red-500">{error}</p>
+                    ) : isLoading ? (
+                      <SkeletalLoader />
+                    ) : profile === null ? (
+                      <div className="text-center text-gray-500">
+                        <SkeletalLoader />
+                      </div>
+                    ) : (
+                      Object.keys(profile)
+                        .filter((key) => !excludedFields.includes(key))
+                        .map((key) => (
+                          <React.Fragment key={key}>
+                            <div className="flex items-center space-x-2">
+                              <p className="font-semibold dark:text-gray-200 capitalize flex-grow">
+                                {key.replace(/([A-Z])/g, " $1")}
+                              </p>
+                              <Link href="/profile/details">
+                                <ExternalLink
+                                  className={`w-5 h-5 ${
+                                    isValueEmpty(profile[key])
+                                      ? "text-red-500"
+                                      : "text-green-500"
+                                  } transition-colors duration-200`}
+                                />
+                              </Link>
+                            </div>
+                            <div>
+                              {key === "hobbies" || key === "languages" ? (
+                                <div className="flex flex-wrap gap-2">
+                                  {profile[key]?.map(
+                                    (item: string, index: number) => (
+                                      <button
+                                        key={index}
+                                        className={`px-3 py-1 dark:text-gray-200 `}
+                                      >
+                                        {item}
+                                      </button>
+                                    )
+                                  )}
+                                </div>
+                              ) : Array.isArray(profile[key]) ? (
+                                <ul className="list-disc list-inside">
+                                  {profile[key]?.map(
+                                    (item: string, index: number) => (
+                                      <li  className='dark:text-gray-200' key={index}>{item}</li>
+                                    )
+                                  )}
+                                </ul>
+                              ) : (
+                                <p className="dark:text-gray-200">{profile[key] || "Not specified"}</p>
+                              )}
+                            </div>
+                            <Separator className="my-3" />
+                          </React.Fragment>
+                        ))
+                    )}
+                    <DashBoardSkills />
+                  </div>
+                </div>
+              </div>
             </div>
+
+            <PortfolioAnalytic />
           </div>
         </div>
       </div>
-
-
-
-
-<PortfolioAnalytic/>
-        </div>
-      </div>
-
     </ProfileLayout>
   );
 };

@@ -31,13 +31,15 @@ model User {
   pageViews               PageView[]
   skills                  Skill[]      @relation("UserSkills")
   template                Template     @default(BASIC)
+  sessions                Session[]
 }
 
-enum Template {
-  BASIC
-  MODERN
-  PROFESSIONAL
-  MINIMAL
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId    String     @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VisitLog {
@@ -137,13 +139,6 @@ model Education {
   endDate     DateTime?
 }
 
-enum SkillLevel {
-  BEGINNER
-  INTERMEDIATE
-  ADVANCED
-  EXPERT
-}
-
 model Waitlist {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
@@ -160,4 +155,18 @@ enum Level {
   Junior
   Mid
   Senior
+}
+
+enum Template {
+  BASIC
+  MODERN
+  PROFESSIONAL
+  MINIMAL
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
 }

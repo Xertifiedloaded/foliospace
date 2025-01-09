@@ -25,46 +25,42 @@ const ProfileCard: React.FC<Profile> = ({
   return (
     <Link
       href={`/portfolio/${username}`}
-      className="block group bg-white border border-neutral-200 rounded-xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+      className="group relative bg-white border border-neutral-200 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-2"
     >
-      <div className="p-4 sm:p-6">
-        {/* Profile Header Section */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="relative flex-shrink-0">
+      <div className="p-6">
+        <div className="flex items-center space-x-4 mb-4">
+          <div className="relative">
             <Image
               width={100}
               height={100}
               src={picture}
               alt={name}
-              className="w-14 h-14  rounded-full object-cover border-4 border-neutral-100 group-hover:border-primary-100 transition-all duration-300"
+              className="w-16 h-16 rounded-full border-3 border-neutral-200 group-hover:scale-110 transition-transform"
             />
           </div>
-          <div className="flex-1">
-            <h3 className="text-xl font-semibold text-neutral-900 mb-1">
-              {name}
-            </h3>
-            <p className="text-neutral-600 text-xs font-bold">{tagline}</p>
+          <div>
+            <h3 className="text-lg font-bold text-neutral-900">{name}</h3>
+            <p className="text-sm text-neutral-600">{tagline}</p>
           </div>
         </div>
 
-        {/* Skills Section */}
-        <div className="mt-6">
-          {skills.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {skills.map((skill, index) => (
-                <span
-                  key={index}
-                  className="inline-flex font-semibold text-xs items-center px-3 py-1.5 bg-neutral-50 text-neutral-700 rounded-full   hover:bg-neutral-100 transition-colors duration-200"
-                >
-                  {skill.name}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-neutral-500 italic">
-              No skills listed yet
-            </p>
-          )}
+        <div className="mt-4">
+          <ul className="mt-2 text-sm text-neutral-600">
+            {skills.length > 0 ? (
+              <ul>
+                {skills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="px-2 py-1 bg-gray-100 rounded-full text-xs"
+                  >
+                    <span>{skill.name}</span>
+                  </span>
+                ))}
+              </ul>
+            ) : (
+              <li className="text-xs">No skills available</li>
+            )}
+          </ul>
         </div>
       </div>
     </Link>

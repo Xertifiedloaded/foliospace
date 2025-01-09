@@ -41,23 +41,22 @@ export function UserNavigation() {
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-sm font-semibold text-neutral-900">{user?.name}</p>
-              <p className="text-xs text-neutral-500">{user?.email}</p>
+              <p className="text-sm  dark:text-white font-semibold text-neutral-900">{user?.name}</p>
+              <p className="text-xs text-neutral-100">{user?.email}</p>
             </div>
           </div>
 
           {/* Dropdown Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" className="h-10 w-10 text-neutral-700 hover:bg-neutral-100">
-                <RiMoreFill className="h-5 w-5" />
+              <Button variant="outline" size="icon" className="h-10 w-10  text-neutral-700 hover:bg-neutral-100">
+                <RiMoreFill className="h-5 dark:text-white w-5" />
               </Button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent className="w-64 bg-white shadow-lg rounded-lg p-2 mt-1">
               <DropdownMenuLabel className="font-medium text-sm text-neutral-900">My Account</DropdownMenuLabel>
 
-              {/* User Info in Dropdown */}
               <div className="flex items-center space-x-2 p-2 border-b border-neutral-200">
                 <Avatar className="w-8 h-8">
                   <AvatarFallback className="text-sm text-white bg-gradient-to-tr from-blue-500 to-purple-600">

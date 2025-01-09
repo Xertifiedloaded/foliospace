@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -7,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import SkillsSection from "@/components/ProfileSkillsData";
 import ProfileLayout from "@/components/layout";
 import { useSession } from "next-auth/react";
 import { Loader2 } from "lucide-react";
@@ -379,7 +377,7 @@ export default function ProfileDetails() {
                         name="levelOfExperience"
                         value={formData.levelOfExperience}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full dark:bg-black bg:text-white p-2 border rounded"
                       >
                         <option value="Junior">Junior</option>
                         <option value="Mid">Mid</option>
@@ -424,6 +422,14 @@ export default function ProfileDetails() {
                   </form>
                 </CardContent>
               </Card>
+              <UploadSkillForm
+                name={name}
+                level={level}
+                setLevel={setLevel}
+                setName={setName}
+                skills={skills}
+                handleSubmitSkills={handleSubmitSkills}
+              />
             </section>
           </div>
 

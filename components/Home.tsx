@@ -11,6 +11,10 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { UserNavigation } from "./UserNavigation";
 import { useSession } from "next-auth/react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { Progress } from '@/components/ui/progress';
+import { ThemeToggle } from './ThemeToggle';
 
 const FEATURE_SECTIONS = [
   {
@@ -18,16 +22,14 @@ const FEATURE_SECTIONS = [
     icon: RiDashboardLine,
     description:
       "Create, edit, and customize your portfolio effortlessly, without any coding expertise.",
-    gradient: "from-cyan-500 to-blue-600",
-    iconColor: "text-cyan-600",
+    gradient: "bg-gradient-to-r from-cyan-500 to-blue-600",
   },
   {
     name: "Expertise Mapping",
     icon: RiCodeSSlashLine,
     description:
       "Turn your skills into visually compelling narratives, all without the need for coding.",
-    gradient: "from-emerald-500 to-green-600",
-    iconColor: "text-emerald-600",
+    gradient: "bg-gradient-to-r from-emerald-500 to-green-600",
   },
 ];
 
@@ -37,16 +39,17 @@ export default function ProfessionalHomePage() {
   const user = session?.user;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 to-teal-600 pb-10 text-white">
-      <header className="fixed w-full top-0 z-50 bg-white/90 backdrop-blur-md border-b border-neutral-200 shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 to-teal-600 dark:from-slate-900 dark:to-slate-800">
+      <header className="fixed w-full top-0 z-50 bg-background/80 backdrop-blur-md border-b">
         <div className="px-8 py-6 flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <RiCheckboxCircleLine className="lg:text-3xl text-2xl  text-blue-600" />
-            <span className="lg:text-xl font-extrabold tracking-tight text-neutral-900">
+            <RiCheckboxCircleLine className="lg:text-3xl text-2xl text-primary" />
+            <span className="lg:text-xl font-extrabold tracking-tight">
               FolioSpace
             </span>
           </div>
           <nav className="flex items-center space-x-6">
+            <ThemeToggle />
             {user && <UserNavigation />}
           </nav>
         </div>
@@ -54,51 +57,52 @@ export default function ProfessionalHomePage() {
 
       <main className="wrapper px-8 pt-32 grid gap-16 lg:grid-cols-2">
         <div className="space-y-8">
-          <div className="inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold tracking-wider">
+          <div className="inline-block bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-semibold tracking-wider">
             Professional Portfolio Ecosystem
           </div>
 
-          <h1 className="text-3xl lg:text-6xl font-extrabold text-neutral-100 leading-tight">
+          <h1 className="text-3xl lg:text-6xl font-extrabold text-white dark:text-slate-100 leading-tight">
             Architect Your Professional Legacy
           </h1>
 
-          <p className="lg:text-xl text-sm text-neutral-300 leading-relaxed max-w-2xl">
+          <p className="lg:text-xl text-sm text-white/80 dark:text-slate-300 leading-relaxed max-w-2xl">
             Beyond traditional portfolios, we provide a dynamic platform that
             transforms your professional journey into a compelling, strategic
             narrative that resonates with global opportunities.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2  gap-6 mt-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
             {FEATURE_SECTIONS.map((feature, index) => (
-              <div
+              <Card
                 key={index}
-                className={`group bg-white rounded-lg shadow-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl ${feature.gradient}`}
+                className="group transition-all duration-300 hover:scale-105"
               >
-                <div className={`mb-4 ${feature.iconColor}`}>
-                  <feature.icon className="w-10 h-10" />
-                </div>
-                <h3 className="text-lg font-semibold text-neutral-900">
-                  {feature.name}
-                </h3>
-                <p className="text-sm text-neutral-600 group-hover:text-neutral-900 transition-colors">
-                  {feature.description}
-                </p>
-              </div>
+                <CardHeader>
+                  <div className={`mb-4 ${feature.gradient} text-white rounded-full w-12 h-12 flex items-center justify-center`}>
+                    <feature.icon className="w-6 h-6" />
+                  </div>
+                  <CardTitle className="text-lg">{feature.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
             ))}
           </div>
+
           {!user && (
             <div className="flex space-x-4">
               <Button
                 onClick={() => router.push("/auth/login")}
                 variant="outline"
-                className="border-neutral-300 text-neutral-700 hover:bg-neutral-200 transition-all"
               >
                 <RiLoginBoxLine className="mr-2" />
                 Login
               </Button>
               <Button
                 onClick={() => router.push("/auth/register")}
-                className="bg-blue-600 text-white hover:bg-blue-700 transition-all"
               >
                 <RiUserAddLine className="mr-2" />
                 Sign Up
@@ -108,8 +112,8 @@ export default function ProfessionalHomePage() {
         </div>
 
         <div className="hidden lg:flex justify-center items-center">
-          <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-neutral-200 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+          <Card className="w-full max-w-md">
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-800 dark:to-purple-800 text-white">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-bold">Portfolio Dashboard</h2>
                 <span className="text-sm bg-white/30 px-3 py-1 rounded-full">
@@ -123,39 +127,31 @@ export default function ProfessionalHomePage() {
                   <div className="text-xs opacity-75">Software Engineer</div>
                 </div>
               </div>
-            </div>
-            <div className="p-6 space-y-6">
+            </CardHeader>
+            <CardContent className="p-6 space-y-6">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-neutral-600">
+                <span className="text-sm text-muted-foreground">
                   Profile Completeness
                 </span>
-                <span className="text-sm font-semibold text-blue-600">85%</span>
+                <span className="text-sm font-semibold text-primary">85%</span>
               </div>
-              <div className="w-full bg-neutral-200 rounded-full h-2">
-                <div className="bg-blue-600 rounded-full h-2 w-5/6"></div>
-              </div>
+              <Progress value={85} className="w-full" />
               <div className="grid grid-cols-3 gap-6 pt-4">
                 <div className="text-center">
-                  <div className="text-sm font-semibold text-neutral-700">
-                    12
-                  </div>
-                  <div className="text-xs text-neutral-500">Projects</div>
+                  <div className="text-sm font-semibold">12</div>
+                  <div className="text-xs text-muted-foreground">Projects</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-sm font-semibold text-neutral-700">
-                    7
-                  </div>
-                  <div className="text-xs text-neutral-500">Skills</div>
+                  <div className="text-sm font-semibold">7</div>
+                  <div className="text-xs text-muted-foreground">Skills</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-sm font-semibold text-neutral-700">
-                    3
-                  </div>
-                  <div className="text-xs text-neutral-500">Certifications</div>
+                  <div className="text-sm font-semibold">3</div>
+                  <div className="text-xs text-muted-foreground">Certifications</div>
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>

@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { Button } from "./ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface UploadSkillFormProps {
   handleSubmitSkills: (e: React.FormEvent) => void;
@@ -21,11 +21,10 @@ export default function UploadSkillForm({
   level,
   setLevel,
 }: UploadSkillFormProps) {
-  
 
   return (
     <>
-      <Card className="mt-6 mb-3">
+      <Card className="mt-6 mb-3 dark:bg-black dark:text-white">
         <CardHeader>
           <CardTitle>Profile Details</CardTitle>
         </CardHeader>
@@ -35,16 +34,15 @@ export default function UploadSkillForm({
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium "
           >
             Skill Name
           </label>
-          <input
-            type="text"
+          <Input
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-1 w-full "
             required
           />
         </div>
@@ -52,32 +50,24 @@ export default function UploadSkillForm({
         <div>
           <label
             htmlFor="level"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
           >
             Skill Level
           </label>
-          <select
-            id="level"
-            value={level}
-            onChange={(e) =>
-              setLevel(
-                e.target.value as
-                  | "BEGINNER"
-                  | "INTERMEDIATE"
-                  | "ADVANCED"
-                  | "EXPERT"
-              )
-            }
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          >
-            <option value="BEGINNER">Beginner</option>
-            <option value="INTERMEDIATE">Intermediate</option>
-            <option value="ADVANCED">Advanced</option>
-            <option value="EXPERT">Expert</option>
-          </select>
+          <Select value={level} onValueChange={setLevel}>
+            <SelectTrigger className="mt-1 w-full dark:border-gray-600">
+              <SelectValue placeholder="Select skill level" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="BEGINNER">Beginner</SelectItem>
+              <SelectItem value="INTERMEDIATE">Intermediate</SelectItem>
+              <SelectItem value="ADVANCED">Advanced</SelectItem>
+              <SelectItem value="EXPERT">Expert</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full ">
           Add Skill
         </Button>
       </form>

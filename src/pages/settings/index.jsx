@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { useRouter } from "next/router"; // Import useRouter
+
 import { settingsCategories } from "../../../utils";
 import SettingsLayout from "../../../components/SettingsLayout";
 import UserBackupButton from "../../../components/UserDownloadButton";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
+import { ThemeToggle } from "../../../components/ThemeToggle";
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("account");
@@ -134,8 +135,8 @@ const SettingsContent = ({ activeCategory }) => {
         return <UserBackupButton/>;
       case "Account Deletion":
         return <span>Account Deletion Component</span>;
-      case "Dark Mode":
-        return <span>Dark Mode Component</span>;
+      case "Toggle Theme":
+        return <ThemeToggle/>;
       case "Content Language":
         return <LanguageSwitcher/>
       default:

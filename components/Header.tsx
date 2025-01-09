@@ -7,41 +7,27 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { Home, Grid, User, Share2, FileText, Palette, Eye, FilePlus, MenuIcon, Settings, Search } from "lucide-react";
-import { LucideIcon } from "lucide-react"; 
+
+import { MenuIcon} from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { RiCheckboxCircleLine } from "react-icons/ri";
+import { navItems } from "@/utils/data";
 
-interface NavItem {
-  path: string;
-  title: string;
-  icon: LucideIcon;
-}
 
 const Header: React.FC = () => {
-  const navItems: NavItem[] = [
-    { path: "/", title: "Home", icon: Home }, 
-    { path: "/profile/dashboard", title: "Dashboard", icon: Grid }, 
-    { path: "/profile/details", title: "Profile Details", icon: User }, 
-    { path: "/profile/links", title: "Links", icon: Share2 },
-    { path: "/profile/socials", title: "Socials", icon: Share2 }, 
-    { path: "/profile/resume", title: "Resume", icon: FileText }, 
-    { path: "/profile/portfolio", title: "Portfolio", icon: Palette }, 
-    { path: "/settings", title: "Settings", icon: Settings }, 
-    { path: "/profile/collaboration", title: "Collaborate", icon: Search }, 
-  ];
 
   const handleNavigation = (path: string): void => {
     window.location.href = path;
   };
 
   return (
-    <header className="sticky bg-white top-0 z-50 shadow-md">
+    <header className="sticky bg-white dark:bg-black top-0 z-50 shadow-md dark:text-white">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <div className="flex items-center">
-            <RiCheckboxCircleLine className="mr-2 text-2xl text-blue-600" />
-            <span className="lg:text-xl text-sm  font-black text-neutral-900 tracking-tight">
+            <RiCheckboxCircleLine className="mr-2 text-2xl text-blue-600 dark:text-blue-400" />
+            <span className="lg:text-xl text-sm font-black text-neutral-900 dark:text-white tracking-tight">
               FolioSpace
             </span>
           </div>
@@ -50,7 +36,7 @@ const Header: React.FC = () => {
               <MenubarMenu key={item.path}>
                 <MenubarTrigger
                   onClick={() => handleNavigation(item.path)}
-                  className="cursor-pointer hover:bg-gray-100 transition-colors"
+                  className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
                   <item.icon className="mr-2 h-4 w-4" />
                   {item.title}
@@ -72,7 +58,7 @@ const Header: React.FC = () => {
                 <MenubarItem
                   key={item.path}
                   onClick={() => handleNavigation(item.path)}
-                  className="cursor-pointer"
+                  className="cursor-pointer dark:bg-gray-700 dark:text-white"
                 >
                   <item.icon className="mr-2 h-4 w-4" />
                   {item.title}

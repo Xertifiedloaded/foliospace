@@ -203,18 +203,10 @@ const PortfolioPage = () => {
   }
 
   return (
-    <div className="max-w-4xl container mx-auto space-y-6">
+    <div className="max-w-4xl container mx-auto ">
       <Hero portfolio={portfolio} template={portfolio?.template} />
       {renderTemplateContent()}
-      <footer className="mt-8 mb-4 text-center">
-        <small className="text-gray-500 font-light flex items-center justify-center gap-1">
-          © {new Date().getFullYear()}{" "}
-          <span className="font-medium text-gray-700 hover:text-blue-600 transition-colors">
-            Makinde Olaitan
-          </span>
-          <span className="text-gray-400">•</span> All rights reserved
-        </small>
-      </footer>
+
     </div>
   );
 };

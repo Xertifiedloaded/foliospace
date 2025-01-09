@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import Header from "@/components/Header";
 import { useSession } from "next-auth/react";
