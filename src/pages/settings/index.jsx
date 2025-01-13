@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-
 import { settingsCategories } from "../../../utils";
 import SettingsLayout from "../../../components/SettingsLayout";
 import UserBackupButton from "../../../components/UserDownloadButton";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
 import { ThemeToggle } from "../../../components/ThemeToggle";
+import TemplateSelector from "../../../components/template";
+import { Button } from "../../../components/ui/button";
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("account");
@@ -21,9 +22,8 @@ const SettingsPage = () => {
 
   return (
     <SettingsLayout>
-      <div className="min-h-screen bg-white dark:bg-gray-800">
+      <div className="min-h-screen bg-white dark:bg-black">
         <SettingsHeader isNavOpen={isNavOpen} toggleNav={toggleNav} />
-
         <div className="">
           <div className="max-w-7xl mx-auto px-4 py-6">
             <div className="flex flex-col md:flex-row gap-6">
@@ -33,7 +33,6 @@ const SettingsPage = () => {
                 handleTabClick={handleTabClick}
                 setIsNavOpen={setIsNavOpen}
               />
-
               <SettingsContent activeCategory={activeCategory} />
             </div>
           </div>
@@ -50,17 +49,17 @@ const Navigation = ({ isNavOpen, activeTab, handleTabClick, setIsNavOpen }) => {
     <>
       <nav
         className={`
-            md:sticky md:top-[73px] w-full md:w-64 
-            bg-white dark:bg-gray-800 z-40 
-            transform transition-transform duration-300 ease-in-out
-            md:transform-none flex-shrink-0 
-            ${
-              isNavOpen
-                ? "fixed top-[73px] left-0 h-[calc(100vh-73px)]"
-                : "fixed top-[73px] -left-full h-[calc(100vh-73px)]"
-            }
-            md:relative md:left-0 md:h-auto
-          `}
+          md:sticky md:top-[73px] w-full md:w-64 
+          bg-white dark:bg-black z-40 
+          transform transition-transform duration-300 ease-in-out
+          md:transform-none flex-shrink-0 
+          ${
+            isNavOpen
+              ? "fixed top-[73px] left-0 h-[calc(100vh-73px)]"
+              : "fixed top-[73px] -left-full h-[calc(100vh-73px)]"
+          }
+          md:relative md:left-0 md:h-auto
+        `}
       >
         <div className="p-4 space-y-1 overflow-y-auto h-full">
           {settingsCategories.map((category) => (
@@ -92,9 +91,11 @@ const Navigation = ({ isNavOpen, activeTab, handleTabClick, setIsNavOpen }) => {
 
 const SettingsHeader = ({ isNavOpen, toggleNav }) => {
   return (
-    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+    <header className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Settings</h1>
+        <h1 className="text-2xl dark:text-white text-=black font-bold">
+          Settings
+        </h1>
         <button
           onClick={toggleNav}
           className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -132,13 +133,21 @@ const SettingsContent = ({ activeCategory }) => {
   const renderFeatureAction = (feature) => {
     switch (feature.name) {
       case "Export Data":
-        return <UserBackupButton/>;
-      case "Account Deletion":
-        return <span>Account Deletion Component</span>;
-      case "Toggle Theme":
-        return <ThemeToggle/>;
+        return <UserBackupButton />;
+      case "Theme Settings":
+        return <ThemeToggle />;
       case "Content Language":
-        return <LanguageSwitcher/>
+        return <LanguageSwitcher />;
+      case "Portfolio Template":
+        return <TemplateSelector />;
+      case "Account Deletion":
+        return (
+          <Button
+            className={`bg-red-700 dark:text-white text-white btn-primary `}
+          >
+            Delete Account
+          </Button>
+        );
       default:
         return (
           <button className="text-blue-600 dark:text-blue-400 hover:underline">
@@ -150,14 +159,16 @@ const SettingsContent = ({ activeCategory }) => {
 
   const renderSection = (section) => (
     <div key={section.title} className="mb-8">
-      <h3 className="text-lg font-semibold mb-4">{section.title}</h3>
+      <h3 className="text-lg dark:text-white font-semibold mb-4">
+        {section.title}
+      </h3>
       <div className="space-y-3">
         {section.features.map((feature) => (
           <div
             key={feature.name}
-            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+            className="flex dark:text-white items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
           >
-            <span>{feature.name}</span>
+            <span className="dark:text-white">{feature.name}</span>
             {renderFeatureAction(feature)}
           </div>
         ))}
@@ -166,8 +177,10 @@ const SettingsContent = ({ activeCategory }) => {
   );
 
   return (
-    <main className="flex-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-      <h2 className="text-xl font-bold mb-6">{activeCategory?.label}</h2>
+    <main className="flex-1 bg-white dark:bg-black rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <h2 className="text-xl dark:text-white font-bold mb-6">
+        {activeCategory?.label}
+      </h2>
       {activeCategory?.sections.map(renderSection)}
     </main>
   );

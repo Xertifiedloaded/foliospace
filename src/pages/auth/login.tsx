@@ -78,7 +78,7 @@ export default function LoginPage() {
 
   return (
  <AuthLayout>
-     <div className="flex flex-col justify-center items-center min-h-screen bg-slate-50 dark:bg-slate-900 px-4">
+     <div className="flex flex-col justify-center items-center min-h-screen  px-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
@@ -130,7 +130,7 @@ export default function LoginPage() {
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full dark:text-black" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isLoading ? "Signing in..." : "Sign in"}
             </Button>

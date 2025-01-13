@@ -95,7 +95,7 @@ const Dashboard: React.FC = () => {
         <div className="container mx-auto py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="lg:flex justify-center items-center">
-              <div className="w-full max-w-4xl rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+              <div className="w-full max-w-4xl rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-black overflow-hidden">
                 <div className="p-6 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-gray-700 dark:to-gray-600 text-white">
                   <div className="flex justify-between items-center">
                     <h2 className="text-lg font-bold">Profile Dashboard</h2>

@@ -48,7 +48,7 @@ export const ModernHero = ({ portfolio }) => {
   const { profile, socials, name, username } = portfolio || {};
 
   return (
-    <div className="bg-gradient-to-br from-purple-900 to-indigo-800 text-white">
+    <div className="bg-gradient-to-br from-purple-900 to-indigo-800 text-white dark:text-gray-100">
       <div className="container mx-auto px-4 py-20">
         <div className="flex flex-col items-center justify-center space-y-8">
           {profile?.picture && (
@@ -73,7 +73,7 @@ export const ModernHero = ({ portfolio }) => {
           </h1>
 
           {profile?.bio && (
-            <p className="max-w-2xl text-center text-purple-200 text-lg">
+            <p className="max-w-2xl text-center text-purple-200 text-lg dark:text-gray-400">
               {profile.bio}
             </p>
           )}
@@ -83,7 +83,7 @@ export const ModernHero = ({ portfolio }) => {
               {portfolio.skills.map((skill, index) => (
                 <span
                   key={index}
-                  className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-lg text-purple-200 hover:bg-white/20 transition-all duration-300"
+                  className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-lg text-purple-200 hover:bg-white/20 transition-all duration-300 dark:text-gray-400 dark:bg-white/20"
                 >
                   {skill.name}
                 </span>
@@ -98,7 +98,7 @@ export const ModernHero = ({ portfolio }) => {
                   key={index}
                   variant="ghost"
                   size="icon"
-                  className="rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-300"
+                  className="rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100"
                 >
                   <SocialIcon type={social.name} />
                 </Button>
@@ -115,7 +115,7 @@ export const ProfessionalHero = ({ portfolio }) => {
   const { profile, socials, name, username } = portfolio || {};
 
   return (
-    <div className="text-black">
+    <div className="text-black dark:text-white">
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row  items-center gap-12">
@@ -142,7 +142,9 @@ export const ProfessionalHero = ({ portfolio }) => {
               </h1>
 
               {profile?.bio && (
-                <p className=" mb-6 leading-relaxed">{profile.bio}</p>
+                <p className=" mb-6 leading-relaxed text-gray-700 dark:text-gray-300">
+                  {profile.bio}
+                </p>
               )}
 
               {portfolio?.skills?.length > 0 && (
@@ -150,7 +152,7 @@ export const ProfessionalHero = ({ portfolio }) => {
                   {portfolio.skills.map((skill, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 text-sm rounded bg-gray-800 text-gray-300"
+                      className="px-3 py-1 text-sm rounded bg-gray-800 text-gray-300 dark:bg-gray-600 dark:text-gray-200"
                     >
                       {skill.name}
                     </span>
@@ -165,7 +167,7 @@ export const ProfessionalHero = ({ portfolio }) => {
                       key={index}
                       variant="outline"
                       size="icon"
-                      className="rounded-md border-gray-700 hover:bg-gray-800"
+                      className="rounded-md border-gray-700 hover:bg-gray-800 dark:border-gray-500 dark:hover:bg-gray-600"
                     >
                       <SocialIcon type={social.name} />
                     </Button>
@@ -180,12 +182,12 @@ export const ProfessionalHero = ({ portfolio }) => {
   );
 };
 
-// Minimal Hero
+
 export const MinimalHero = ({ portfolio }) => {
   const { profile, socials, name, username } = portfolio || {};
 
   return (
-    <div className="bg-white">
+    <div className="bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4 py-20">
         <div className="flex flex-col items-center justify-center space-y-6 max-w-3xl mx-auto">
           {profile?.picture && (
@@ -200,17 +202,19 @@ export const MinimalHero = ({ portfolio }) => {
             </div>
           )}
 
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white text-center">
             {name}
             {profile?.tagline && (
-              <span className="block text-xl text-gray-500 mt-2 font-normal">
+              <span className="block text-xl text-gray-500 dark:text-gray-400 mt-2 font-normal">
                 {profile.tagline}
               </span>
             )}
           </h1>
 
           {profile?.bio && (
-            <p className="text-gray-600 text-center max-w-2xl">{profile.bio}</p>
+            <p className="text-gray-600 dark:text-gray-400 text-center max-w-2xl">
+              {profile.bio}
+            </p>
           )}
 
           {portfolio?.skills?.length > 0 && (
@@ -218,7 +222,7 @@ export const MinimalHero = ({ portfolio }) => {
               {portfolio.skills.map((skill, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-600"
+                  className="px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
                 >
                   {skill.name}
                 </span>

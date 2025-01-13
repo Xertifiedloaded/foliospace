@@ -72,7 +72,7 @@ const PasswordResetPage = () => {
 
   return (
     <AuthLayout>
-      <section className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-pink-500 p-4">
+      <section className="flex items-center justify-center min-h-screen  p-4">
         <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
           <div className="text-center mb-6">
             <h2 className="text-3xl font-bold text-gray-900">Reset Password</h2>
@@ -85,14 +85,14 @@ const PasswordResetPage = () => {
             <div>
               <label
                 htmlFor="new-password"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block dark:text-black text-sm font-medium text-gray-700 mb-1"
               >
                 New Password
               </label>
               <input
                 type="password"
                 id="new-password"
-                className="w-full border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full dark:text-black border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
@@ -101,14 +101,14 @@ const PasswordResetPage = () => {
             <div>
               <label
                 htmlFor="confirm-password"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium dark:text-black text-gray-700 mb-1"
               >
                 Confirm Password
               </label>
               <input
                 type="password"
                 id="confirm-password"
-                className="w-full border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full border dark:text-black border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required

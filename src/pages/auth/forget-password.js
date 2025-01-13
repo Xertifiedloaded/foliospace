@@ -59,8 +59,8 @@ export default function ForgetPassword() {
 
   return (
 <AuthLayout>
-<section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-500 p-4">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
+<section className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white  shadow-lg rounded-lg p-8">
         <div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-gray-900">Forgot Password</h2>
           <p className="text-gray-500 mt-2">
@@ -82,7 +82,7 @@ export default function ForgetPassword() {
               onChange={handleChange}
               value={payload.email}
               placeholder="Enter your email"
-              className="w-full border border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full dark:text-black border border-gray-300 rounded-lg p-3  focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
           </div>

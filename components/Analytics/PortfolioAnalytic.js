@@ -87,9 +87,9 @@ const PortfolioAnalytic = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 rounded-2xl dark:bg-gray-900  bg-gray-50">
+    <div className="container mx-auto p-4  dark:bg-black rounded-2xl shadow-2xl  bg-gray-50">
       <AnalyticsCard analyticsData={analyticsData} />
-      <Card className="bg-white dark:bg-gray-800">
+      <Card className="bg-white dark:bg-black">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-gray-200">
             <Activity className="h-5 w-5 text-gray-600 dark:text-gray-400" />
@@ -101,16 +101,17 @@ const PortfolioAnalytic = () => {
             {analyticsData.recentLogs.map((log) => (
               <li
                 key={log.id}
-                className="py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="py-3 hover:bg-gray-70 dark:hover:bg-gray-700 transition-colors"
               >
                 <div className="flex flex-col md:flex-row md:justify-between">
-                  <p className="text-gray-800 dark:text-gray-200 font-medium">
-                    {new Date(log.timestamp).toLocaleString()}
-                  </p>
+                
                   <p className="text-gray-500 dark:text-gray-400 text-sm">
                     {log.userAgent}
                   </p>
                 </div>
+                <p className="text-gray-800 dark:text-gray-200 mt-2 text-sm font-medium">
+                   Accessed on {new Date(log.timestamp).toLocaleString()}
+                  </p>
               </li>
             ))}
           </ul>
@@ -156,7 +157,7 @@ const AnalyticsCard = ({ analyticsData }) => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className={`text-4xl font-bold ${subClass}`}>{value}</p>
+              <p className={`text-4xl dark:text-white  font-bold ${subClass}`}>{value}</p>
               <p className="text-sm text-gray-500 dark:text-gray-400">{description}</p>
             </CardContent>
           </Card>

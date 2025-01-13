@@ -43,7 +43,7 @@ export default function ResumePage() {
 
   if (!resume) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center dark:bg-black dark:text-white">
         <Card className="w-[400px] text-center">
           <CardHeader>
             <CardTitle>Resume Not Found</CardTitle>
@@ -63,7 +63,7 @@ export default function ResumePage() {
     resume || {};
 
   return (
-    <div className="">
+    <div className="dark:bg-black dark:text-white">
       <Card className="w-full mb-8 shadow-lg">
         <div className="bg-gradient-to-r from-primary to-secondary text-white text-center p-6">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">{name}</h1>
@@ -86,14 +86,14 @@ export default function ResumePage() {
         </div>
       </Card>
 
-      <div className=" md:grid container mx-auto max-w-7xl px-4 lg:px-6 grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="md:grid container mx-auto max-w-7xl px-4 lg:px-6 grid-cols-1 md:grid-cols-3 gap-6">
         <div className="col-span-2 space-y-6">
           {profile?.bio && (
             <section>
               <h2 className="text-xl font-semibold mb-4">
                 Professional Summary
               </h2>
-              <p className="text-sm md:text-base text-muted-foreground">
+              <p className="text-sm md:text-base text-muted-foreground dark:text-gray-300">
                 {profile?.bio}
               </p>
             </section>
@@ -109,10 +109,10 @@ export default function ResumePage() {
                 {experiences?.map((exp) => (
                   <div
                     key={exp?.id}
-                    className="p-4 border rounded-md shadow-sm"
+                    className="p-4 border rounded-md shadow-sm dark:bg-gray-800"
                   >
                     <h3 className="text-lg font-bold">{exp?.position}</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground dark:text-gray-400">
                       {exp?.company}
                     </p>
                     <Badge variant="secondary" className="mt-2">
@@ -133,7 +133,6 @@ export default function ResumePage() {
           )}
         </div>
 
-        {/* Right Column */}
         <div className="space-y-6">
           {skills?.length > 0 && (
             <section className="lg:mt-0 mt-3">
@@ -142,12 +141,12 @@ export default function ResumePage() {
                 {skills?.map((skill, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 mr-2 bg-gray-100 text-black rounded-full text-xs"
+                    className="px-2 py-1 mr-2 bg-gray-100 text-black rounded-full text-xs dark:bg-gray-700 dark:text-white"
                   >
-                    <span className="font-bold mr-2 text-gray-700">
+                    <span className="font-bold mr-2 text-gray-700 dark:text-gray-300">
                       {skill?.name}
                     </span>
-                    <span className="text-xs text-gray-500 mt-1">
+                    <span className="text-xs text-gray-500 mt-1 dark:text-gray-400">
                       {skill?.level}
                     </span>
                   </span>
@@ -165,10 +164,10 @@ export default function ResumePage() {
                 {education?.map((edu) => (
                   <div
                     key={edu?.id}
-                    className="p-4 border rounded-md shadow-sm"
+                    className="p-4 border rounded-md shadow-sm dark:bg-gray-800"
                   >
                     <h3 className="text-lg font-bold">{edu?.institution}</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground dark:text-gray-400">
                       {edu?.degree}
                     </p>
                     <Badge variant="secondary" className="mt-2">
@@ -185,9 +184,9 @@ export default function ResumePage() {
         </div>
       </div>
       <footer className="mt-8 mb-4 text-center">
-        <small className="text-gray-500 font-light flex items-center justify-center gap-1">
+        <small className="text-gray-500 dark:text-gray-400 font-light flex items-center justify-center gap-1">
           © {new Date().getFullYear()}{" "}
-          <span className="font-medium text-gray-700 hover:text-blue-600 transition-colors">
+          <span className="font-medium text-gray-700 dark:text-white hover:text-blue-600 transition-colors">
             Makinde Olaitan
           </span>
           <span className="text-gray-400">•</span> All rights reserved

@@ -66,7 +66,7 @@ export default function SignupPage() {
 
   return (
     <AuthLayout>
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+      <div className="flex min-h-screen items-center justify-center  p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">
@@ -157,7 +157,7 @@ export default function SignupPage() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full dark:text-black" disabled={isLoading}>
                 {isLoading ? "Creating Account..." : "Sign Up"}
               </Button>
             </form>

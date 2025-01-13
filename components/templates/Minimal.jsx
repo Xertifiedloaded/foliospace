@@ -68,7 +68,7 @@ const MinimalTemplate = ({ portfolio }) => {
             <h2 className="text-3xl font-bold text-gray-900">Experience</h2>
           </div>
           
-          <div className="max-w-3xl mx-auto space-y-8">
+          <div className=" mx-auto space-y-8">
             {experiences?.map((exp) => (
               <div key={exp.id} className="border-l-2 border-gray-200 pl-6 relative">
                 <div className="absolute w-3 h-3 bg-gray-200 rounded-full -left-[7px] top-2" />
@@ -99,7 +99,7 @@ const MinimalTemplate = ({ portfolio }) => {
             <h2 className="text-3xl font-bold text-gray-900">Education</h2>
           </div>
           
-          <div className="max-w-3xl mx-auto space-y-8">
+          <div className=" mx-auto space-y-8">
             {education?.map((edu) => (
               <div key={edu.id} className="bg-white p-6 rounded-lg shadow-sm">
                 <h3 className="text-xl font-semibold text-gray-900">{edu.degree}</h3>

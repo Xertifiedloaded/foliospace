@@ -62,14 +62,14 @@ export const DashBoardHeading = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm space-y-6  transition-colors duration-200">
+    <div className="bg-white dark:bg-black  rounded-lg shadow-2xl space-y-6  transition-colors duration-200">
       <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
         Your Public Links
       </h2>
 
       <div className="space-y-4">
         {/* Portfolio Card */}
-        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 transition-colors duration-200">
+        <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 transition-colors duration-200">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
               <LinkIcon className="w-4 h-4 text-gray-600 dark:text-gray-300" />
@@ -105,7 +105,7 @@ export const DashBoardHeading = () => {
         </div>
 
         {/* Resume Card */}
-        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 transition-colors duration-200">
+        <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 transition-colors duration-200">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
               <LinkIcon className="w-4 h-4 text-gray-600 dark:text-gray-300" />

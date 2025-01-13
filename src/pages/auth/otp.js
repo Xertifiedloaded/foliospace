@@ -110,7 +110,7 @@ export default function OtpVerificationPage() {
             </div>
             <Button
               type="submit"
-              className="w-full"
+              className="w-full dark:text-black font-bold"
               disabled={loading || otp.some((digit) => !digit)}
             >
               {loading ? "Verifying..." : "Verify Code"}
@@ -120,7 +120,7 @@ export default function OtpVerificationPage() {
         <CardFooter className="justify-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Didn't receive the code?{" "}
-            <Button variant="link" className="p-0">
+            <Button variant="link" className="p-0 dark:text-black">
               Resend
             </Button>
           </p>

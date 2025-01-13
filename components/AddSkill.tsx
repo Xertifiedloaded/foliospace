@@ -67,7 +67,7 @@ export default function UploadSkillForm({
           </Select>
         </div>
 
-        <Button type="submit" className="w-full ">
+        <Button type="submit" className="w-full dark:text-black ">
           Add Skill
         </Button>
       </form>

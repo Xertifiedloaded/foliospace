@@ -411,7 +411,7 @@ export default function ProfileDetails() {
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full"
+                      className="w-full dark:text-black"
                     >
                       {isSubmitting ? (
                         <Loader2 className="animate-spin" />
