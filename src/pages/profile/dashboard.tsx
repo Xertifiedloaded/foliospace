@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink } from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
 import DashBoardSkills from "@/sections/DashBoardSkills";
 import ProfileLayout from "@/components/layout";
@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import ProfileCompleteness from "../../../components/ProfileCompleteness";
 import { DashBoardHeading } from "../../../sections/DashBoardHeading";
 import PortfolioAnalytic from "../../../components/Analytics/PortfolioAnalytic";
+import { Button } from "@/components/ui/button";
 
 interface Profile {
   id: string;
@@ -28,7 +29,6 @@ const Dashboard: React.FC = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -78,36 +78,25 @@ const Dashboard: React.FC = () => {
       {Array.from({ length: 4 }).map((_, index) => (
         <React.Fragment key={index}>
           <div className="flex items-center space-x-2">
-            <div className="h-5 w-1/3 bg-gray-200 animate-pulse rounded"></div>
-            <div className="h-5 w-5 bg-gray-200 animate-pulse rounded-full"></div>
+            <div className="h-5 w-1/3 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"></div>
+            <div className="h-5 w-5 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-full"></div>
           </div>
-          <div className="h-4 w-full bg-gray-200 animate-pulse rounded"></div>
+          <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 animate-pulse rounded"></div>
           <Separator className="my-3" />
         </React.Fragment>
       ))}
-      <div className="h-4 w-2/3 bg-gray-200 animate-pulse rounded"></div>
+      <div className="h-4 w-2/3 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"></div>
     </div>
   );
 
   return (
     <ProfileLayout>
-      <div
-        className={`min-h-screen transition-colors duration-300 dark:bg-black dark:text-gray-200 `}
-      >
+      <div className="min-h-screen  transition-colors duration-300 bg-white dark:bg-black text-gray-900 dark:text-gray-200">
         <div className="container mx-auto py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="px-4 lg:flex justify-center items-center">
-              <div
-                className="w-full dark:bg-black dark:text-white max-w-4xl rounded-2xl shadow-2xl border dark:border-gray-700 
-             "
-              >
-                <div
-                  className={`p-6 ${
-                    isDarkMode
-                      ? "bg-gradient-to-r from-gray-700 to-gray-600"
-                      : "bg-gradient-to-r from-blue-600 to-purple-600"
-                  } text-white`}
-                >
+            <div className="lg:flex justify-center items-center">
+              <div className="w-full max-w-4xl rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                <div className="p-6 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-gray-700 dark:to-gray-600 text-white">
                   <div className="flex justify-between items-center">
                     <h2 className="text-lg font-bold">Profile Dashboard</h2>
                   </div>
@@ -120,7 +109,7 @@ const Dashboard: React.FC = () => {
                           className="w-full h-full object-cover rounded-full"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gray-300 rounded-full"></div>
+                        <div className="w-full h-full bg-gray-300 dark:bg-gray-600 rounded-full"></div>
                       )}
                     </div>
                     <div>
@@ -134,16 +123,16 @@ const Dashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-6 space-y-6">
+                <div className="p-4 space-y-6">
                   <ProfileCompleteness profile={profile} />
                   <DashBoardHeading />
                   <div className="space-y-6">
                     {error ? (
-                      <p className="text-red-500">{error}</p>
+                      <p className="text-red-500 dark:text-red-400">{error}</p>
                     ) : isLoading ? (
                       <SkeletalLoader />
                     ) : profile === null ? (
-                      <div className="text-center text-gray-500">
+                      <div className="text-center text-gray-500 dark:text-gray-400">
                         <SkeletalLoader />
                       </div>
                     ) : (
@@ -152,15 +141,15 @@ const Dashboard: React.FC = () => {
                         .map((key) => (
                           <React.Fragment key={key}>
                             <div className="flex items-center space-x-2">
-                              <p className="font-semibold dark:text-gray-200 capitalize flex-grow">
+                              <p className="font-semibold capitalize flex-grow">
                                 {key.replace(/([A-Z])/g, " $1")}
                               </p>
                               <Link href="/profile/details">
                                 <ExternalLink
                                   className={`w-5 h-5 ${
                                     isValueEmpty(profile[key])
-                                      ? "text-red-500"
-                                      : "text-green-500"
+                                      ? "text-red-500 dark:text-red-400"
+                                      : "text-green-500 dark:text-green-400"
                                   } transition-colors duration-200`}
                                 />
                               </Link>
@@ -170,12 +159,12 @@ const Dashboard: React.FC = () => {
                                 <div className="flex flex-wrap gap-2">
                                   {profile[key]?.map(
                                     (item: string, index: number) => (
-                                      <button
+                                      <Button
                                         key={index}
-                                        className={`px-3 py-1 dark:text-gray-200 `}
+                                        className="px-3 py-1 bg-gray-100  dark:bg-gray-700 rounded"
                                       >
                                         {item}
-                                      </button>
+                                      </Button>
                                     )
                                   )}
                                 </div>
@@ -183,12 +172,12 @@ const Dashboard: React.FC = () => {
                                 <ul className="list-disc list-inside">
                                   {profile[key]?.map(
                                     (item: string, index: number) => (
-                                      <li  className='dark:text-gray-200' key={index}>{item}</li>
+                                      <li key={index}>{item}</li>
                                     )
                                   )}
                                 </ul>
                               ) : (
-                                <p className="dark:text-gray-200">{profile[key] || "Not specified"}</p>
+                                <p>{profile[key] || "Not specified"}</p>
                               )}
                             </div>
                             <Separator className="my-3" />
@@ -210,3 +199,4 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+

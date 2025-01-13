@@ -1,4 +1,6 @@
 "use client";
+
+import React from "react";
 import {
   RiLoginBoxLine,
   RiUserAddLine,
@@ -12,11 +14,17 @@ import { Button } from "@/components/ui/button";
 import { UserNavigation } from "./UserNavigation";
 import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import { Progress } from '@/components/ui/progress';
 import { ThemeToggle } from './ThemeToggle';
 
-const FEATURE_SECTIONS = [
+interface FeatureSection {
+  name: string;
+  icon: React.ElementType;
+  description: string;
+  gradient: string;
+}
+
+const FEATURE_SECTIONS: FeatureSection[] = [
   {
     name: "Portfolio Architect",
     icon: RiDashboardLine,
@@ -39,12 +47,12 @@ export default function ProfessionalHomePage() {
   const user = session?.user;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 to-teal-600 dark:from-slate-900 dark:to-slate-800">
-      <header className="fixed w-full top-0 z-50 bg-background/80 backdrop-blur-md border-b">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-teal-100 dark:from-slate-900 transition-colors duration-200">
+      <header className="fixed w-full top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
         <div className="px-8 py-6 flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <RiCheckboxCircleLine className="lg:text-3xl text-2xl text-primary" />
-            <span className="lg:text-xl font-extrabold tracking-tight">
+            <RiCheckboxCircleLine className="lg:text-3xl text-2xl text-primary dark:text-primary" />
+            <span className="lg:text-xl font-extrabold tracking-tight text-gray-900 dark:text-white">
               FolioSpace
             </span>
           </div>
@@ -61,11 +69,11 @@ export default function ProfessionalHomePage() {
             Professional Portfolio Ecosystem
           </div>
 
-          <h1 className="text-3xl lg:text-6xl font-extrabold text-white dark:text-slate-100 leading-tight">
+          <h1 className="text-3xl lg:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight">
             Architect Your Professional Legacy
           </h1>
 
-          <p className="lg:text-xl text-sm text-white/80 dark:text-slate-300 leading-relaxed max-w-2xl">
+          <p className="lg:text-xl text-sm text-gray-700 dark:text-gray-300 leading-relaxed max-w-2xl">
             Beyond traditional portfolios, we provide a dynamic platform that
             transforms your professional journey into a compelling, strategic
             narrative that resonates with global opportunities.
@@ -75,16 +83,16 @@ export default function ProfessionalHomePage() {
             {FEATURE_SECTIONS.map((feature, index) => (
               <Card
                 key={index}
-                className="group transition-all duration-300 hover:scale-105"
+                className="group transition-all duration-300 hover:scale-105 bg-white dark:bg-gray-800"
               >
                 <CardHeader>
                   <div className={`mb-4 ${feature.gradient} text-white rounded-full w-12 h-12 flex items-center justify-center`}>
                     <feature.icon className="w-6 h-6" />
                   </div>
-                  <CardTitle className="text-lg">{feature.name}</CardTitle>
+                  <CardTitle className="text-lg text-gray-900 dark:text-white">{feature.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
                     {feature.description}
                   </p>
                 </CardContent>
@@ -97,12 +105,14 @@ export default function ProfessionalHomePage() {
               <Button
                 onClick={() => router.push("/auth/login")}
                 variant="outline"
+                className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <RiLoginBoxLine className="mr-2" />
                 Login
               </Button>
               <Button
                 onClick={() => router.push("/auth/register")}
+                className="bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90"
               >
                 <RiUserAddLine className="mr-2" />
                 Sign Up
@@ -112,7 +122,7 @@ export default function ProfessionalHomePage() {
         </div>
 
         <div className="hidden lg:flex justify-center items-center">
-          <Card className="w-full max-w-md">
+          <Card className="w-full max-w-md bg-white dark:bg-gray-800">
             <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-800 dark:to-purple-800 text-white">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-bold">Portfolio Dashboard</h2>
@@ -130,24 +140,24 @@ export default function ProfessionalHomePage() {
             </CardHeader>
             <CardContent className="p-6 space-y-6">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-gray-600 dark:text-gray-300">
                   Profile Completeness
                 </span>
-                <span className="text-sm font-semibold text-primary">85%</span>
+                <span className="text-sm font-semibold text-primary dark:text-primary">85%</span>
               </div>
               <Progress value={85} className="w-full" />
               <div className="grid grid-cols-3 gap-6 pt-4">
                 <div className="text-center">
-                  <div className="text-sm font-semibold">12</div>
-                  <div className="text-xs text-muted-foreground">Projects</div>
+                  <div className="text-sm font-semibold text-gray-900 dark:text-white">12</div>
+                  <div className="text-xs text-gray-600 dark:text-gray-300">Projects</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-sm font-semibold">7</div>
-                  <div className="text-xs text-muted-foreground">Skills</div>
+                  <div className="text-sm font-semibold text-gray-900 dark:text-white">7</div>
+                  <div className="text-xs text-gray-600 dark:text-gray-300">Skills</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-sm font-semibold">3</div>
-                  <div className="text-xs text-muted-foreground">Certifications</div>
+                  <div className="text-sm font-semibold text-gray-900 dark:text-white">3</div>
+                  <div className="text-xs text-gray-600 dark:text-gray-300">Certifications</div>
                 </div>
               </div>
             </CardContent>
@@ -157,3 +167,4 @@ export default function ProfessionalHomePage() {
     </div>
   );
 }
+

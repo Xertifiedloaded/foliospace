@@ -51,8 +51,8 @@ export default async function handler(req, res) {
         otpExpiry,
       },
     });
-    // const verificationLink = `https://foliospace.vercel.app/auth/${OTPverificationToken}`;
-    const verificationLink = `https://foliospace.vercel.app`;
+    const verificationLink = `https://www.foliospace.org.ng/auth/verification/${OTPverificationToken}`;
+
     const emailContent = generateEmailContent(otp, verificationLink);
 
     await transporter.sendMail({

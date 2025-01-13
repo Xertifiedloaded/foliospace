@@ -1,111 +1,144 @@
-import React, { useState } from "react";
-import { Lock, AlertCircle } from "lucide-react";
-import { useToast } from '@/hooks/use-toast';
-import AuthLayout from '../../../components/AuthLayout';
+import { useState } from "react";
+import { useRouter } from "next/router";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from '@/hooks/use-toast';
+import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+} from "@/components/ui/alert-dialog";
 
-const OtpPage = () => {
+export default function OtpVerificationPage() {
+  const router = useRouter();
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  const handleChange = (e, index) => {
-    if (isNaN(e.target.value)) return;
-    const newOtp = [...otp];
-    newOtp[index] = e.target.value;
-    setOtp(newOtp);
-    if (e.target.nextSibling && e.target.value) e.target.nextSibling.focus();
-  };
-
-  const handleSubmit = async (e) => {
+  const handleVerification = async (e) => {
     e.preventDefault();
-    const otpCode = otp.join("");
-    
-    if (otpCode.length !== 4) {
-      toast({
-        variant: "destructive",
-        title: "Invalid OTP",
-        description: "Please enter a valid 4-digit OTP.",
-      });
-      return;
-    }
-
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/verify-otp-received", {
+      const response = await fetch("/api/auth/verify-otp-received", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otp: otpCode }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          otp: otp.join(""),
+        }),
       });
 
-      if (!res.ok) {
-        throw new Error("Invalid OTP. Please try again.");
+      const data = await response.json();
+
+      if (response.ok) {
+        setShowSuccess(true);
+        setTimeout(() => {
+          router.push("/auth/login");
+        }, 3000);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Verification Failed",
+          description: data.message,
+        });
       }
-
-      toast({
-        title: "Success!",
-        description: "OTP verified successfully. Redirecting to login...",
-        className: "bg-green-50",
-      });
-
-      setTimeout(() => {
-        window.location.href = "/auth/login";
-      }, 2000);
-    } catch (err) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: err.message,
+        description: "Something went wrong. Please try again.",
       });
     } finally {
       setLoading(false);
     }
   };
 
+  const handleOtpChange = (index, value) => {
+    // Only allow numbers
+    if (!/^\d*$/.test(value)) {
+      return;
+    }
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    if (value && index < 3) {
+      document.getElementById(`otp-${index + 1}`).focus();
+    }
+  };
+
+  const handleKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      document.getElementById(`otp-${index - 1}`).focus();
+    }
+  };
+
   return (
-<AuthLayout>
-<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
-        <div className="text-center mb-8">
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-              <Lock className="w-6 h-6 text-blue-600" />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+      <Card className="w-full max-w-md bg-white dark:bg-gray-800">
+        <CardHeader>
+          <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-100">
+            Enter Verification Code
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 text-center mt-2">
+            Enter the 4-digit code sent to your email
+          </p>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleVerification}>
+            <div className="flex gap-2 justify-center mb-6">
+              {otp.map((digit, index) => (
+                <Input
+                  key={index}
+                  id={`otp-${index}`}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleOtpChange(index, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(index, e)}
+                  className="w-14 h-14 text-center text-2xl bg-gray-50 dark:bg-gray-700"
+                  autoFocus={index === 0}
+                />
+              ))}
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">
-              Enter Verification Code
-            </h2>
-            <p className="text-gray-500 mt-2">
-              Please enter the 4-digit code sent to your email.
-            </p>
-          </div>
-        </div>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading || otp.some((digit) => !digit)}
+            >
+              {loading ? "Verifying..." : "Verify Code"}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="justify-center">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Didn't receive the code?{" "}
+            <Button variant="link" className="p-0">
+              Resend
+            </Button>
+          </p>
+        </CardFooter>
+      </Card>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex justify-between gap-3">
-            {otp.map((digit, index) => (
-              <input
-                key={index}
-                type="text"
-                maxLength={1}
-                className="w-16 text-base h-16 text-center font-semibold border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                value={digit}
-                onChange={(e) => handleChange(e, index)}
-                onFocus={(e) => e.target.select()}
-              />
-            ))}
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={loading}
-          >
-            {loading ? "Verifying..." : "Verify Code"}
-          </button>
-        </form>
-      </div>
+      <AlertDialog open={showSuccess}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-center text-green-600">
+              Verification Successful!
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center">
+              Your account has been verified. Redirecting to login...
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
-</AuthLayout>
   );
-};
-
-export default OtpPage;
+}

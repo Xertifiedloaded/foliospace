@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { X, Plus } from "lucide-react";
+import { X, Plus } from 'lucide-react';
 import { useSession } from "next-auth/react";
 import ProfileLayout from "@/components/layout";
 import { IPhoneFrame } from "@/components/Preview";
@@ -19,13 +19,11 @@ interface SocialMediaData {
 export default function SocialMediaSection() {
   const [socials, setSocials] = useState<SocialMediaData[]>([]);
   const { data: session, status } = useSession();
-  const [newSocial, setNewSocial] = useState<
-    Omit<SocialMediaData, "isVisible" | "id">
-  >({
+  const [newSocial, setNewSocial] = useState<Omit<SocialMediaData, "isVisible" | "id">>({
     name: "",
     link: "",
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const userId = session?.user?.id;
@@ -44,7 +42,7 @@ export default function SocialMediaSection() {
           setError("Failed to fetch social media links.");
         }
       } catch (error) {
-        setError("Error fetching socials: " + error);
+        setError("Error fetching socials: " + (error as Error).message);
       } finally {
         setLoading(false);
       }
@@ -153,19 +151,19 @@ export default function SocialMediaSection() {
 
   return (
     <ProfileLayout>
-      <div className="bg-gray-50 min-h-screen">
+      <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-200">
         <div className="container mx-auto py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <Card>
+              <Card className="dark:bg-gray-800">
                 <CardHeader>
-                  <CardTitle>Social Media</CardTitle>
+                  <CardTitle className="text-gray-900 dark:text-white">Social Media</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={addSocial} className="space-y-4">
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <Label>Name</Label>
+                        <Label className="text-gray-700 dark:text-gray-300">Name</Label>
                         <Input
                           value={newSocial.name}
                           onChange={(e) =>
@@ -175,10 +173,11 @@ export default function SocialMediaSection() {
                             }))
                           }
                           placeholder="Enter platform name"
+                          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         />
                       </div>
                       <div>
-                        <Label>Profile Link</Label>
+                        <Label className="text-gray-700 dark:text-gray-300">Profile Link</Label>
                         <Input
                           value={newSocial.link}
                           onChange={(e) =>
@@ -188,13 +187,14 @@ export default function SocialMediaSection() {
                             }))
                           }
                           placeholder="Full profile URL"
+                          className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         />
                       </div>
                     </div>
                     <Button
                       type="submit"
                       variant="outline"
-                      className="w-full"
+                      className="w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600"
                       disabled={loading}
                     >
                       {loading ? (
@@ -207,7 +207,7 @@ export default function SocialMediaSection() {
                     </Button>
                   </form>
 
-                  {error && <p className="text-red-500 mt-4">{error}</p>}
+                  {error && <p className="text-red-500 dark:text-red-400 mt-4">{error}</p>}
                 </CardContent>
               </Card>
             </div>
@@ -216,27 +216,26 @@ export default function SocialMediaSection() {
                 <IPhoneFrame>
                   {loading ? (
                     <div className="space-y-6">
-                      {/* Skeleton loader for each social link */}
                       {[...Array(3)].map((_, idx) => (
                         <div
                           key={idx}
-                          className="animate-pulse flex justify-between items-center bg-gray-100 p-2 rounded"
+                          className="animate-pulse flex justify-between items-center bg-gray-100 dark:bg-gray-700 p-2 rounded"
                         >
-                          <div className="w-24 h-4 bg-gray-300 rounded"></div>
-                          <div className="w-12 h-4 bg-gray-300 rounded"></div>
+                          <div className="w-24 h-4 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                          <div className="w-12 h-4 bg-gray-300 dark:bg-gray-600 rounded"></div>
                         </div>
                       ))}
                     </div>
                   ) : (
                     socials.length > 0 && (
                       <div className="space-y-6">
-                        <h3 className="text-sm font-medium">
+                        <h3 className="text-sm font-medium text-gray-900 dark:text-white">
                           Current Social Links
                         </h3>
                         {socials.map((social) => (
                           <div
                             key={social.id}
-                            className="flex justify-between items-center bg-gray-100 p-2 rounded"
+                            className="flex justify-between items-center bg-gray-100 dark:bg-gray-700 p-2 rounded"
                           >
                             <div className="flex items-center space-x-2">
                               <div>
@@ -244,7 +243,7 @@ export default function SocialMediaSection() {
                                   href={social.link}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-xs text-blue-600 hover:underline"
+                                  className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
                                 >
                                   {social.name}
                                 </a>
@@ -252,12 +251,15 @@ export default function SocialMediaSection() {
                             </div>
                             <div className="flex items-center space-x-2">
                               <Button
-                                variant={
-                                  social.isVisible ? "default" : "outline"
-                                }
+                                variant={social.isVisible ? "default" : "outline"}
                                 size="sm"
                                 onClick={() => toggleVisibility(social.id)}
                                 disabled={loading}
+                                className={`${
+                                  social.isVisible
+                                    ? "bg-blue-500 text-white hover:bg-blue-600"
+                                    : "bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600"
+                                }`}
                               >
                                 {social.isVisible ? "Visible" : "Hidden"}
                               </Button>
@@ -266,6 +268,7 @@ export default function SocialMediaSection() {
                                 size="icon"
                                 onClick={() => removeSocial(social.id)}
                                 disabled={loading}
+                                className="text-gray-600 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400"
                               >
                                 <X className="h-4 w-4" />
                               </Button>
@@ -284,3 +287,4 @@ export default function SocialMediaSection() {
     </ProfileLayout>
   );
 }
+

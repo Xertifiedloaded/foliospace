@@ -10,6 +10,7 @@ interface Profile {
   username: string;
   skills: Skill[];
 }
+
 interface Skill {
   name: string;
   level: string;
@@ -25,7 +26,7 @@ const ProfileCard: React.FC<Profile> = ({
   return (
     <Link
       href={`/portfolio/${username}`}
-      className="group relative bg-white border border-neutral-200 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-2"
+      className="group relative bg-white dark:bg-black border border-neutral-200 dark:border-gray-800 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-gray-700 hover:-translate-y-2"
     >
       <div className="p-6">
         <div className="flex items-center space-x-4 mb-4">
@@ -35,23 +36,23 @@ const ProfileCard: React.FC<Profile> = ({
               height={100}
               src={picture}
               alt={name}
-              className="w-16 h-16 rounded-full border-3 border-neutral-200 group-hover:scale-110 transition-transform"
+              className="w-16 h-16 rounded-full border-3 border-neutral-200 dark:border-gray-600 group-hover:scale-110 transition-transform"
             />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-neutral-900">{name}</h3>
-            <p className="text-sm text-neutral-600">{tagline}</p>
+            <h3 className="text-lg font-bold text-neutral-900 dark:text-white">{name}</h3>
+            <p className="text-sm text-neutral-600 dark:text-gray-300">{tagline}</p>
           </div>
         </div>
 
         <div className="mt-4">
-          <ul className="mt-2 text-sm text-neutral-600">
+          <ul className="mt-2 text-sm text-neutral-600 dark:text-gray-300">
             {skills.length > 0 ? (
-              <ul>
+              <ul className="flex flex-wrap gap-2">
                 {skills.map((skill, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 bg-gray-100 rounded-full text-xs"
+                    className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-xs text-gray-800 dark:text-gray-200"
                   >
                     <span>{skill.name}</span>
                   </span>
@@ -92,20 +93,20 @@ const ProfileSection: React.FC = () => {
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className="text-red-500 dark:text-red-400">{error}</div>;
   }
 
   return (
-    <section className="bg-neutral-50 py-16">
+    <section className="bg-neutral-50 dark:bg-black py-16 transition-colors duration-200">
       <div className="px-6">
         <div className="text-center mb-12">
-          <div className="inline-block bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
+          <div className="inline-block bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 px-4 py-2 rounded-full text-sm font-medium mb-4">
             Registered Users
           </div>
-          <h2 className="lg:text-4xl text-xl font-bold text-neutral-900 mb-4">
+          <h2 className="lg:text-4xl text-xl font-bold text-neutral-900 dark:text-white mb-4">
             Meet a few of our Registered Users
           </h2>
-          <p className="lg:text-xl text-sm text-neutral-600 max-w-2xl mx-auto">
+          <p className="lg:text-xl text-sm text-neutral-600 dark:text-gray-300 max-w-2xl mx-auto">
             Discover the diverse individuals who have joined our platform to
             collaborate and grow.
           </p>
@@ -123,18 +124,19 @@ const ProfileSection: React.FC = () => {
 
 export default ProfileSection;
 
-const SkeletonLoader = () => (
-  <div className="grid wrapper my-10  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+const SkeletonLoader: React.FC = () => (
+  <div className="grid wrapper my-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     {Array(6)
       .fill(null)
       .map((_, index) => (
         <div key={index} className="animate-pulse flex items-center space-x-4">
-          <div className="w-16 h-16 bg-gray-300 rounded-full" />
+          <div className="w-16 h-16 bg-gray-300 dark:bg-gray-600 rounded-full" />
           <div className="flex-1 space-y-2">
-            <div className="h-4 bg-gray-300 rounded w-3/4" />
-            <div className="h-4 bg-gray-300 rounded w-1/2" />
+            <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4" />
+            <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2" />
           </div>
         </div>
       ))}
   </div>
 );
+

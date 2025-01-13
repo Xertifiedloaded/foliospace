@@ -9,7 +9,7 @@ const PasswordResetPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const { token } = router.query;
+  const { resetToken } = router.query;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +39,7 @@ const PasswordResetPage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ newPassword, resetToken: token }),
+        body: JSON.stringify({ newPassword, resetToken: resetToken }),
       });
 
       if (!res.ok) {

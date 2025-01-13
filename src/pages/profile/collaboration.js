@@ -27,7 +27,6 @@ import {
   FaYoutube,
   FaTiktok,
 } from "react-icons/fa";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +37,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import {
   Search,
   Users2,
   X,
@@ -46,7 +51,6 @@ import {
   ExternalLink,
   Globe2,
 } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
 import ProfileLayout from "../../../components/layout";
 
 const UserSkillsDisplay = () => {
@@ -58,7 +62,7 @@ const UserSkillsDisplay = () => {
 
   const getSocialIcon = (platform) => {
     const icons = {
-      github: <FaGithub className="h-2 w-2" />,
+      github: <FaGithub className="h-4 w-4" />,
       linkedin: <FaLinkedin className="h-4 w-4" />,
       twitter: <FaTwitter className="h-4 w-4" />,
       instagram: <FaInstagram className="h-4 w-4" />,
@@ -70,9 +74,65 @@ const UserSkillsDisplay = () => {
       tiktok: <FaTiktok className="h-4 w-4" />,
       default: <Globe2 className="h-4 w-4" />,
     };
+    return icons[platform?.toLowerCase()] || icons.default;
+  };
 
-    const platformLower = platform?.toLowerCase();
-    return icons[platformLower] || icons.default;
+  const SocialLinks = ({ socials }) => {
+    const visibleSocials = socials.slice(0, 2);
+    const remainingSocials = socials.slice(2);
+    return (
+      <>
+        {visibleSocials.map((social) => (
+          <TooltipProvider key={social.id}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon"  asChild className="h-8 dark:text-white w-8">
+                  <a
+                    href={social.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {getSocialIcon(social.name)}
+                  </a>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{social.name}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ))}
+        {remainingSocials.length > 0 && (
+          <DropdownMenu className="flex items-center">
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="px-2 text-xs font-medium"
+              >
+                +{remainingSocials.length}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="" align="end">
+              {remainingSocials.map((social) => (
+                <DropdownMenuItem key={social.id} asChild>
+                  <a
+                    href={social.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <span className="h-4 w-4">
+                      {getSocialIcon(social.name)}
+                    </span>
+                    {social.name}
+                  </a>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </>
+    );
   };
 
   const fetchUsers = async () => {
@@ -96,9 +156,9 @@ const UserSkillsDisplay = () => {
 
   const allSkills = useMemo(() => {
     const skillSet = new Set();
-    users.forEach((user) => {
-      user.skills.forEach((skill) => skillSet.add(skill.name));
-    });
+    users.forEach((user) =>
+      user.skills.forEach((skill) => skillSet.add(skill.name))
+    );
     return Array.from(skillSet).sort();
   }, [users]);
 
@@ -140,215 +200,122 @@ const UserSkillsDisplay = () => {
       <div className="container mx-auto p-6 space-y-8">
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">
-                Team Directory
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Browse and connect with team members based on their skills and
-                expertise
-              </p>
-            </div>
+            <h1 className="text-3xl font-bold">Team Directory</h1>
             <Button
               variant="outline"
               onClick={clearFilters}
               disabled={!searchTerm && !selectedSkills.length && !selectedLevel}
-              className="gap-2"
             >
-              <X className="h-4 w-4" />
-              Reset Filters
+              <X className="h-4 w-4 " /> Reset Filters
             </Button>
           </div>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search by name, role, or skill..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
-              />
-            </div>
+          <div className="flex gap-4">
+            <Input
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
             <Select value={selectedLevel} onValueChange={setSelectedLevel}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger>
                 <SelectValue placeholder="Experience Level" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={null}>All Levels</SelectItem>
+                <SelectItem value="all">All Levels</SelectItem>
                 <SelectItem value="Junior">Junior</SelectItem>
-                <SelectItem value="Mid">Mid-Level</SelectItem>
+                <SelectItem value="Mid">Mid</SelectItem>
                 <SelectItem value="Senior">Senior</SelectItem>
               </SelectContent>
             </Select>
           </div>
+          <div className="flex flex-wrap gap-2">
+            {allSkills.slice(0, 5).map((skill) => (
+              <Button
+                key={skill}
+                onClick={() => handleSkillToggle(skill)}
+                variant={selectedSkills.includes(skill) ? "default" : "outline"}
+                size="sm"
+                className="rounded-full"
+              >
+                {skill}
+              </Button>
+            ))}
 
-          <div className="space-y-2">
-            <h2 className="text-sm font-medium">Filter by Skills</h2>
-            <div className="flex flex-wrap gap-2">
-              {allSkills.map((skill) => (
-                <Button
-                  key={skill}
-                  variant={
-                    selectedSkills.includes(skill) ? "default" : "outline"
-                  }
-                  size="sm"
-                  onClick={() => handleSkillToggle(skill)}
-                  className="rounded-full"
-                >
-                  {skill}
-                </Button>
-              ))}
-            </div>
+            {allSkills.length > 5 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="rounded-full">
+                    +{allSkills.length - 5} more
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {allSkills.slice(5).map((skill) => (
+                    <DropdownMenuItem
+                      key={skill}
+                      onClick={() => handleSkillToggle(skill)}
+                    >
+                      {skill}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
-
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="space-y-4 text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
-              <p className="text-muted-foreground">Loading team members...</p>
-            </div>
-          </div>
-        ) : filteredUsers.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div>Loading...</div>
+        ) : (
+          <div>
             {filteredUsers.map((user) => (
-              <Card
-                key={user.id}
-                className="group hover:shadow-lg transition-all"
-              >
-                <CardHeader>
-                  <div className="flex items-start gap-4">
-                    <img
-                      src={user?.profile?.picture ?? "/images/user.jpg"}
-                      alt={user.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                    <div className="space-y-1">
-                      <CardTitle className="text-lg">{user.name}</CardTitle>
-                      <CardDescription>
-                        {user?.profile?.tagline ?? "No Tagline"}
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
+              <Card key={user.id} className="mb-4">
+                <CardHeader>{user.name}</CardHeader>
                 <CardContent className="space-y-4">
                   {user?.profile?.levelOfExperience && (
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary">
                         {user.profile.levelOfExperience}
                       </Badge>
-                      {user?.profile?.yearsOfExperience && (
-                        <span className="text-sm text-muted-foreground">
-                          {user.profile.yearsOfExperience} years experience
-                        </span>
-                      )}
+                      {user?.profile?.yearsOfExperience &&
+                        user.profile.yearsOfExperience > 0 && (
+                          <span className="text-sm text-muted-foreground">
+                            {user.profile.yearsOfExperience} years experience
+                          </span>
+                        )}
                     </div>
                   )}
 
                   <div className="flex flex-wrap gap-1.5">
-                    {user.skills.map((skill) => (
+                    {user.skills.slice(0, 5).map((skill) => (
                       <Badge key={skill.id} variant="outline">
                         {skill.name}
                       </Badge>
                     ))}
+
+                    {user.skills.length > 5 && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Badge
+                            variant="outline"
+                            className="cursor-pointer hover:bg-muted"
+                          >
+                            +{user.skills.length - 5} more
+                          </Badge>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          {user.skills.slice(5).map((skill) => (
+                            <DropdownMenuItem key={skill.id}>
+                              {skill.name}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <div className="flex items-center gap-3 text-sm">
-                    <TooltipProvider>
-                      {user?.email && (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              asChild
-                              className="h-8 w-8"
-                            >
-                              <a href={`mailto:${user.email}`}>
-                                <Mail className="h-4 w-4" />
-                              </a>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Send email</TooltipContent>
-                        </Tooltip>
-                      )}
-
-                      {user?.profile?.phoneNumber && (
-                        <>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                asChild
-                                className="h-8 w-8 text-green-600"
-                              >
-                                <a
-                                  href={`https://wa.me/${user.profile.phoneNumber}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <FaWhatsapp className="h-4 w-4" />
-                                </a>
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>WhatsApp</TooltipContent>
-                          </Tooltip>
-
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                asChild
-                                className="h-8 w-8"
-                              >
-                                <a href={`tel:${user.profile.phoneNumber}`}>
-                                  <Phone className="h-4 w-4" />
-                                </a>
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Call</TooltipContent>
-                          </Tooltip>
-                        </>
-                      )}
-
-                      {user.socials.length > 0 &&
-                        user?.socials.map((social) => (
-                          <Tooltip key={social.id}>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                asChild
-                                className="h-8 w-8"
-                              >
-                                <a
-                                  href={social?.link}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-muted-foreground hover:text-foreground transition-colors"
-                                >
-                                  {getSocialIcon(social?.name)}
-                                </a>
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>{social.name}</TooltipContent>
-                          </Tooltip>
-                        ))}
-                    </TooltipProvider>
-                  </div>
-                </CardFooter>
+                <CardContent>
+                  <SocialLinks socials={user.socials} />
+                </CardContent>
               </Card>
             ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <Users2 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">No users found</p>
           </div>
         )}
       </div>

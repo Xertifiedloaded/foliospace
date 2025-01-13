@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-*{
+* {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -77,19 +77,24 @@ body {
 }
 
 .wrapper {
-  @apply px-6 md:px-28 lg:px-16
+  @apply px-6 md:px-28 lg:px-16;
 }
 
 .nav-wrapper {
-  @apply px-4 md:px-24 lg:px-28
+  @apply px-4 md:px-24 lg:px-28;
 }
 @layer base {
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-neutral-50 dark:bg-black transition-colors duration-200;
+  }
+  input,
+  textarea,
+  label,
+  select,
+  option,button{
+    @apply dark:text-white text-black;
   }
 }
-
-

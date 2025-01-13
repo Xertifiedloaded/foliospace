@@ -1,4 +1,3 @@
-
 "use client"
 
 import { createContext, useContext, useEffect, useState } from "react"
@@ -8,8 +7,19 @@ const ThemeContext = createContext({
   setTheme: () => null,
 })
 
-export function ThemeProvider({ children, defaultTheme = "system", storageKey = "vite-ui-theme", ...props }) {
-  const [theme, setTheme] = useState(defaultTheme)
+export function ThemeProvider({ 
+  children, 
+  defaultTheme = "system", 
+  storageKey = "vite-ui-theme", 
+  ...props 
+}) {
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem(storageKey)
+      return savedTheme || defaultTheme
+    }
+    return defaultTheme
+  })
 
   useEffect(() => {
     const root = window.document.documentElement
@@ -20,9 +30,17 @@ export function ThemeProvider({ children, defaultTheme = "system", storageKey = 
         .matches
         ? "dark"
         : "light"
-
       root.classList.add(systemTheme)
-      return
+
+      // Add listener for system theme changes
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+      const handleChange = (e) => {
+        root.classList.remove("light", "dark")
+        root.classList.add(e.matches ? "dark" : "light")
+      }
+      
+      mediaQuery.addEventListener("change", handleChange)
+      return () => mediaQuery.removeEventListener("change", handleChange)
     }
 
     root.classList.add(theme)

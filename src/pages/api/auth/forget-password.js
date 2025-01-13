@@ -33,7 +33,7 @@ export default async function handler(req, res) {
         },
       });
 
-      const resetLink = `https://foliospace.vercel.app/auth/${resetToken}`;
+      const resetLink = `https://www.foliospace.org.ng/auth/${resetToken}`;
       const emailContent = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
         <h1 style="color: #4caf50;">Password Reset Request</h1>
