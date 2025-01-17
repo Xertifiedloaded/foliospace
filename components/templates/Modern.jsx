@@ -16,7 +16,7 @@ const ModernTemplate = ({ portfolio }) => {
   return (
     <div className="bg-gradient-to-br from-purple-900 to-indigo-800 text-white min-h-screen">
       <section className="py-20">
-        <div className="container mx-auto px-4">
+        <div className="container px-4">
           <div className="flex items-center justify-center gap-4 mb-16">
             <FolderCode className="w-8 h-8 text-purple-300" />
             <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">
@@ -66,7 +66,7 @@ const ModernTemplate = ({ portfolio }) => {
 
       {/* Experience Timeline */}
       <section className="py-20 bg-gradient-to-b from-transparent to-purple-900/30">
-        <div className="container mx-auto px-4">
+        <div className="container px-4">
           <div className="flex items-center justify-center gap-4 mb-16">
             <Briefcase className="w-8 h-8 text-purple-300" />
             <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">
@@ -74,7 +74,7 @@ const ModernTemplate = ({ portfolio }) => {
             </h2>
           </div>
           
-          <div className="max-w-4xl mx-auto space-y-12">
+          <div className=" space-y-12">
             {experiences?.map((exp) => (
               <div key={exp.id} className="group relative pl-8 border-l-2 border-purple-500/30 hover:border-purple-400 transition-colors">
                 <div className="absolute w-4 h-4 bg-purple-500 rounded-full -left-[9px] top-2 group-hover:bg-purple-400 transition-colors" />
@@ -104,7 +104,7 @@ const ModernTemplate = ({ portfolio }) => {
 
       {/* Education Cards */}
       <section className="py-20">
-        <div className="container mx-auto px-4">
+        <div className="container px-4">
           <div className="flex items-center justify-center gap-4 mb-16">
             <GraduationCap className="w-8 h-8 text-purple-300" />
             <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">
@@ -112,7 +112,7 @@ const ModernTemplate = ({ portfolio }) => {
             </h2>
           </div>
           
-          <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+          <div className=" grid md:grid-cols-2 gap-8">
             {education?.map((edu) => (
               <div key={edu.id} className="group bg-white/5 backdrop-blur-lg p-6 rounded-xl hover:bg-white/10 transition-all duration-300">
                 <h3 className="text-2xl font-bold text-white mb-2">{edu.degree}</h3>
@@ -132,8 +132,8 @@ const ModernTemplate = ({ portfolio }) => {
 
       {/* Connect Section */}
       <section className="py-20 bg-gradient-to-b from-transparent to-indigo-900/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
+        <div className="container px-4">
+          <div className="">
             <div className="flex items-center justify-center gap-4 mb-16">
               <Link2 className="w-8 h-8 text-purple-300" />
               <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">

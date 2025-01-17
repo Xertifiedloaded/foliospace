@@ -35,7 +35,7 @@ const ProfessionalTemplate = ({ portfolio }) => {
       {/* Experience Section */}
       <section className="py-20 bg-gray-100 dark:bg-gray-800">
         <div className="container mx-auto px-4 max-w-5xl">
-          <h2 className="text-3xl font-bold mb-12 text-center">Professional Experience</h2>
+          <h2 className=" font-bold mb-12 text-center">Professional Experience</h2>
           <div className="space-y-12">
             {experiences?.map((exp) => (
               <div key={exp.id} className="flex flex-col md:flex-row gap-8">
@@ -77,7 +77,7 @@ const ProfessionalTemplate = ({ portfolio }) => {
       {/* Projects Section */}
       <section className="bg-gray-50 dark:bg-gray-800 py-20">
         <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-3xl font-bold mb-12 text-center">Featured Projects</h2>
+          <h2 className=" font-bold mb-12 text-center">Featured Projects</h2>
           <div className="grid md:grid-cols-2 gap-8">
             {projects?.map((project) => (
               <div key={project.id} className="bg-white dark:bg-gray-700 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
