@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -7,22 +8,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-
-import SettingsLayout from "./SettingsLayout";
 import { useToast } from "../hooks/use-toast";
 
 const TemplateSelector = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const [isClient, setIsClient] = useState(false);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   const handleTemplateChange = async (value) => {
+    if (status !== 'authenticated') {
+      toast({
+        title: "Not Authenticated",
+        description: "Please log in to update your template.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -40,8 +47,7 @@ const TemplateSelector = () => {
     } catch (error) {
       toast({
         title: "Update Failed",
-        description:
-          "An error occurred while updating the template. Please try again.",
+        description: "An error occurred while updating the template. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -56,7 +62,7 @@ const TemplateSelector = () => {
       <Select
         className="border border-white"
         onValueChange={handleTemplateChange}
-        disabled={loading}
+        disabled={loading || status !== 'authenticated'}
       >
         <SelectTrigger id="template" className="w-full">
           <SelectValue placeholder="Select a template" />

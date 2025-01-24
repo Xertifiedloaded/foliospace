@@ -235,7 +235,7 @@ export default function PortfolioSection() {
 
   return (
     <ProfileLayout>
-      <div className="bg-gray-50 container mx-auto min-h-screen">
+      <div className="bg-gray-50 dark:bg-black container mx-auto min-h-screen transition-colors duration-200">
         <div className="py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
@@ -299,7 +299,7 @@ export default function PortfolioSection() {
                     </div>
 
                     <div className="flex justify-end">
-                      <Button type="submit" disabled={isLoading}>
+                      <Button variant='destructive' className="text-black" type="submit" disabled={isLoading}>
                         {isLoading ? (
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         ) : editIndex !== null ? (
@@ -354,6 +354,7 @@ export default function PortfolioSection() {
                           <Plus />
                         </Button>
                         <Button
+                        className="text-black"
                           onClick={() => deleteProject(project)}
                           size="icon"
                           variant="ghost"

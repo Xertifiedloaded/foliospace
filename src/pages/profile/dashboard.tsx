@@ -189,7 +189,6 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-
             <PortfolioAnalytic />
           </div>
         </div>

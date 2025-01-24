@@ -13,7 +13,7 @@ const ComingSoon = dynamic(() => import("../../components/ComingSoon"), {
 });
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
-  const production = process.env.NODE_ENV === "development";
+  const production = process.env.NODE_ENV === "production";
 
   return (
     <>

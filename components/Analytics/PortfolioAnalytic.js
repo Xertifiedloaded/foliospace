@@ -1,47 +1,48 @@
 import React, { useEffect, useState } from "react";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCardData } from '../../utils/index';
+import { getCardData } from "../../utils/index";
 import { Activity } from "lucide-react";
 
 const PortfolioAnalytic = () => {
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState(null);
+  const { data: session, status } = useSession();
+
+  const fetchSessionAndAnalytics = async () => {
+    try {
+      if (!session || !session.user?.username) {
+        console.error("No user session found or username not available");
+        setLoading(false);
+        return;
+      }
+
+      setUsername(session.user.username);
+
+      const response = await fetch(
+        `/api/analytics/analytics?username=${session?.user?.username}`
+      );
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch analytics data: ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      setAnalyticsData(data);
+    } catch (error) {
+      console.error("Error fetching analytics data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchSessionAndAnalytics = async () => {
-      try {
-        const session = await getSession();
-        if (!session || !session.user?.username) {
-          console.error("No user session found or username not available");
-          setLoading(false);
-          return;
-        }
-
-        setUsername(session.user.username);
-
-        const response = await fetch(
-          `/api/analytics/analytics?username=${session?.user?.username}`
-        );
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch analytics data: ${response.statusText}`
-          );
-        }
-
-        const data = await response.json();
-        setAnalyticsData(data);
-      } catch (error) {
-        console.error("Error fetching analytics data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSessionAndAnalytics();
-  }, []);
-
+    if (status === "authenticated") {
+      fetchSessionAndAnalytics();
+    }
+  }, [status]);
   if (loading) {
     return (
       <div className="container mx-auto p-4">
@@ -104,14 +105,13 @@ const PortfolioAnalytic = () => {
                 className="py-3 hover:bg-gray-70 dark:hover:bg-gray-700 transition-colors"
               >
                 <div className="flex flex-col md:flex-row md:justify-between">
-                
                   <p className="text-gray-500 dark:text-gray-400 text-sm">
                     {log.userAgent}
                   </p>
                 </div>
                 <p className="text-gray-800 dark:text-gray-200 mt-2 text-sm font-medium">
-                   Accessed on {new Date(log.timestamp).toLocaleString()}
-                  </p>
+                  Accessed on {new Date(log.timestamp).toLocaleString()}
+                </p>
               </li>
             ))}
           </ul>
@@ -157,8 +157,12 @@ const AnalyticsCard = ({ analyticsData }) => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className={`text-4xl dark:text-white  font-bold ${subClass}`}>{value}</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{description}</p>
+              <p className={`text-4xl dark:text-white  font-bold ${subClass}`}>
+                {value}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {description}
+              </p>
             </CardContent>
           </Card>
         )
