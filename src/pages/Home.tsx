@@ -4,6 +4,7 @@ import { Footer } from "@/components/ui/Footer";
 import { Button } from "@/components/ui/button";
 import ProfileSection from "@/sections/Profile";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const data = [
@@ -51,7 +52,7 @@ const Header = () => {
     <>
       <header className=" pt-3 flex justify-between  items-center">
 
-        <a href="/" className="">
+        <Link href="/" className="">
         <Image
           src="/images/logo.svg"
           alt="gallery"
@@ -59,7 +60,7 @@ const Header = () => {
           height={250}
           className="object-cover w-[400px] inline-block"
         />
-        </a>
+        </Link>
         <UserNavigation />
       </header>
     </>
