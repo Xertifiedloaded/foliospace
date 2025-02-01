@@ -1,103 +1,179 @@
-import React from "react";
+"use client";
+import { FaXTwitter } from "react-icons/fa6";
 import {
-  RiCheckboxCircleLine,
-  RiTwitterLine,
-  RiLinkedinLine,
-  RiGithubLine,
-  RiInstagramLine,
-} from "react-icons/ri";
+  BiLogoFacebookCircle,
+  BiLogoInstagram,
+  BiLogoLinkedinSquare,
+  BiLogoYoutube,
+} from "react-icons/bi";
+import { useState } from "react";
+import { Input } from "./input";
+import { Button } from "./button";
 
-const Footer: React.FC = () => {
+type ImageProps = {
+  url?: string;
+  src: string;
+  alt?: string;
+};
 
+type Links = {
+  title: string;
+  url: string;
+  icon?: React.ReactNode;
+};
 
-  const footerNavigation = {
-    platform: [
-      { name: "Features", href: "/" },
-      { name: "Portfolio Builder", href: "/" },
-      { name: "Career Insights", href: "/" },
-    ],
-    company: [
-      { name: "About Us", href: "/" },
-      { name: "Careers", href: "/" },
-      { name: "Press", href: "/" },
-      { name: "Contact", href: "/" },
-    ],
-    resources: [
-      { name: "Blog", href: "/" },
-      { name: "Help Center", href: "/" },
-      { name: "Documentation", href: "/" },
-      { name: "Community", href: "/" },
-    ],
+type ColumnLinks = {
+  title: string;
+  links: Links[];
+};
+
+type FooterLink = {
+  title: string;
+  url: string;
+};
+
+type Props = {
+  logo: ImageProps;
+  newsletterDescription: string;
+  inputPlaceholder?: string;
+  button: {
+    title: string;
+    variant: string;
+    size: string;
+  };
+  termsAndConditions: string;
+  columnLinks: ColumnLinks[];
+  footerText: string;
+  footerLinks: FooterLink[];
+};
+
+export type FooterProps = React.ComponentPropsWithoutRef<"section"> & Partial<Props>;
+
+export const Footer = (props: FooterProps) => {
+  const {
+    logo,
+    newsletterDescription,
+    inputPlaceholder,
+    button,
+    termsAndConditions,
+    columnLinks,
+    footerText,
+    footerLinks,
+  } = {
+    ...FooterDefaults,
+    ...props,
   };
 
-  const socialLinks = [
-    { icon: RiTwitterLine, href: "https://twitter.com/creatify" },
-    { icon: RiLinkedinLine, href: "https://linkedin.com/company/creatify" },
-    { icon: RiGithubLine, href: "https://github.com/creatify" },
-    { icon: RiInstagramLine, href: "https://instagram.com/creatify" },
-  ];
+  const [emailInput, setEmailInput] = useState<string>("");
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log({ emailInput });
+  };
 
   return (
-    <footer className="bg-white dark:bg-black transition-colors duration-200">
-      <div className="container mx-auto px-6 py-16">
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8">
-          <div>
-            <div className="flex items-center mb-6">
-              <RiCheckboxCircleLine className="mr-2 text-2xl text-blue-500 dark:text-blue-400" />
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">FolioSpace</span>
-            </div>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Elevate your professional journey with intelligent portfolio
-              building and career insights.
-            </p>
-            <div className="flex space-x-4">
-              {socialLinks.map((social, index) => (
-                <a
-                  key={index}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
-                >
-                  <social.icon className="w-6 h-6" />
-                </a>
-              ))}
+    <footer className="px-[5%] py-12 md:py-18 lg:py-20">
+      <div className="container">
+        <div className="grid grid-cols-1 gap-x-[8vw] gap-y-12 pb-12 md:gap-y-16 md:pb-18 lg:grid-cols-[0.75fr_1fr] lg:gap-y-4 lg:pb-20">
+          <div className="flex flex-col">
+            <a href={logo.url} className="mb-5 md:mb-6">
+              <img src={logo.src} alt={logo.alt} className="inline-block" />
+            </a>
+            <p className="mb-5 md:mb-6">{newsletterDescription}</p>
+            <div className="w-full max-w-md">
+              <form
+                className="mb-3 grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-[1fr_max-content] md:gap-y-4"
+                onSubmit={handleSubmit}
+              >
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder={inputPlaceholder}
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                />
+                <Button className="bg-background text-heading shadow-md">{button.title}</Button>
+              </form>
+              <div dangerouslySetInnerHTML={{ __html: termsAndConditions }} />
             </div>
           </div>
-
-          {Object.entries(footerNavigation).map(([key, links]) => (
-            <div key={key}>
-              <h4 className="font-semibold mb-6 text-gray-900 dark:text-white capitalize">
-                {key}
-              </h4>
-              <ul className="space-y-4">
-                {links.map((link, index) => (
-                  <li key={index}>
-                    <a
-                      href={link.href}
-                      className="text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
-                    >
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="grid grid-cols-1 items-start gap-y-10 sm:grid-cols-3 sm:gap-x-6 md:gap-x-8 md:gap-y-4">
+            {columnLinks.map((column, index) => (
+              <div key={index} className="flex flex-col items-start justify-start">
+                <h2 className="mb-3 font-semibold md:mb-4">{column.title}</h2>
+                <ul>
+                  {column.links.map((link, linkIndex) => (
+                    <li key={linkIndex} className="py-2 text-sm">
+                      <a href={link.url} className="flex items-center gap-3">
+                        {link.icon && <span>{link.icon}</span>}
+                        <span>{link.title}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="mt-8 pb-2 text-center border-t border-gray-200 dark:border-gray-700">
-        <small className="text-gray-500 dark:text-gray-400 font-light flex items-center justify-center gap-1">
-          © {new Date().getFullYear()}{" "}
-          <span className="font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-            Makinde Olaitan
-          </span>
-          <span className="text-gray-400 dark:text-gray-600">•</span> All rights reserved
-        </small>
+        <div className="h-px w-full bg-black" />
+        <div className="flex flex-col-reverse items-start justify-between pb-4 pt-6 text-sm md:flex-row md:items-center md:pb-0 md:pt-8">
+          <p className="mt-6 md:mt-0">{footerText}</p>
+          <ul className="grid grid-flow-row grid-cols-[max-content] justify-center gap-y-4 text-sm md:grid-flow-col md:gap-x-6 md:gap-y-0">
+            {footerLinks.map((link, index) => (
+              <li key={index} className="underline">
+                <a href={link.url}>{link.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </footer>
   );
 };
 
-export default Footer;
-
+export const FooterDefaults: Props = {
+  logo: {
+    url: "#",
+    src: "/images/logo.svg",
+    alt: "Logo image",
+  },
+  newsletterDescription: "Join our newsletter to stay up to date on features and releases.",
+  inputPlaceholder: "Enter your email",
+  button: {
+    title: "Subscribe",
+    variant: "secondary",
+    size: "sm",
+  },
+  termsAndConditions: `
+  <p class='text-xs'>
+  Get our emails on inspirations and tips to grow your creative business.
+  </p>
+  `,
+  columnLinks: [
+    {
+      title: "ABOUT",
+      links: [
+        { title: "About", url: "#" },
+        { title: "Contact", url: "#" },
+        { title: "Terms of Use", url: "#" },
+        { title: "Privacy Policy", url: "#" },
+        { title: "Faq", url: "#" },
+      ],
+    },
+    {
+      title: "Follow us",
+      links: [
+        { title: "Facebook", url: "#", icon: <BiLogoFacebookCircle className="size-6" /> },
+        { title: "Instagram", url: "#", icon: <BiLogoInstagram className="size-6" /> },
+        { title: "X", url: "#", icon: <FaXTwitter className="size-6 p-0.5" /> },
+        { title: "LinkedIn", url: "#", icon: <BiLogoLinkedinSquare className="size-6" /> },
+        { title: "Youtube", url: "#", icon: <BiLogoYoutube className="size-6" /> },
+      ],
+    },
+  ],
+  footerText: `© ${new Date().getFullYear()} foliospace. All rights reserved.`,
+  footerLinks: [
+    { title: "Privacy Policy", url: "#" },
+    { title: "Terms of Service", url: "#" },
+    { title: "Cookies Settings", url: "#" },
+  ],
+};

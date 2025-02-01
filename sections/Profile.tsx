@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface Profile {
   name: string;
@@ -26,7 +27,7 @@ const ProfileCard: React.FC<Profile> = ({
   return (
     <Link
       href={`/portfolio/${username}`}
-      className="group relative bg-white dark:bg-black border border-neutral-200 dark:border-gray-800 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-gray-700 hover:-translate-y-2"
+      className="group relative  bg-card border border-border  rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-gray-700 hover:-translate-y-2"
     >
       <div className="p-6">
         <div className="flex items-center space-x-4 mb-4">
@@ -36,23 +37,23 @@ const ProfileCard: React.FC<Profile> = ({
               height={100}
               src={picture}
               alt={name}
-              className="w-16 h-16 rounded-full border-3 border-neutral-200 dark:border-gray-600 group-hover:scale-110 transition-transform"
+              className="w-16 h-16 rounded-full border-3 border-border dark:border-gray-600 group-hover:scale-110 transition-transform"
             />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-neutral-900 dark:text-white">{name}</h3>
-            <p className="text-sm text-neutral-600 dark:text-gray-300">{tagline}</p>
+            <h3 className="text-lg font-bold text-heading">{name}</h3>
+            <p className="text-sm text-paragraph">{tagline}</p>
           </div>
         </div>
 
         <div className="mt-4">
-          <ul className="mt-2 text-sm text-neutral-600 dark:text-gray-300">
+          <ul className="mt-2 text-sm text-paragraph">
             {skills.length > 0 ? (
               <ul className="flex flex-wrap gap-2">
                 {skills.map((skill, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-xs text-gray-800 dark:text-gray-200"
+                    className="px-2 py-1 bg-heading text-background  rounded-full text-xs "
                   >
                     <span>{skill.name}</span>
                   </span>
@@ -97,22 +98,46 @@ const ProfileSection: React.FC = () => {
   }
 
   return (
-    <section className="bg-neutral-50 dark:bg-black py-16 transition-colors duration-200">
-      <div className="px-6">
-        <div className="text-center mb-12">
-          <div className="inline-block bg-green-50 dark:bg-green-900 text-green-700 dark:text-green-300 px-4 py-2 rounded-full text-sm font-medium mb-4">
-            Registered Users
-          </div>
-          <h2 className="lg:text-4xl text-xl font-bold text-neutral-900 dark:text-white mb-4">
+    <section className="">
+      <div className="">
+        <div className="flex flex-col items-center justify-center md:text-left max-w-3xl mx-auto">
+          <Button
+            variant="outline"
+            className="px-8 py-4 bg-border   text-xs bold rounded-xl  border-2 border-blue-500/20 hover:border-blue-500/40 hover:bg-blue-500/10 transition-all duration-300 backdrop-blur-sm group relative overflow-hidden"
+          >
+            <span className="relative z-10  flex items-center gap-2">
+              Browse Template
+              <svg
+                className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
+              </svg>
+            </span>
+
+            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-transparent border-b-2 border-blue-500/20 group-hover:border-blue-500/40 transition-all duration-300">
+              <span className="absolute left-0 w-0 h-[2px] bg-blue-500/40 group-hover:w-full group-hover:left-0 transition-all duration-300"></span>
+              <span className="absolute right-0 w-0 h-[2px] bg-blue-500/40 group-hover:w-full group-hover:right-0 transition-all duration-300"></span>
+            </span>
+          </Button>
+          <h1 className="text-3xl mt-5 md:text-5xl font-bold text-center mb-6 bg-clip-text text-heading bg-gradient-to-r from-white via-gray-100 to-gray-300">
             Meet a few of our Registered Users
-          </h2>
-          <p className="lg:text-xl text-sm text-neutral-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Discover the diverse individuals who have joined our platform to
-            collaborate and grow.
+          </h1>
+          <p className="text-lg text-center text-praragraph mb-6">
+            Showcase your work, update anytime, and attract global opportunities
+            with ease. Start with a professional template that suits your style,
+            no coding required.
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3  gap-6">
           {profiles.map((profile, index) => (
             <ProfileCard key={index} {...profile} />
           ))}
@@ -125,7 +150,7 @@ const ProfileSection: React.FC = () => {
 export default ProfileSection;
 
 const SkeletonLoader: React.FC = () => (
-  <div className="grid wrapper my-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  <div className="grid  my-10 sm:grid-cols-2 md:grid-cols-3  gap-6">
     {Array(6)
       .fill(null)
       .map((_, index) => (
@@ -139,4 +164,3 @@ const SkeletonLoader: React.FC = () => (
       ))}
   </div>
 );
-

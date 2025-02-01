@@ -22,8 +22,8 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky bg-white dark:bg-black top-0 z-50 shadow-md dark:text-white">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+    <header className="sticky  top-0 z-50 shadow-md dark:text-white">
+      <div className="px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <div className="flex items-center">
             <RiCheckboxCircleLine className="mr-2 text-2xl text-blue-600 dark:text-blue-400" />
@@ -53,12 +53,12 @@ const Header: React.FC = () => {
                 <MenuIcon className="h-4 w-4" />
               </Button>
             </MenubarTrigger>
-            <MenubarContent className="md:hidden">
+            <MenubarContent className="md:hidden border-0">
               {navItems.map((item) => (
                 <MenubarItem
                   key={item.path}
                   onClick={() => handleNavigation(item.path)}
-                  className="cursor-pointer dark:bg-gray-700 dark:text-white"
+                  className="cursor-pointer py-1 bg-background"
                 >
                   <item.icon className="mr-2 h-4 w-4" />
                   {item.title}

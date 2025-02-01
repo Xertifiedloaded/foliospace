@@ -12,48 +12,57 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
+			backgroundImage: {
+				'hero-gradient': 'var(--gradient-radial), var(--gradient-background)',
+				'card-bg-gradient': 'var(--card-bg-gradient)',
+			  },
 			colors: {
-				background: 'hsl(var(--background))',
-				foreground: 'hsl(var(--foreground))',
+				background: 'var(--background)',
+				foreground: 'var(--foreground)',
 				card: {
-					DEFAULT: 'hsl(var(--card))',
-					foreground: 'hsl(var(--card-foreground))'
+				  DEFAULT: 'var(--card)',
+				  foreground: 'var(--card-foreground)',
 				},
 				popover: {
-					DEFAULT: 'hsl(var(--popover))',
-					foreground: 'hsl(var(--popover-foreground))'
+				  DEFAULT: 'var(--popover)',
+				  foreground: 'var(--popover-foreground)',
 				},
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+				  DEFAULT: 'var(--primary)',
+				  foreground: 'var(--primary-foreground)',
 				},
 				secondary: {
-					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))'
+				  DEFAULT: 'var(--secondary)',
+				  foreground: 'var(--secondary-foreground)',
 				},
 				muted: {
-					DEFAULT: 'hsl(var(--muted))',
-					foreground: 'hsl(var(--muted-foreground))'
+				  DEFAULT: 'var(--muted)',
+				  foreground: 'var(--muted-foreground)',
 				},
 				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+				  DEFAULT: 'var(--accent)',
+				  foreground: 'var(--accent-foreground)',
 				},
 				destructive: {
-					DEFAULT: 'hsl(var(--destructive))',
-					foreground: 'hsl(var(--destructive-foreground))'
+				  DEFAULT: 'var(--destructive)',
+				  foreground: 'var(--destructive-foreground)',
 				},
-				border: 'hsl(var(--border))',
-				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
+				border: 'var(--border)',
+				input: 'var(--input)',
+				ring: 'var(--ring)',
+				borderColor: 'var(--borderColor)',
+				gradientBackground: 'var(--gradientBackground)',
 				chart: {
-					'1': 'hsl(var(--chart-1))',
-					'2': 'hsl(var(--chart-2))',
-					'3': 'hsl(var(--chart-3))',
-					'4': 'hsl(var(--chart-4))',
-					'5': 'hsl(var(--chart-5))'
-				}
-			},
+				  '1': 'var(--chart-1)',
+				  '2': 'var(--chart-2)',
+				  '3': 'var(--chart-3)',
+				  '4': 'var(--chart-4)',
+				  '5': 'var(--chart-5)',
+				},
+				heading: 'var(--heading)', /* ✅ Added */
+				paragraph: 'var(--paragraph)', /* ✅ Added */
+			  },
+
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -79,44 +88,44 @@ const config: Config = {
 				fadeIn: {
 					'0%': { opacity: '0', transform: 'translateY(-10px)' },
 					'100%': { opacity: '1', transform: 'translateY(0)' }
-				  },
+				},
 				building: {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-5px)' }
-				  },
-				  crane: {
+				},
+				crane: {
 					'0%, 100%': { transform: 'rotate(0deg)' },
 					'50%': { transform: 'rotate(5deg)' }
-				  },
-				  worker: {
+				},
+				worker: {
 					'0%, 100%': { transform: 'translateX(0)' },
 					'50%': { transform: 'translateX(20px)' }
-				  },
-				  construct: {
+				},
+				construct: {
 					'0%': { strokeDasharray: '0 1000' },
 					'100%': { strokeDasharray: '1000 1000' }
-				  },
-				  windows: {
+				},
+				windows: {
 					'0%': { opacity: '0' },
 					'100%': { opacity: '1' }
-				  },
-				  pulley: {
+				},
+				pulley: {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(2px)' }
-				  },
-				  cable: {
+				},
+				cable: {
 					'0%, 100%': { strokeDashoffset: '0' },
 					'50%': { strokeDashoffset: '10' }
-				  },
-				  load: {
+				},
+				load: {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-20px)' }
-				  },
-				  progress: {
+				},
+				progress: {
 					'0%': { transform: 'translateX(-100%)' },
 					'50%': { transform: 'translateX(0%)' },
 					'100%': { transform: 'translateX(100%)' }
-				  },
+				},
 			},
 			animation: {
 				'spin-slow': 'spin 3s linear infinite',
@@ -134,7 +143,7 @@ const config: Config = {
 				'load': 'load 2s ease-in-out infinite',
 				'pro': 'progress 2s ease-in-out infinite',
 				'fade': 'fadeIn 0.5s ease-in',
-			
+
 			},
 
 

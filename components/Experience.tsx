@@ -151,7 +151,7 @@ export default function Experience() {
 
   return (
     <section>
-      <div className=" container mx-auto min-h-screen">
+      <div className=" min-h-screen">
         <div className=" py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
@@ -403,7 +403,7 @@ export default function Experience() {
                 </form>
               )}
             </div>
-            {/* Render Skeleton Loader if loading */}
+
             <IPhoneFrame>
               <div className="space-y-6">
                 <h2 className="text-lg font-semibold mb-4 flex items-center">

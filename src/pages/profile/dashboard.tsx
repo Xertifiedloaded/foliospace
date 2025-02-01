@@ -78,7 +78,7 @@ const Dashboard: React.FC = () => {
       {Array.from({ length: 4 }).map((_, index) => (
         <React.Fragment key={index}>
           <div className="flex items-center space-x-2">
-            <div className="h-5 w-1/3 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"></div>
+            <div className="h-5 w-1/3  animate-pulse rounded"></div>
             <div className="h-5 w-5 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-full"></div>
           </div>
           <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 animate-pulse rounded"></div>
@@ -91,12 +91,12 @@ const Dashboard: React.FC = () => {
 
   return (
     <ProfileLayout>
-      <div className="min-h-screen  transition-colors duration-300 bg-white dark:bg-black text-gray-900 dark:text-gray-200">
+      <div className="min-h-screen  transition-colors duration-300 ">
         <div className="container mx-auto py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="lg:flex justify-center items-center">
-              <div className="w-full max-w-4xl rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-black overflow-hidden">
-                <div className="p-6 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-gray-700 dark:to-gray-600 text-white">
+              <div className="w-full max-w-4xl rounded-2xl shadow-2xl      overflow-hidden">
+                <div className="p-6 ">
                   <div className="flex justify-between items-center">
                     <h2 className="text-lg font-bold">Profile Dashboard</h2>
                   </div>
@@ -109,7 +109,7 @@ const Dashboard: React.FC = () => {
                           className="w-full h-full object-cover rounded-full"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                        <div className="w-full h-full bg-gray-300 rounded-full"></div>
                       )}
                     </div>
                     <div>
@@ -132,7 +132,7 @@ const Dashboard: React.FC = () => {
                     ) : isLoading ? (
                       <SkeletalLoader />
                     ) : profile === null ? (
-                      <div className="text-center text-gray-500 dark:text-gray-400">
+                      <div className="text-center text-gray-500">
                         <SkeletalLoader />
                       </div>
                     ) : (
@@ -140,7 +140,7 @@ const Dashboard: React.FC = () => {
                         .filter((key) => !excludedFields.includes(key))
                         .map((key) => (
                           <React.Fragment key={key}>
-                            <div className="flex items-center space-x-2">
+                            <div className="">
                               <p className="font-semibold capitalize flex-grow">
                                 {key.replace(/([A-Z])/g, " $1")}
                               </p>

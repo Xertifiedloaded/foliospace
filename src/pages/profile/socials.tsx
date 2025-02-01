@@ -151,8 +151,8 @@ export default function SocialMediaSection() {
 
   return (
     <ProfileLayout>
-      <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-200">
-        <div className="container mx-auto py-8">
+      <div className=" min-h-screen transition-colors duration-200">
+        <div className=" py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <Card className="dark:bg-gray-800">

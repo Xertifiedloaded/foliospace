@@ -1,72 +1,31 @@
-"use client"
+import { useEffect } from "react";
 
-import { createContext, useContext, useEffect, useState } from "react"
-
-const ThemeContext = createContext({
-  theme: "system",
-  setTheme: () => null,
-})
-
-export function ThemeProvider({ 
-  children, 
-  defaultTheme = "system", 
-  storageKey = "vite-ui-theme", 
-  ...props 
-}) {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem(storageKey)
-      return savedTheme || defaultTheme
-    }
-    return defaultTheme
-  })
-
+const useDarkMode = () => {
   useEffect(() => {
-    const root = window.document.documentElement
-    root.classList.remove("light", "dark")
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light"
-      root.classList.add(systemTheme)
-
-      // Add listener for system theme changes
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-      const handleChange = (e) => {
-        root.classList.remove("light", "dark")
-        root.classList.add(e.matches ? "dark" : "light")
-      }
-      
-      mediaQuery.addEventListener("change", handleChange)
-      return () => mediaQuery.removeEventListener("change", handleChange)
+    // Set the initial theme based on system preference
+    if (prefersDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
     }
 
-    root.classList.add(theme)
-  }, [theme])
+    // Listen for changes in system theme
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = (e) => {
+      if (e.matches) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
 
-  return (
-    <ThemeContext.Provider
-      {...props}
-      value={{
-        theme,
-        setTheme: (theme) => {
-          localStorage.setItem(storageKey, theme)
-          setTheme(theme)
-        },
-      }}
-    >
-      {children}
-    </ThemeContext.Provider>
-  )
-}
+    mediaQuery.addEventListener("change", onChange);
 
-export const useTheme = () => {
-  const context = useContext(ThemeContext)
+    // Cleanup listener on unmount
+    return () => mediaQuery.removeEventListener("change", onChange);
+  }, []);
+};
 
-  if (context === undefined)
-    throw new Error("useTheme must be used within a ThemeProvider")
-
-  return context
-}
+export default useDarkMode;

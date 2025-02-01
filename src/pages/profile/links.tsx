@@ -113,7 +113,7 @@ export default function LinksSection() {
 
   return (
     <ProfileLayout>
-      <div className="container mx-auto py-8">
+      <div className=" py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6">
             <Card>

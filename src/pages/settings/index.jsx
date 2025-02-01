@@ -3,7 +3,6 @@ import { settingsCategories } from "../../../utils";
 import SettingsLayout from "../../../components/SettingsLayout";
 import UserBackupButton from "../../../components/UserDownloadButton";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
-import { ThemeToggle } from "../../../components/ThemeToggle";
 import TemplateSelector from "../../../components/template";
 import { Button } from "../../../components/ui/button";
 
@@ -135,7 +134,7 @@ const SettingsContent = ({ activeCategory }) => {
       case "Export Data":
         return <UserBackupButton />;
       case "Theme Settings":
-        return <ThemeToggle />;
+        return 'theme';
       case "Content Language":
         return <LanguageSwitcher />;
       case "Portfolio Template":

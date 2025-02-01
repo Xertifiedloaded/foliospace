@@ -4,12 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Briefcase, GraduationCap } from "lucide-react";
 import ProfileLayout from "@/components/layout";
-import { IPhoneFrame } from "@/components/Preview";
+
 
 export default function ResumeSection() {
   return (
     <ProfileLayout>
-      <Card>
+      <Card className="border-0">
         <CardContent>
           <Tabs defaultValue="experience" className="w-full  pt-3">
             <TabsList className="grid w-full grid-cols-2">

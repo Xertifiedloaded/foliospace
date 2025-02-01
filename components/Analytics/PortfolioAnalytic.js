@@ -88,7 +88,7 @@ const PortfolioAnalytic = () => {
   }
 
   return (
-    <div className="container mx-auto p-4  dark:bg-black rounded-2xl shadow-2xl  bg-gray-50">
+    <div className="container mx-auto p-4  rounded-2xl shadow-2xl  ">
       <AnalyticsCard analyticsData={analyticsData} />
       <Card className="bg-white dark:bg-black">
         <CardHeader>

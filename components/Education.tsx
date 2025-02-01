@@ -152,7 +152,7 @@ export default function Education() {
 
   return (
     <section>
-      <div className=" container mx-auto min-h-screen">
+      <div className="  min-h-screen">
         <div className=" py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
@@ -254,7 +254,7 @@ export default function Education() {
                       {education?.map((edu) => (
                         <div
                           key={edu?.id}
-                          className="bg-white rounded-lg border border-gray-100 overflow-hidden"
+                          className=" overflow-hidden"
                         >
                           <div className="p-3">
                             <div className="flex justify-between items-start mb-1">

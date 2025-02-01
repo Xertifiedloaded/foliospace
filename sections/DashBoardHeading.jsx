@@ -62,7 +62,7 @@ export const DashBoardHeading = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-black  rounded-lg shadow-2xl space-y-6  transition-colors duration-200">
+    <div className=" rounded-lg shadow-2xl space-y-6  transition-colors duration-200">
       <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
         Your Public Links
       </h2>
