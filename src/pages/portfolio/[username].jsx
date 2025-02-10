@@ -7,11 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 import SkeletalLoader from "../../../components/SkeletalLoader";
-import Basic from "../../../components/templates/Basic";
-import ProfessionalTemplate from "../../../components/templates/Professional";
-import MinimalTemplate from "../../../components/templates/Minimal";
-import ModernTemplate from "../../../components/templates/Modern";
-import Hero from "../../../sections/Hero";
 import Link from "next/link";
 import PortfolioDesign from "../../../components/portfolio/PortfolioDesign";
 
@@ -67,19 +62,6 @@ const PortfolioPage = () => {
     logVisit();
   }, [username, loading, portfolio]);
 
-  const renderTemplateContent = () => {
-    switch (portfolio?.template) {
-      case "PROFESSIONAL":
-        return <ProfessionalTemplate portfolio={portfolio} />;
-      case "MINIMAL":
-        return <MinimalTemplate portfolio={portfolio} />;
-      case "MODERN":
-        return <ModernTemplate portfolio={portfolio} />;
-      case "BASIC":
-      default:
-        return <Basic portfolio={portfolio} />;
-    }
-  };
 
   if (loading) {
     return <SkeletalLoader />;
@@ -105,10 +87,7 @@ const PortfolioPage = () => {
 
   return (
 <div className="min-h-screen bg-white dark:bg-gray-900">
-  {/* <div className="max-w-6xl container mx-auto px-2 sm:px-6 lg:px-8">
-    <Hero portfolio={portfolio} template={portfolio?.template} />
-    {renderTemplateContent()}
-  </div> */}
+
   <PortfolioDesign portfolio={portfolio}/>
 </div>
   );
