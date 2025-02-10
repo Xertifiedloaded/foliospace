@@ -155,7 +155,7 @@ export default function SocialMediaSection() {
         <div className=" py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <Card className="dark:bg-gray-800">
+              <Card className="border-0">
                 <CardHeader>
                   <CardTitle className="text-gray-900 dark:text-white">Social Media</CardTitle>
                 </CardHeader>

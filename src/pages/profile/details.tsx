@@ -280,13 +280,13 @@ export default function ProfileDetails() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6">
             <section>
-              <Card>
+              <Card className="border-0">
                 <CardHeader>
                   <CardTitle>Profile Details</CardTitle>
                 </CardHeader>
               </Card>
 
-              <Card className="mt-4">
+              <Card className="mt-4  border-0">
                 <CardHeader>
                   <CardTitle className="text-sm">Basic Information</CardTitle>
                 </CardHeader>
@@ -377,7 +377,7 @@ export default function ProfileDetails() {
                         name="levelOfExperience"
                         value={formData.levelOfExperience}
                         onChange={handleChange}
-                        className="w-full dark:bg-black bg:text-white p-2 border rounded"
+                        className="w-full bg-transparent outline-none text-heading p-2 border rounded"
                       >
                         <option value="Junior">Junior</option>
                         <option value="Mid">Mid</option>

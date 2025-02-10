@@ -37,7 +37,7 @@ body {
     --accent-foreground: #1c1f24;
     --destructive: #d50000;
     --destructive-foreground: #ffffff;
-    --border: #22D3EE94;
+    --border: hsl(0, 0%, 89.8%);
     --input: #e6e6e6;
     --ring: #1a1a1a;
     --chart-1: #ff7300;
@@ -79,7 +79,7 @@ body {
       --accent-foreground: #f1f5f9;
       --destructive: #990000;
       --destructive-foreground: #f1f5f9;
-      --border: #22D3EE94;
+      --border: hsl(0, 0%, 89.8%);
       --input: #2a2a2a;
       --ring: #f1f5f9;
       --chart-1: #448aff;
@@ -118,7 +118,7 @@ body {
 }
 
 .wrapper {
-  @apply px-6 md:px-28 lg:px-16;
+  @apply px-2 md:px-28 lg:px-16;
 }
 
 .nav-wrapper {
@@ -142,4 +142,4 @@ body {
 }
 
 
-/* background: radial-gradient(49.38% 45.34% at 50% 0%, rgba(117, 147, 245, 0.5) 0%, rgba(0, 0, 0, 0) 100%); */
+

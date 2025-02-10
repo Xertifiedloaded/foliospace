@@ -24,7 +24,7 @@ export default function UploadSkillForm({
 
   return (
     <>
-      <Card className="mt-6 mb-3 dark:bg-black dark:text-white">
+      <Card className="mt-6 mb-3 text-heading border-0">
         <CardHeader>
           <CardTitle>Profile Details</CardTitle>
         </CardHeader>
@@ -54,11 +54,11 @@ export default function UploadSkillForm({
           >
             Skill Level
           </label>
-          <Select value={level} onValueChange={setLevel}>
-            <SelectTrigger className="mt-1 w-full dark:border-gray-600">
+          <Select  value={level} onValueChange={setLevel}>
+            <SelectTrigger className="mt-1 outline-none w-full">
               <SelectValue placeholder="Select skill level" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="border-0">
               <SelectItem value="BEGINNER">Beginner</SelectItem>
               <SelectItem value="INTERMEDIATE">Intermediate</SelectItem>
               <SelectItem value="ADVANCED">Advanced</SelectItem>

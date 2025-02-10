@@ -21,7 +21,7 @@ const ProfilePreview = ({ data, loading, skills }) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 ">
       <div className="flex flex-col items-center text-center">
         {data?.previewUrl ? (
           <img
@@ -41,12 +41,12 @@ const ProfilePreview = ({ data, loading, skills }) => {
 
       {skills.length > 0 && (
         <section>
-          <h3 className="text-sm font-medium text-gray-500">Skills</h3>
-          <ul>
+          <h3 className="text-sm font-medium text-heading">Skills</h3>
+          <ul className="flex items-center flex-wrap gap-2">
             {skills.map((skill, index) => (
               <span
                 key={index}
-                className="px-2 py-1 bg-gray-100 rounded-full text-xs"
+                className="px-2 py-1 bg-background rounded-full text-xs"
               >
                 <span>{skill.name}</span>
               </span>
@@ -57,12 +57,12 @@ const ProfilePreview = ({ data, loading, skills }) => {
 
       <div className="space-y-4">
         <section>
-          <h3 className="text-sm font-medium text-gray-500">About</h3>
+          <h3 className="text-sm font-medium text-heading">About</h3>
           <p className="mt-1 text-sm">{data?.bio || "No bio added yet"}</p>
         </section>
 
         <section>
-          <h3 className="text-sm font-medium text-gray-500">Contact</h3>
+          <h3 className="text-sm font-medium text-heading">Contact</h3>
           <div className="mt-1 text-sm">
             <p>{data?.phoneNumber || "No phone number added"}</p>
             <p>{data?.address || "No address added"}</p>
@@ -70,7 +70,7 @@ const ProfilePreview = ({ data, loading, skills }) => {
         </section>
 
         <section>
-          <h3 className="text-sm font-medium text-gray-500">Hobbies</h3>
+          <h3 className="text-sm font-medium text-heading">Hobbies</h3>
           <div className="mt-1 flex flex-wrap gap-2">
             {data?.hobbies ? (
               (typeof data.hobbies === "string"
@@ -79,7 +79,7 @@ const ProfilePreview = ({ data, loading, skills }) => {
               ).map((hobby, index) => (
                 <span
                   key={index}
-                  className="px-2 py-1 bg-gray-100 rounded-full text-xs"
+                  className="px-2 py-1 bg-background rounded-full text-xs"
                 >
                   {hobby.trim()}
                 </span>
@@ -91,7 +91,7 @@ const ProfilePreview = ({ data, loading, skills }) => {
         </section>
 
         <section>
-          <h3 className="text-sm font-medium text-gray-500">Languages</h3>
+          <h3 className="text-sm font-medium text-heading">Languages</h3>
           <div className="mt-1 flex flex-wrap gap-2">
             {data?.languages ? (
               (typeof data.languages === "string"
@@ -100,7 +100,7 @@ const ProfilePreview = ({ data, loading, skills }) => {
               ).map((language, index) => (
                 <span
                   key={index}
-                  className="px-2 py-1 bg-gray-100 rounded-full text-xs"
+                  className="px-2 py-1 bg-background rounded-full text-xs"
                 >
                   {language.trim()}
                 </span>

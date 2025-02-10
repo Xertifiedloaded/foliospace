@@ -239,7 +239,7 @@ export default function PortfolioSection() {
         <div className="py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <Card>
+              <Card className="border-0">
                 <CardHeader>
                   <CardTitle>Portfolio Projects</CardTitle>
                 </CardHeader>

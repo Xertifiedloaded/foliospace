@@ -6,8 +6,8 @@ export const IPhoneFrame: React.FC<{ children: ReactNode }> = ({
 }) => {
   return (
     <div className="flex justify-center items-center">
-      <div className="relative w-[390px] h-[844px] bg-black rounded-[50px] overflow-hidden shadow-2xl dark:bg-gray-900">
-        <div className="absolute inset-[4px] bg-gray-900 rounded-[50px] dark:bg-gray-800"></div>
+      <div className="relative w-[390px] h-[844px] bg-card rounded-[50px] overflow-hidden shadow-2xl">
+        <div className="absolute inset-[4px] bg-card rounded-[50px] "></div>
         <div className="absolute inset-[8px] bg-white rounded-[46px] overflow-hidden dark:bg-gray-800">
           <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-black w-[150px] h-[30px] rounded-[30px]"></div>
           <div className="absolute top-[10px] left-0 w-full flex justify-between px-4 text-xs text-gray-700 dark:text-gray-300">

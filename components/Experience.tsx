@@ -150,8 +150,8 @@ export default function Experience() {
   }, [userId]);
 
   return (
-    <section>
-      <div className=" min-h-screen">
+    <section >
+      <div className="  min-h-screen">
         <div className=" py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">

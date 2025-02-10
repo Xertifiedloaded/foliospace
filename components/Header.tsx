@@ -22,7 +22,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky  top-0 z-50 shadow-md dark:text-white">
+    <header className="sticky  top-0 z-50 shadow-md text-heading">
       <div className="px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <div className="flex items-center">
@@ -31,7 +31,7 @@ const Header: React.FC = () => {
               FolioSpace
             </span>
           </div>
-          <Menubar className="hidden md:flex">
+          <Menubar className="hidden border-0 md:flex">
             {navItems.map((item) => (
               <MenubarMenu key={item.path}>
                 <MenubarTrigger

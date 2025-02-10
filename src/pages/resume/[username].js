@@ -44,7 +44,7 @@ export default function ResumePage() {
   if (!resume) {
     return (
       <div className="flex min-h-screen items-center justify-center dark:bg-black dark:text-white">
-        <Card className="w-[400px] text-center">
+        <Card className="w-[400px] border-0 text-center">
           <CardHeader>
             <CardTitle>Resume Not Found</CardTitle>
           </CardHeader>
@@ -64,7 +64,7 @@ export default function ResumePage() {
 
   return (
     <div className="dark:bg-black dark:text-white">
-      <Card className="w-full mb-8 shadow-lg">
+      <Card className="w-full border-0 mb-8 shadow-lg">
         <div className="bg-gradient-to-r from-primary to-secondary text-white text-center p-6">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">{name}</h1>
           {profile?.tagline && (
@@ -109,7 +109,7 @@ export default function ResumePage() {
                 {experiences?.map((exp) => (
                   <div
                     key={exp?.id}
-                    className="p-4 border rounded-md shadow-sm dark:bg-gray-800"
+                    className="p-4 border-0 rounded-md shadow-sm dark:bg-gray-800"
                   >
                     <h3 className="text-lg font-bold">{exp?.position}</h3>
                     <p className="text-sm text-muted-foreground dark:text-gray-400">
@@ -164,7 +164,7 @@ export default function ResumePage() {
                 {education?.map((edu) => (
                   <div
                     key={edu?.id}
-                    className="p-4 border rounded-md shadow-sm dark:bg-gray-800"
+                    className="p-4 border-0 rounded-md shadow-sm dark:bg-gray-800"
                   >
                     <h3 className="text-lg font-bold">{edu?.institution}</h3>
                     <p className="text-sm text-muted-foreground dark:text-gray-400">

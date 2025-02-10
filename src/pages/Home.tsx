@@ -2,6 +2,7 @@ import { FAQ } from "@/components/Faq";
 import { UserNavigation } from "@/components/UserNavigation";
 import { Footer } from "@/components/ui/Footer";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import ProfileSection from "@/sections/Profile";
 import Image from "next/image";
 import Link from "next/link";
@@ -117,13 +118,13 @@ const Customization = () => {
   return (
     <section className="grid grid-cols-1  gap-10 md:grid-cols-2">
       {data.map(({ title, paragraph }, idx) => (
-        <div
+        <Card
           key={idx}
-          className="bg-card  flex flex-col  justify-center items-start border border-border px-6 py-10 rounded-lg shadow-md"
+          className=" border-0 bg-transparent  flex flex-col  justify-center items-start  px-6 py-10 rounded-lg shadow-md"
         >
           <h3 className="text-xl font-semibold text-heading">{title}</h3>
           <p className="mt-2 text-paragraph">{paragraph}</p>
-        </div>
+        </Card>
       ))}
     </section>
   );
