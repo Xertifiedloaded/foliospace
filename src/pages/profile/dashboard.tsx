@@ -140,7 +140,7 @@ const Dashboard: React.FC = () => {
                         .filter((key) => !excludedFields.includes(key))
                         .map((key) => (
                           <React.Fragment key={key}>
-                            <div className="">
+                            <div className="flex justify-between items-center">
                               <p className="font-semibold capitalize flex-grow">
                                 {key.replace(/([A-Z])/g, " $1")}
                               </p>
@@ -189,7 +189,7 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-            <PortfolioAnalytic />
+            <PortfolioAnalytic userName={session?.user.username} />
           </div>
         </div>
       </div>

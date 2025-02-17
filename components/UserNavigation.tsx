@@ -1,6 +1,19 @@
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { RiDashboardLine, RiLogoutBoxLine, RiUserLine, RiSettingsLine, RiMoreFill } from "react-icons/ri";
+import { 
+  RiDashboardLine, 
+  RiLogoutBoxLine, 
+  RiUserLine, 
+  RiSettingsLine, 
+  RiMoreFill 
+} from "react-icons/ri";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 
@@ -10,10 +23,7 @@ export function UserNavigation() {
   const user = session?.user;
 
   const handleLogout = () => {
-    signOut({
-      redirect: true,
-      callbackUrl: "/auth/login",
-    });
+    signOut({ redirect: true, callbackUrl: "/auth/login" });
   };
 
   if (!user) return null;
@@ -22,23 +32,17 @@ export function UserNavigation() {
     <div className="relative">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="flex border-borderColor border-b  items-center space-x-3 p-3 rounded-lg cursor-pointer hover:bg-white/5 transition-colors">
-            <div className="flex items-center space-x-3">
-              <Avatar className="md:h-10 md:w-10 h-8 w-8 ring-1 ring-white/10">
-                <AvatarFallback className="bg-gradient-to-br from-blue-900 to-blue-800 text-white">
-                  {user?.name?.charAt(0)?.toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <p className="md:text-sm text-xs font-medium text-heading">
-                  {user?.name}
-                </p>
-                <p className="text-xs text-paragraph">
-                  {user?.email}
-                </p>
-              </div>
+          <div className="flex items-center space-x-3 p-3 rounded-lg cursor-pointer hover:bg-white/5 transition-colors border-b border-borderColor">
+            <Avatar className="h-10 w-10 md:h-12 md:w-12 ring-1 ring-white/10">
+              <AvatarFallback className="bg-gradient-to-br from-blue-900 to-blue-800 text-white">
+                {user?.name?.charAt(0)?.toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="hidden md:flex flex-col">
+              <p className="text-sm font-medium text-heading">{user?.name}</p>
+              <p className="text-xs text-paragraph">{user?.email}</p>
             </div>
-            <RiMoreFill className="w-5 h-5 text-gray-400" />
+            <RiMoreFill className="w-5 h-5 text-gray-400 md:hidden" />
           </div>
         </DropdownMenuTrigger>
         

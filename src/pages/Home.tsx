@@ -59,7 +59,7 @@ const Header = () => {
           alt="gallery"
           width={500}
           height={250}
-          className="object-cover w-[400px] inline-block"
+          className="object-cover w-full h-full inline-block"
         />
         </Link>
         <UserNavigation />
