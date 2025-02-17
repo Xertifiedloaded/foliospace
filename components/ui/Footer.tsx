@@ -78,23 +78,7 @@ export const Footer = (props: FooterProps) => {
             <a href={logo.url} className="mb-5 md:mb-6">
               <img src={logo.src} alt={logo.alt} className="inline-block" />
             </a>
-            <p className="mb-5 md:mb-6">{newsletterDescription}</p>
-            <div className="w-full max-w-md">
-              <form
-                className="mb-3 grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-[1fr_max-content] md:gap-y-4"
-                onSubmit={handleSubmit}
-              >
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder={inputPlaceholder}
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                />
-                <Button className="bg-background text-heading shadow-md">{button.title}</Button>
-              </form>
-              <div dangerouslySetInnerHTML={{ __html: termsAndConditions }} />
-            </div>
+
           </div>
           <div className="grid grid-cols-1 items-start gap-y-10 sm:grid-cols-3 sm:gap-x-6 md:gap-x-8 md:gap-y-4">
             {columnLinks.map((column, index) => (
@@ -152,11 +136,11 @@ export const FooterDefaults: Props = {
     {
       title: "ABOUT",
       links: [
-        { title: "About", url: "#" },
-        { title: "Contact", url: "#" },
+        { title: "About", url: "/about-us" },
+        { title: "Contact", url: "" },
+        { title: "Developers", url: "/developers" },
         { title: "Terms of Use", url: "#" },
         { title: "Privacy Policy", url: "#" },
-        { title: "Faq", url: "#" },
       ],
     },
     {

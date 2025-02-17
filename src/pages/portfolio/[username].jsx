@@ -76,7 +76,7 @@ const PortfolioPage = () => {
           </CardHeader>
           <CardContent>
             <p>We couldn't find any data for the user.</p>
-            <Button variant="outline" className="mt-4" asChild>
+            <Button variant="default" className="mt-4" asChild>
               <Link href="/">Go Back</Link>
             </Button>
           </CardContent>

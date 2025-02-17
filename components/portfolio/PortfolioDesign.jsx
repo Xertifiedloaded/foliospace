@@ -105,7 +105,7 @@ export default function PortfolioDesign({ portfolio }) {
               </p>
             )}
 
-            <Button variant="outline" className="rounded-full">
+            <Button variant="default" className="rounded-2xl text-xs font-bold">
               <Link href={`${window.location.origin}/resume/${username}`}>
                 Download CV
               </Link>

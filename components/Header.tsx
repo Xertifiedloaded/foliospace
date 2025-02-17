@@ -22,7 +22,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky  top-0 z-50 shadow-md text-heading">
+    <header className="sticky bg-background  top-0 z-50 shadow-md text-heading">
       <div className="px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <div className="flex items-center">
@@ -36,7 +36,7 @@ const Header: React.FC = () => {
               <MenubarMenu key={item.path}>
                 <MenubarTrigger
                   onClick={() => handleNavigation(item.path)}
-                  className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="cursor-pointer border-0 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
                   <item.icon className="mr-2 h-4 w-4" />
                   {item.title}
@@ -48,8 +48,8 @@ const Header: React.FC = () => {
 
         <Menubar className="flex md:hidden items-center space-x-4">
           <MenubarMenu>
-            <MenubarTrigger asChild>
-              <Button variant="outline" className="md:hidden">
+            <MenubarTrigger className="border-0" asChild>
+              <Button variant="default" className="md:hidden bg-transparent text-heading">
                 <MenuIcon className="h-4 w-4" />
               </Button>
             </MenubarTrigger>

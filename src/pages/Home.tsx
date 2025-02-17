@@ -1,201 +1,233 @@
-import { FAQ } from "@/components/Faq";
-import { UserNavigation } from "@/components/UserNavigation";
-import { Footer } from "@/components/ui/Footer";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import ProfileSection from "@/sections/Profile";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { motion } from "framer-motion";
+import { UserNavigation } from "@/components/UserNavigation";
+import { FAQ } from "@/components/Faq";
+import { Footer } from "@/components/ui/Footer";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ProfileSection from "@/sections/Profile";
+import { ChevronRight, ArrowRight, Check, CheckCircle, Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 
-const data = [
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { toast } from "@/hooks/use-toast";
+import Newsletter from "@/components/Newsletter";
+
+interface SubmitEmailResponse {
+  success: boolean;
+  message: string;
+}
+
+const features = [
   {
     title: "Easy Customization",
-    paragraph:
-      "Drag and drop to design a portfolio that reflects you. You can also edit the layout and design elements like fonts, colors, and background images.",
+    description:
+      "Drag and drop to design a portfolio that reflects you. Edit layout, fonts, colors, and background images with ease.",
+    icon: "🎨",
   },
   {
     title: "Instant Updates",
-    paragraph:
-      "Make changes anytime, no coding required. You can make changes, add new projects, update your resume, or refresh the design whenever they want.",
+    description:
+      "Make changes anytime, no coding required. Add new projects, update your resume, or refresh the design in real-time.",
+    icon: "⚡",
   },
   {
     title: "Mobile Friendly",
-    paragraph:
-      "Your portfolio looks great on any device. Once you are happy with the portfolio, you can hit Publish to make it live.",
+    description:
+      "Your portfolio looks great on any device. Publish instantly to make your work accessible everywhere.",
+    icon: "📱",
   },
   {
     title: "Professional Templates",
-    paragraph:
-      "Make changes anytime, no coding required. You can make changes, add new projects, update your resume, or refresh the design whenever they want.",
+    description:
+      "Choose from a wide range of professionally designed templates to kickstart your portfolio creation.",
+    icon: "🏆",
   },
 ];
 
 export default function HomePage() {
   return (
-    <>
-      <div className="wrapper">
-        <Header />
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
+      <Header />
+      <main>
         <Hero />
-        <Customization />
-        <Beautiful />
+        <Features />
+        <Templates />
         <FAQ />
         <ProfileSection />
         <Newsletter />
-        <Footer />
-      </div>
-    </>
+      </main>
+      <Footer />
+    </div>
   );
 }
 
 const Header = () => {
-  return (
-    <>
-      <header className=" pt-3 flex justify-between  items-center">
 
-        <Link href="/" className="">
-        <Image
-          src="/images/logo.svg"
-          alt="gallery"
-          width={500}
-          height={250}
-          className="object-cover w-full h-full inline-block"
-        />
-        </Link>
-        <UserNavigation />
-      </header>
-    </>
+  return (
+    <header className="container mx-auto py-6 px-4 flex justify-between items-center">
+      <Link href="/" className="flex items-center space-x-2">
+        <CheckCircle className="text-blue-600" />
+        <span className="text-xl font-bold">FolioSpace</span>
+      </Link>
+      <UserNavigation />
+    </header>
   );
 };
 
 const Hero = () => {
+  const { data: session } = useSession();
   return (
-    <section className="min-h-screen relative overflow-hidden">
-      <div className="max-w-5xl mx-auto px-4 h-screen flex flex-col justify-center items-center relative">
-        <h1 className="text-3xl md:text-6xl font-bold text-center mb-6 bg-clip-text text-heading bg-gradient-to-r from-white via-gray-100 to-gray-300">
-          Architect your
-          <span className="block mt-2">Professional Legacy</span>
-        </h1>
-
-        <p className="text-lg md:text-xl text-paragraph max-w-2xl text-center mb-8 leading-relaxed">
-          Beyond traditional portfolios, we provide a dynamic platform that
-          transforms your professional journey into a compelling, strategic
-          narrative aligned with global opportunities.
-        </p>
-
+    <section className="container mx-auto px-4 py-20 md:py-32 text-center">
+      <motion.h1
+        className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        Architect your
+        <br />
+        Professional Legacy
+      </motion.h1>
+      <motion.p
+        className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        Transform your professional journey into a compelling, strategic
+        narrative aligned with global opportunities.
+      </motion.p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      >
+ <div>
+      {session ? (
         <Button
-          variant="outline"
-          className="px-8 py-6 text-lg rounded-xl bg-transparent border-2 border-blue-500/20 hover:border-blue-500/40 hover:bg-blue-500/10 transition-all duration-300 backdrop-blur-sm group relative overflow-hidden"
+          size="lg"
+          variant="default"
+          className="rounded-full bg-blue-500 text-white hover:bg-blue-600"
         >
-          <span className="relative z-10 flex items-center gap-2">
-            Create Portfolio
-            <svg
-              className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
-          </span>
-
-          <span className="absolute bottom-0 left-0 w-full h-[2px] bg-transparent border-b-2 border-blue-500/20 group-hover:border-blue-500/40 transition-all duration-300">
-            <span className="absolute left-0 w-0 h-[2px] bg-blue-500/40 group-hover:w-full group-hover:left-0 transition-all duration-300"></span>
-            <span className="absolute right-0 w-0 h-[2px] bg-blue-500/40 group-hover:w-full group-hover:right-0 transition-all duration-300"></span>
-          </span>
+          Create Portfolio
+          <ChevronRight className="ml-2 text-white h-4 w-4" />
         </Button>
+      ) : (
+        <div className="space-x-4">
+          <Link href="/auth/register">
+            <Button size="lg" variant="default" className="rounded-full bg-blue-500 text-white hover:bg-blue-600">
+              Sign Up
+            </Button>
+          </Link>
+          <Link href="/auth/login">
+            <Button size="lg" variant="default" className="rounded-full bg-blue-500 text-white hover:bg-blue-600">
+              Log In
+            </Button>
+          </Link>
+        </div>
+      )}
+    </div>
+      </motion.div>
+    </section>
+  );
+};
+
+const Features = () => {
+  return (
+    <section className="container mx-auto px-4 py-20">
+      <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+        Powerful Features
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {features.map((feature, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+          >
+            <Card className="h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center text-2xl">
+                  <span className="text-4xl mr-4">{feature.icon}</span>
+                  {feature.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
       </div>
     </section>
   );
 };
 
-const Customization = () => {
+const Templates = () => {
   return (
-    <section className="grid grid-cols-1  gap-10 md:grid-cols-2">
-      {data.map(({ title, paragraph }, idx) => (
-        <Card
-          key={idx}
-          className=" border-0 bg-transparent  flex flex-col  justify-center items-start  px-6 py-10 rounded-lg shadow-md"
-        >
-          <h3 className="text-xl font-semibold text-heading">{title}</h3>
-          <p className="mt-2 text-paragraph">{paragraph}</p>
-        </Card>
-      ))}
-    </section>
-  );
-};
-
-const Beautiful = () => {
-  return (
-    <section className="mt-28">
-      <div className="flex flex-col items-center justify-center md:text-left max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-6xl font-bold text-center mb-6 bg-clip-text text-heading bg-gradient-to-r from-white via-gray-100 to-gray-300">
-          100+ beautiful, responsive portfolio templates
-        </h1>
-        <p className="text-lg text-center text-praragraph mb-6">
+    <section className="container mx-auto px-4 py-20">
+      <div className="max-w-3xl mx-auto text-center mb-12">
+        <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          100+ Beautiful, Responsive Portfolio Templates
+        </h2>
+        <p className="text-lg text-muted-foreground mb-8">
           Showcase your work, update anytime, and attract global opportunities
           with ease. Start with a professional template that suits your style,
           no coding required.
         </p>
-
-        <Button
-          variant="outline"
-          className="px-8 py-4  text-lg rounded-xl bg-transparent border-2 border-blue-500/20 hover:border-blue-500/40 hover:bg-blue-500/10 transition-all duration-300 backdrop-blur-sm group relative overflow-hidden"
-        >
-          <span className="relative z-10 flex items-center gap-2">
-            Browse Template
-            <svg
-              className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
-          </span>
-
-          <span className="absolute bottom-0 left-0 w-full h-[2px] bg-transparent border-b-2 border-blue-500/20 group-hover:border-blue-500/40 transition-all duration-300">
-            <span className="absolute left-0 w-0 h-[2px] bg-blue-500/40 group-hover:w-full group-hover:left-0 transition-all duration-300"></span>
-            <span className="absolute right-0 w-0 h-[2px] bg-blue-500/40 group-hover:w-full group-hover:right-0 transition-all duration-300"></span>
-          </span>
+        <Button size="lg" variant="default" className="rounded-full">
+          Browse Templates <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
-
-      <div className="">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <Image
           src="/images/gallery.svg"
-          alt="gallery"
-          width={250}
-          height={250}
-          className="object-cover w-full"
+          alt="Template Gallery"
+          width={1200}
+          height={600}
+          className="w-full rounded-lg shadow-2xl"
         />
-      </div>
+      </motion.div>
     </section>
   );
+};
+interface SubmitEmailResponse {
+  success: boolean;
+  message: string;
+}
+const submitEmail = async (email: string): Promise<SubmitEmailResponse> => {
+  try {
+    const response = await fetch('/api/waitlist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to subscribe');
+    }
+
+    return {
+      success: true,
+      message: data.message || "You've successfully subscribed to our newsletter!"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'An error occurred while subscribing'
+    };
+  }
 };
 
-const Newsletter = () => {
-  return (
-    <section className="my-10 max-w-5xl mx-auto bg-white text-foreground p-14 rounded-3xl flex flex-col items-center justify-center">
-      <h1 className="text-black lg:text-4xl text-center text-xl mb-5">
-        Create your portfolio today. Showcase what you do.{" "}
-      </h1>
-      <Button
-        className="border bg-background text-foreground
-       border-black"
-      >
-        Get Started Now
-      </Button>
-    </section>
-  );
-};

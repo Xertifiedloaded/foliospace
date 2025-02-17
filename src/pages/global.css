@@ -135,9 +135,8 @@ body {
   textarea,
   label,
   select,
-  option,
-  button {
-    @apply dark:text-white text-black;
+  option{
+    @apply dark:text-primary text-black;
   }
 }
 

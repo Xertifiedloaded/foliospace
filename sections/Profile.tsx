@@ -98,7 +98,7 @@ const ProfileSection: React.FC = () => {
   }
 
   return (
-    <section className="">
+    <section className="wrapper">
       <div className="">
         <div className="flex flex-col items-center justify-center md:text-left max-w-3xl mx-auto">
           <Button

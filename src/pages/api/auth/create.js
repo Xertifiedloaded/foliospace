@@ -26,13 +26,27 @@ export default async function handler(req, res) {
   }
 
   try {
-    const existingUser = await prisma.user.findUnique({
+    const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2934}-\u{2935}\u{3030}\u{2B06}\u{2194}\u{25AA}\u{25AB}\u{2B1B}\u{2B1C}\u{25FE}\u{25FB}\u{2B50}\u{1F004}-\u{1F0CF}\u{1F201}-\u{1F251}\u{1F004}-\u{1F0CF}\u{1F0D0}-\u{1F0FF}\u{23F0}]/u;
+    if (emojiRegex.test(username)) {
+      return res.status(400).json({ message: "Username cannot contain emoji characters." });
+    }
+    const existingUsername = await prisma.user.findUnique({
+      where: { username },
+    });
+  
+    const existingEmail = await prisma.user.findUnique({
       where: { email },
     });
-
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+  
+    if (existingUsername) {
+      return res.status(400).json({ message: "Username already exists" });
     }
+  
+    if (existingEmail) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+  
+  
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const otp = generateOTP(4);
