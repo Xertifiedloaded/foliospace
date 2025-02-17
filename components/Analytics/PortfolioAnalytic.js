@@ -7,7 +7,6 @@ import { getCardData } from "../../utils/index"
 import { Activity, TrendingUp, TrendingDown } from "lucide-react"
 
 const PortfolioAnalytic = ({ userName }) => {
-  const { status } = useSession()
   const [analyticsData, setAnalyticsData] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -34,10 +33,8 @@ const PortfolioAnalytic = ({ userName }) => {
       }
     }
 
-    if (userName) {
-      fetchAnalytics()
-    }
-  }, [status, userName])
+    fetchAnalytics()
+  }, [ userName])
 
   if (loading) {
     return <AnalyticsLoader />
