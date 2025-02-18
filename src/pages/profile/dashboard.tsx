@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DashBoardHeading } from "@/sections/DashBoardHeading"
+import UserBackupButton from '../../../components/UserDownloadButton';
 
 interface Profile {
   id: string
@@ -76,7 +77,7 @@ const Dashboard: React.FC = () => {
         <Card className="mb-8 overflow-hidden shadow-lg">
           <CardContent className="p-6">
             <div className="flex flex-col sm:flex-row items-center justify-between">
-              <div className="flex items-center space-x-4 mb-4 sm:mb-0">
+              <div className="flex justify-between items-center space-x-4 mb-4 sm:mb-0">
                 <Avatar className="h-20 w-20 border-4 border-primary">
                   <AvatarImage src={profile?.picture} alt={session?.user?.name || "User"} />
                   <AvatarFallback>
@@ -86,6 +87,7 @@ const Dashboard: React.FC = () => {
                 <div>
                   <h1 className="text-2xl font-bold">{session?.user?.name || "User Name"}</h1>
                   <p className="text-lg text-muted-foreground">{profile?.tagline || "No tagline"}</p>
+                  <UserBackupButton/>
                 </div>
               </div>
               <Button className=" text-xs rounded-lg items-center space-x-2">

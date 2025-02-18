@@ -23,7 +23,6 @@ import {
   Plus,
   X,
   Edit,
-  Calendar,
 } from "lucide-react";
 import ProfileLayout from "@/components/layout";
 import { IPhoneFrame } from "@/components/Preview";

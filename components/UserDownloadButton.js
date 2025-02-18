@@ -33,7 +33,7 @@ const UserBackupButton = () => {
     <Button
       onClick={handleDownload}
       disabled={isLoading}
-      className={`btn dark:text-black btn-primary ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
+      className={`text-xs rounded-lg space-x-2 mt-2 ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
     >
       {isLoading ? "Generating..." : "Export Portfolio PDF"}
     </Button>

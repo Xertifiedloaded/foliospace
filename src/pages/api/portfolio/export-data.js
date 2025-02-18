@@ -1,38 +1,87 @@
-import { PrismaClient } from '@prisma/client';
-import PDFDocument from 'pdfkit';
-import stream from 'stream';
+import { PrismaClient } from "@prisma/client";
+import PDFDocument from "pdfkit";
+import stream from "stream";
 
 const prisma = new PrismaClient();
 
 const colors = {
-  primary: '#2D3748',
-  secondary: '#4A5568',
-  accent: '#3182CE',
-  light: '#718096',
-  ultraLight: '#E2E8F0',
+  primary: "#7C3AED",
+  secondary: "#4F46E5",
+  text: "#374151",
+  mutedText: "#6B7280",
+  lightBg: "#F3F4F6",
+  white: "#FFFFFF",
 };
 
-const addSection = (doc, title, yPosition = null) => {
-  if (yPosition) doc.y = yPosition;
-  doc.fontSize(16)
-     .font('Helvetica-Bold')
-     .fillColor(colors.primary)
-     .text(title)
-     .moveDown(0.5)
-     .lineCap('butt')
-     .moveTo(doc.x, doc.y)
-     .lineTo(doc.page.width - 72, doc.y)
-     .strokeColor(colors.ultraLight)
-     .lineWidth(2)
-     .stroke()
-     .moveDown(0.5);
+const fonts = {
+  regular: "Times-Roman", 
+  bold: "Times-Bold",
+};
+
+// And modify the createGradientHeader function to use regular font instead:
+
+const createGradientHeader = (doc, user) => {
+  // Create gradient background
+  doc.rect(0, 0, doc.page.width, 150).fillColor(colors.primary).fill();
+
+  // Add user name and details in white
+  doc
+    .fontSize(28)
+    .font(fonts.bold)
+    .fillColor(colors.white)
+    .text(user.name, { align: "center" })
+    .moveDown(0.2);
+
+  if (user.profile?.tagline) {
+    doc
+      .fontSize(14)
+      .font(fonts.regular)
+      .fillColor(colors.white)
+      .text(user.profile.tagline, { align: "center" })
+      .moveDown(0.3);
+  }
+
+  // Contact information - changed from fonts.light to fonts.regular
+  const contactInfo = [
+    user.email,
+    user.profile?.phoneNumber,
+    user.profile?.location,
+  ]
+    .filter(Boolean)
+    .join(" • ");
+
+  doc
+    .fontSize(10)
+    .font(fonts.regular)
+    .fillColor(colors.white)
+    .text(contactInfo, { align: "center" })
+    .moveDown(2);
+};
+
+const addSection = (doc, title, icon = "") => {
+  doc
+    .moveDown(0.5)
+    .fontSize(16)
+    .font(fonts.bold)
+    .fillColor(colors.primary)
+    .text(title)
+    .moveDown(0.5);
+
+  doc
+    .lineCap("butt")
+    .moveTo(doc.x, doc.y)
+    .lineTo(doc.page.width - 72, doc.y)
+    .strokeColor(colors.lightBg)
+    .lineWidth(2)
+    .stroke()
+    .moveDown(0.5);
 };
 
 export default async function handler(req, res) {
   const { userId } = req.query;
-  
-  if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method not allowed' });
+
+  if (req.method !== "GET") {
+    return res.status(405).json({ message: "Method not allowed" });
   }
 
   try {
@@ -49,155 +98,128 @@ export default async function handler(req, res) {
     });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     const doc = new PDFDocument({
-      size: 'A4',
+      size: "A4",
       margin: 50,
       bufferPages: true,
     });
 
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${user.name.replace(/\s+/g, '_')}_Resume.pdf"`);
+    // Set response headers
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${user.name.replace(/\s+/g, "_")}_Resume.pdf"`
+    );
 
     const pdfStream = new stream.PassThrough();
     doc.pipe(pdfStream);
     pdfStream.pipe(res);
 
-    doc.fontSize(28)
-       .font('Helvetica-Bold')
-       .fillColor(colors.primary)
-       .text(user.name, { align: 'center' })
-       .fontSize(14)
-       .font('Helvetica')
-       .fillColor(colors.secondary)
-       .text(user.profile?.tagline || '', { align: 'center' })
-       .moveDown(0.5);
-
-    doc.fontSize(10)
-       .font('Helvetica')
-       .fillColor(colors.light)
-       .text([
-         user.email,
-         user.profile?.phoneNumber,
-         user.profile?.location
-       ].filter(Boolean).join(' • '), { align: 'center' })
-       .moveDown(2);
+    // Create header with gradient
+    createGradientHeader(doc, user);
 
     // Professional Summary
     if (user.profile?.bio) {
-      addSection(doc, 'Professional Summary');
-      doc.fontSize(11)
-         .font('Helvetica')
-         .fillColor(colors.secondary)
-         .text(user.profile.bio, { align: 'justify' })
-         .moveDown(1.5);
+      doc.moveDown(2);
+      addSection(doc, "Professional Summary");
+      doc
+        .fontSize(11)
+        .font(fonts.regular)
+        .fillColor(colors.text)
+        .text(user.profile.bio, { align: "justify" })
+        .moveDown(1.5);
     }
 
-    // Skills section
     if (user.skills.length > 0) {
-      addSection(doc, 'Skills');
-      const skillGroups = user.skills.reduce((acc, skill) => {
-        if (!acc[skill.category]) acc[skill.category] = [];
-        acc[skill.category].push(skill.name);
-        return acc;
-      }, {});
+      addSection(doc, "Technical Skills");
 
-      Object.entries(skillGroups).forEach(([category, skills]) => {
-        doc.fontSize(11)
-           .font('Helvetica-Bold')
-           .fillColor(colors.secondary)
-           .text(category + ': ', { continued: true })
-           .font('Helvetica')
-           .text(skills.join(' • '))
-           .moveDown(0.5);
-      });
-      doc.moveDown(1);
+      const skills = user.skills.map(
+        (skill) => `${skill.name} (${skill.level})`
+      );
+      const columns = 3; // Number of skills per row
+      const rows = Math.ceil(skills.length / columns);
+
+      for (let i = 0; i < rows; i++) {
+        const rowSkills = skills
+          .slice(i * columns, (i + 1) * columns)
+          .join("  |  "); 
+
+        doc
+          .fontSize(11)
+          .font(fonts.regular)
+          .fillColor(colors.text)
+          .text(rowSkills, { align: "start" })
+          .moveDown(0.3);
+      }
     }
 
-    // Experience section
+
+    // Experience section with modern styling
     if (user.experiences.length > 0) {
-      addSection(doc, 'Professional Experience');
+      addSection(doc, "Professional Experience");
       user.experiences.forEach((exp) => {
-        doc.fontSize(12)
-           .font('Helvetica-Bold')
-           .fillColor(colors.secondary)
-           .text(exp.position)
-           .fontSize(11)
-           .font('Helvetica')
-           .fillColor(colors.light)
-           .text(`${exp.company} • ${exp.startDate.toLocaleDateString()} - ${exp.endDate ? exp.endDate.toLocaleDateString() : 'Present'}`)
-           .moveDown(0.5)
-           .fontSize(11)
-           .fillColor(colors.secondary)
-           .text(exp.description, { align: 'justify' })
-           .moveDown(1);
+        doc
+          .fontSize(12)
+          .font(fonts.bold)
+          .fillColor(colors.text)
+          .text(exp.position)
+          .fontSize(11)
+          .font(fonts.regular)
+          .fillColor(colors.mutedText)
+          .text(
+            `${exp.company} • ${new Date(exp.startDate).getFullYear()} - ${
+              exp.endDate ? new Date(exp.endDate).getFullYear() : "Present"
+            }`
+          )
+          .moveDown(0.5)
+          .fillColor(colors.text)
+          .text(exp.description, { align: "justify" })
+          .moveDown(1);
       });
     }
 
-    // Education section
+    // Education section with modern styling
     if (user.education.length > 0) {
-      addSection(doc, 'Education');
+      addSection(doc, "Education");
       user.education.forEach((edu) => {
-        doc.fontSize(12)
-           .font('Helvetica-Bold')
-           .fillColor(colors.secondary)
-           .text(edu.degree)
-           .fontSize(11)
-           .font('Helvetica')
-           .fillColor(colors.light)
-           .text(`${edu.institution} • ${edu.startDate.toLocaleDateString()} - ${edu.endDate ? edu.endDate.toLocaleDateString() : 'Present'}`)
-           .moveDown(1);
+        doc
+          .fontSize(12)
+          .font(fonts.bold)
+          .fillColor(colors.text)
+          .text(edu.degree)
+          .fontSize(11)
+          .font(fonts.regular)
+          .fillColor(colors.mutedText)
+          .text(
+            `${edu.institution} • ${new Date(edu.startDate).getFullYear()} - ${
+              edu.endDate ? new Date(edu.endDate).getFullYear() : "Present"
+            }`
+          )
+          .moveDown(1);
       });
     }
 
-    // Projects section
-    if (user.projects.length > 0) {
-      addSection(doc, 'Notable Projects');
-      user.projects.forEach((project) => {
-        doc.fontSize(12)
-           .font('Helvetica-Bold')
-           .fillColor(colors.secondary)
-           .text(project.title)
-           .fontSize(11)
-           .font('Helvetica')
-           .fillColor(colors.secondary)
-           .text(project.description)
-           .fillColor(colors.accent)
-           .text(project.link || project.githubLink || '')
-           .moveDown(1);
-      });
-    }
-
-
-    const visibleSocials = user.socials.filter(s => s.isVisible);
-    if (visibleSocials.length > 0) {
-      doc.fontSize(9)
-         .font('Helvetica')
-         .fillColor(colors.light)
-         .text(visibleSocials.map(s => `${s.name}: ${s.link}`).join(' • '), {
-           align: 'center',
-           bottom: doc.page.height - 50
-         });
-    }
-
-    let pages = doc.bufferedPageRange();
+    // Footer with page numbers
+    const pages = doc.bufferedPageRange();
     for (let i = 0; i < pages.count; i++) {
       doc.switchToPage(i);
-      doc.fontSize(8)
-         .fillColor(colors.light)
-         .text(
-           `Page ${i + 1} of ${pages.count}`,
-           doc.page.width - 100,
-           doc.page.height - 50,
-           { align: 'right' }
-         );
+      doc
+        .fontSize(8)
+        .fillColor(colors.mutedText)
+        .text(
+          `Page ${i + 1} of ${pages.count}`,
+          doc.page.width - 100,
+          doc.page.height - 50,
+          { align: "right" }
+        );
     }
 
     doc.end();
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 }
