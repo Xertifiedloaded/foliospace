@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Search, Filter, Users, X } from "lucide-react";
+import { Button } from '@/components/ui/button';
 
 const UserSkillsDisplay = () => {
   const [searchTerm, setSearchTerm] = useState("");
