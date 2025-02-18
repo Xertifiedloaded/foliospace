@@ -103,7 +103,7 @@ export default function OtpVerificationPage() {
                   value={digit}
                   onChange={(e) => handleOtpChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
-                  className="w-14 h-14 text-center text-2xl bg-gray-50 dark:bg-gray-700"
+                  className="w-14 h-14   text-heading text-center text-2xl bg-gray-50 dark:bg-gray-700"
                   autoFocus={index === 0}
                 />
               ))}

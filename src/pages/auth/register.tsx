@@ -27,11 +27,10 @@ const SignupSchema = z
       .max(20, "Username must be less than 20 characters"),
     name: z
       .string()
-      .min(3, "fullname must be at least 3 characters")
-      .max(20, "fullname must be less than 20 characters"),
+      .min(3, "Fullname must be at least 3 characters")
+      .max(20, "Fullname must be less than 20 characters"),
     email: z.string().email("Invalid email address"),
-    password: z.string().min(8, "Password must be at least 5 characters"),
-
+    password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -66,11 +65,11 @@ export default function SignupPage() {
 
   return (
     <AuthLayout>
-      <div className="flex min-h-screen items-center justify-center  p-4">
+      <div className="flex min-h-screen items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">
-              Create Your foliospace
+              Create Your FolioSpace
             </CardTitle>
             <CardDescription>
               Sign up to build and share your professional portfolio
@@ -85,7 +84,7 @@ export default function SignupPage() {
                   type="text"
                   placeholder="Choose a unique username"
                   {...register("username")}
-                  className="mt-2 placeholder:text-sm"
+                  className="mt-2 placeholder:text-sm text-white"
                 />
                 {errors.username && (
                   <p className="text-red-500 text-sm mt-1">
@@ -93,6 +92,7 @@ export default function SignupPage() {
                   </p>
                 )}
               </div>
+
               <div>
                 <Label htmlFor="name">Fullname</Label>
                 <Input
@@ -100,7 +100,7 @@ export default function SignupPage() {
                   type="text"
                   placeholder="Enter your full name"
                   {...register("name")}
-                  className="mt-2  placeholder:text-sm"
+                  className="mt-2 placeholder:text-sm text-white"
                 />
                 {errors.name && (
                   <p className="text-red-500 text-sm mt-1">
@@ -116,7 +116,7 @@ export default function SignupPage() {
                   type="email"
                   placeholder="you@example.com"
                   {...register("email")}
-                  className="mt-2  placeholder:text-sm"
+                  className="mt-2 placeholder:text-sm text-white"
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-1">
@@ -132,7 +132,7 @@ export default function SignupPage() {
                   type="password"
                   placeholder="Create a strong password"
                   {...register("password")}
-                  className="mt-2  placeholder:text-sm"
+                  className="mt-2 placeholder:text-sm text-white"
                 />
                 {errors.password && (
                   <p className="text-red-500 text-sm mt-1">
@@ -148,7 +148,7 @@ export default function SignupPage() {
                   type="password"
                   placeholder="Repeat your password"
                   {...register("confirmPassword")}
-                  className="mt-2  placeholder:text-sm"
+                  className="mt-2 placeholder:text-sm text-white"
                 />
                 {errors.confirmPassword && (
                   <p className="text-red-500 text-sm mt-1">
