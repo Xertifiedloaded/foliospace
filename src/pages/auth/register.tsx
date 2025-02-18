@@ -84,7 +84,7 @@ export default function SignupPage() {
                   type="text"
                   placeholder="Choose a unique username"
                   {...register("username")}
-                  className="mt-2 placeholder:text-sm text-white"
+                  className="mt-2 placeholder:text-sm text-heading"
                 />
                 {errors.username && (
                   <p className="text-red-500 text-sm mt-1">
@@ -100,7 +100,7 @@ export default function SignupPage() {
                   type="text"
                   placeholder="Enter your full name"
                   {...register("name")}
-                  className="mt-2 placeholder:text-sm text-white"
+                  className="mt-2 placeholder:text-sm text-heading"
                 />
                 {errors.name && (
                   <p className="text-red-500 text-sm mt-1">
@@ -116,7 +116,7 @@ export default function SignupPage() {
                   type="email"
                   placeholder="you@example.com"
                   {...register("email")}
-                  className="mt-2 placeholder:text-sm text-white"
+                  className="mt-2 placeholder:text-sm text-heading"
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-1">
@@ -132,7 +132,7 @@ export default function SignupPage() {
                   type="password"
                   placeholder="Create a strong password"
                   {...register("password")}
-                  className="mt-2 placeholder:text-sm text-white"
+                  className="mt-2 placeholder:text-sm text-heading"
                 />
                 {errors.password && (
                   <p className="text-red-500 text-sm mt-1">
@@ -148,7 +148,7 @@ export default function SignupPage() {
                   type="password"
                   placeholder="Repeat your password"
                   {...register("confirmPassword")}
-                  className="mt-2 placeholder:text-sm text-white"
+                  className="mt-2 placeholder:text-sm text-heading"
                 />
                 {errors.confirmPassword && (
                   <p className="text-red-500 text-sm mt-1">

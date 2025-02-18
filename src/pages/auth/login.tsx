@@ -97,7 +97,7 @@ export default function LoginPage() {
                 type="email"
                 placeholder="name@example.com"
                 {...register("email")}
-                className={`text-white ${errors.email ? "border-red-500" : ""}`}
+                className={`text-heading ${errors.email ? "border-red-500" : ""}`}
 
                 disabled={isLoading}
               />
@@ -121,7 +121,7 @@ export default function LoginPage() {
                 type="password"
                 placeholder="••••••••"
                 {...register("password")}
-                className={`text-white ${errors.password ? "border-red-500" : ""}`}
+                className={`text-heading ${errors.password ? "border-red-500" : ""}`}
 
                 disabled={isLoading}
               />
