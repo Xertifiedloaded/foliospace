@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <h1 className="text-3xl font-bold">{session?.user?.name || "User Name"}</h1>
+                  <h1 className="text-2xl font-bold">{session?.user?.name || "User Name"}</h1>
                   <p className="text-lg text-muted-foreground">{profile?.tagline || "No tagline"}</p>
                 </div>
               </div>

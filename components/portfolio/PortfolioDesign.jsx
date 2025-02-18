@@ -104,7 +104,7 @@ export default function PortfolioDesign({ portfolio }) {
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="text-2xl font-mono"
+                className="text-xl font-mono"
               >
                 {name}
               </motion.h1>
