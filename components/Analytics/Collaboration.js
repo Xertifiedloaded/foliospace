@@ -97,13 +97,13 @@ const UserSkillsDisplay = () => {
             <option value="Senior">Senior</option>
           </select>
           {(searchTerm || selectedSkills.length || selectedLevel) && (
-            <button
+            <Button
               onClick={clearFilters}
               className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
             >
               <X className="h-4 w-4" />
               Clear Filters
-            </button>
+            </Button>
           )}
         </div>
 
@@ -129,7 +129,8 @@ const UserSkillsDisplay = () => {
           <div className="text-center py-12">
             <p>Loading users...</p>
           </div>
-        ) : filteredUsers.length > 0 ? (
+        ) : filteredUsers.length >
+         0 ? (
           filteredUsers.map((user) => (
             <Card key={user.id} className="hover:shadow-lg transition-shadow">
               <CardHeader className="flex flex-row items-center gap-4">

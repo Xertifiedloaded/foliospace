@@ -408,6 +408,7 @@ export default function PortfolioSection() {
                           type="submit"
                           className="w-full"
                           disabled={isLoading}
+                          variant='default'
                         >
                           {isLoading ? (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -447,7 +448,7 @@ export default function PortfolioSection() {
                             </div>
                             <div className="flex space-x-2">
                               <Button
-                                variant="ghost"
+                                           variant='default'
                                 size="icon"
                                 onClick={() => {
                                   setEditingProject(project);
@@ -457,7 +458,7 @@ export default function PortfolioSection() {
                                 <Edit className="h-4 w-4" />
                               </Button>
                               <Button
-                                variant="ghost"
+                                         variant='default'
                                 size="icon"
                                 onClick={() => deleteProject(project)}
                               >
@@ -507,7 +508,7 @@ export default function PortfolioSection() {
                                 </p>
                                 <div className="flex space-x-2">
                                   {project.link && (
-                                    <Button size="sm" variant="outline" asChild>
+                                    <Button size="sm"                           variant='default' asChild>
                                       <a
                                         href={project.link}
                                         target="_blank"
@@ -519,7 +520,7 @@ export default function PortfolioSection() {
                                     </Button>
                                   )}
                                   {project.githubLink && (
-                                    <Button size="sm" variant="outline" asChild>
+                                    <Button size="sm"                           variant='default' asChild>
                                       <a
                                         href={project.githubLink}
                                         target="_blank"
@@ -562,14 +563,14 @@ function ProjectList({ projects }) {
             </p>
             <div className="flex space-x-2">
               {project.link && (
-                <Button size="sm" variant="outline" asChild>
+                <Button size="sm"                           variant='default' asChild>
                   <a href={project.link} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-4 w-4" /> View Project
                   </a>
                 </Button>
               )}
               {project.githubLink && (
-                <Button size="sm" variant="outline" asChild>
+                <Button size="sm"                           variant='default' asChild>
                   <a href={project.githubLink} target="_blank" rel="noopener noreferrer">
                     <Github className="mr-2 h-4 w-4" /> GitHub
                   </a>

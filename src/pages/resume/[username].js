@@ -182,7 +182,7 @@ export default function ResumePage() {
         <small className="text-gray-500 dark:text-gray-400 font-light flex items-center justify-center gap-1">
           © {new Date().getFullYear()}{" "}
           <span className="font-medium text-gray-700 dark:text-white hover:text-blue-600 transition-colors">
-            Makinde Olaitan
+          {name}
           </span>
           <span className="text-gray-400">•</span> All rights reserved
         </small>

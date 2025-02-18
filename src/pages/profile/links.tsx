@@ -133,7 +133,7 @@ export default function LinksSection() {
                     placeholder="Link title"
                   />
                 </div>
-                <Button variant='secondary' type="submit" className="w-full  text-black font-bold" disabled={isLoading}>
+                <Button variant='default' type="submit" className="w-full  text-black font-bold" disabled={isLoading}>
                   {isLoading ? "Adding..." : "Add Link"}
                 </Button>
               </form>

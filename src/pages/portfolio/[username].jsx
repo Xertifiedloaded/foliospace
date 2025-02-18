@@ -86,7 +86,7 @@ const PortfolioPage = () => {
   }
 
   return (
-<div className="min-h-screen bg-white dark:bg-gray-900">
+<div className="min-h-screen overflow-x-hidden bg-white dark:bg-gray-900">
 
   <PortfolioDesign portfolio={portfolio}/>
 </div>

@@ -203,7 +203,7 @@ export default function SocialMediaSection() {
                       placeholder="https://..."
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
+                  <Button  variant='default' type="submit" className="w-full" disabled={loading}>
                     {loading ? "Adding..." : "Add Social Link"}
                   </Button>
                 </form>

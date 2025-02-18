@@ -1,16 +1,32 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect, useMemo } from "react"
-import axios from "axios"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Users2, X, Globe2 } from "lucide-react"
+import type React from "react";
+import { useState, useEffect, useMemo } from "react";
+import axios from "axios";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Users2, X, Globe2 } from "lucide-react";
 import {
   FaGithub,
   FaLinkedin,
@@ -22,73 +38,83 @@ import {
   FaMedium,
   FaYoutube,
   FaTiktok,
-} from "react-icons/fa"
-import ProfileLayout from "@/components/layout"
+} from "react-icons/fa";
+import ProfileLayout from "@/components/layout";
 
 interface User {
-  id: string
-  name: string
-  tagline?: string
-  skills: { id: string; name: string }[]
-  socials: { id: string; name: string; link: string }[]
+  id: string;
+  name: string;
+  tagline?: string;
+  skills: { id: string; name: string }[];
+  socials: { id: string; name: string; link: string }[];
   profile?: {
-    levelOfExperience: string
-    yearsOfExperience?: number
-  }
+    levelOfExperience: string;
+    yearsOfExperience?: number;
+  };
 }
 
 const TeamDirectory = () => {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([])
-  const [selectedLevel, setSelectedLevel] = useState("")
-  const [users, setUsers] = useState<User[]>([])
-  const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedLevel, setSelectedLevel] = useState("");
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchUsers = async () => {
     try {
-      setLoading(true)
-      const queryParams = selectedSkills.length ? `?skills=${selectedSkills.join(",")}` : ""
-      const response = await axios.get(`/api/user/userskills${queryParams}`)
-      setUsers(response.data)
+      setLoading(true);
+      const queryParams = selectedSkills.length
+        ? `?skills=${selectedSkills.join(",")}`
+        : "";
+      const response = await axios.get(`/api/user/userskills${queryParams}`);
+      setUsers(response.data);
     } catch (error) {
-      console.error("Error fetching users:", error)
+      console.error("Error fetching users:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchUsers()
-  }, [selectedSkills])
+    fetchUsers();
+  }, [selectedSkills]);
 
   const allSkills = useMemo(() => {
-    const skillSet = new Set<string>()
-    users.forEach((user) => user.skills.forEach((skill) => skillSet.add(skill.name)))
-    return Array.from(skillSet).sort()
-  }, [users])
+    const skillSet = new Set<string>();
+    users.forEach((user) =>
+      user.skills.forEach((skill) => skillSet.add(skill.name))
+    );
+    return Array.from(skillSet).sort();
+  }, [users]);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
       const searchMatch =
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.tagline?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.skills.some((skill) => skill.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        user.skills.some((skill) =>
+          skill.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
-      const levelMatch = !selectedLevel || (user.profile && user.profile.levelOfExperience === selectedLevel)
+      const levelMatch =
+        !selectedLevel ||
+        (user.profile && user.profile.levelOfExperience === selectedLevel);
 
-      return searchMatch && levelMatch
-    })
-  }, [searchTerm, selectedLevel, users])
+      return searchMatch && levelMatch;
+    });
+  }, [searchTerm, selectedLevel, users]);
 
   const handleSkillToggle = (skill: string) => {
-    setSelectedSkills((prev) => (prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]))
-  }
+    setSelectedSkills((prev) =>
+      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
+    );
+  };
 
   const clearFilters = () => {
-    setSearchTerm("")
-    setSelectedSkills([])
-    setSelectedLevel("")
-  }
+    setSearchTerm("");
+    setSelectedSkills([]);
+    setSelectedLevel("");
+  };
 
   const getSocialIcon = (platform: string) => {
     const icons: { [key: string]: React.ReactNode } = {
@@ -103,13 +129,13 @@ const TeamDirectory = () => {
       youtube: <FaYoutube className="h-4 w-4" />,
       tiktok: <FaTiktok className="h-4 w-4" />,
       default: <Globe2 className="h-4 w-4" />,
-    }
-    return icons[platform.toLowerCase()] || icons.default
-  }
+    };
+    return icons[platform.toLowerCase()] || icons.default;
+  };
 
   const SocialLinks: React.FC<{ socials: User["socials"] }> = ({ socials }) => {
-    const visibleSocials = socials.slice(0, 2)
-    const remainingSocials = socials.slice(2)
+    const visibleSocials = socials.slice(0, 2);
+    const remainingSocials = socials.slice(2);
 
     return (
       <>
@@ -135,15 +161,26 @@ const TeamDirectory = () => {
         {remainingSocials.length > 0 && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="px-2 text-xs font-medium">
+              <Button
+                variant="default"
+                size="sm"
+                className="px-2 text-xs font-medium"
+              >
                 +{remainingSocials.length}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent className="border-0" align="end">
               {remainingSocials.map((social) => (
                 <DropdownMenuItem key={social.id} asChild>
-                  <a href={social.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                    <span className="h-4 w-4">{getSocialIcon(social.name)}</span>
+                  <a
+                    href={social.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <span className="h-4 w-4">
+                      {getSocialIcon(social.name)}
+                    </span>
                     {social.name}
                   </a>
                 </DropdownMenuItem>
@@ -152,17 +189,25 @@ const TeamDirectory = () => {
           </DropdownMenu>
         )}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <ProfileLayout>
       <div className="container mx-auto p-6 space-y-8">
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold">Team Directory</h1>
+            <div className="">
+              <h1 className="text-4xl font-bold mb-4">Skill Connect</h1>
+              <p className="text-sm text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Discover and connect with professionals who share your skills or
+                work in similar fields. Expand your network, collaborate on
+                projects, and grow your career by finding like-minded
+                individuals.
+              </p>
+            </div>
             <Button
-              variant="outline"
+              variant="default"
               onClick={clearFilters}
               disabled={!searchTerm && !selectedSkills.length && !selectedLevel}
             >
@@ -193,9 +238,15 @@ const TeamDirectory = () => {
               <Button
                 key={skill}
                 onClick={() => handleSkillToggle(skill)}
-                variant={selectedSkills.includes(skill) ? "default" : "outline"}
+                variant={
+                  selectedSkills.includes(skill) ? "secondary" : "default"
+                }
                 size="sm"
-                className="rounded-full"
+                className={`rounded-full ${
+                  selectedSkills.includes(skill)
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                }`}
               >
                 {skill}
               </Button>
@@ -212,12 +263,18 @@ const TeamDirectory = () => {
               <Card key={user.id}>
                 <CardHeader>
                   <CardTitle>{user.name}</CardTitle>
-                  {user.tagline && <p className="text-sm text-muted-foreground">{user.tagline}</p>}
+                  {user.tagline && (
+                    <p className="text-sm text-muted-foreground">
+                      {user.tagline}
+                    </p>
+                  )}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {user.profile?.levelOfExperience && (
                     <div className="flex items-center gap-2">
-                      <Badge variant="secondary">{user.profile.levelOfExperience}</Badge>
+                      <Badge variant="secondary">
+                        {user.profile.levelOfExperience}
+                      </Badge>
                       {user.profile.yearsOfExperience && (
                         <span className="text-sm text-muted-foreground">
                           {user.profile.yearsOfExperience} years experience
@@ -242,8 +299,7 @@ const TeamDirectory = () => {
         )}
       </div>
     </ProfileLayout>
-  )
-}
+  );
+};
 
-export default TeamDirectory
-
+export default TeamDirectory;

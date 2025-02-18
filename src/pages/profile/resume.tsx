@@ -17,13 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Briefcase,
-  GraduationCap,
-  Plus,
-  X,
-  Edit,
-} from "lucide-react";
+import { Briefcase, GraduationCap, Plus, X, Edit } from "lucide-react";
 import ProfileLayout from "@/components/layout";
 import { IPhoneFrame } from "@/components/Preview";
 import { toast } from "@/hooks/use-toast";
@@ -64,24 +58,26 @@ interface NewEducation {
   description?: string;
 }
 
-type NewItem = 
-  | { type: 'experience'; data: NewExperience }
-  | { type: 'education'; data: NewEducation };
+type NewItem =
+  | { type: "experience"; data: NewExperience }
+  | { type: "education"; data: NewEducation };
 
 type EditItem = Experience | Education | null;
 
 export default function ResumeSection() {
   const { data: session } = useSession();
   const userId = session?.user?.id;
-  const [activeTab, setActiveTab] = useState<'experience' | 'education'>('experience');
+  const [activeTab, setActiveTab] = useState<"experience" | "education">(
+    "experience"
+  );
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [education, setEducation] = useState<Education[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editItem, setEditItem] = useState<EditItem>(null);
   const [newItem, setNewItem] = useState<NewItem>({
-    type: 'experience',
-    data: {}
+    type: "experience",
+    data: {},
   });
 
   useEffect(() => {
@@ -93,7 +89,9 @@ export default function ResumeSection() {
 
   const fetchExperiences = async () => {
     try {
-      const response = await fetch(`/api/portfolio/experience?userId=${userId}`);
+      const response = await fetch(
+        `/api/portfolio/experience?userId=${userId}`
+      );
       const data = await response.json();
       setExperiences(data);
     } catch (error) {
@@ -128,15 +126,16 @@ export default function ResumeSection() {
     setIsLoading(true);
 
     try {
-      const endpoint = activeTab === "experience"
-        ? "/api/portfolio/experience"
-        : "/api/portfolio/education";
-      
+      const endpoint =
+        activeTab === "experience"
+          ? "/api/portfolio/experience"
+          : "/api/portfolio/education";
+
       const method = editItem ? "PATCH" : "POST";
       const body = JSON.stringify({
         ...newItem.data,
         userId,
-        ...(editItem && { id: editItem.id })
+        ...(editItem && { id: editItem.id }),
       });
 
       const response = await fetch(endpoint, {
@@ -185,9 +184,10 @@ export default function ResumeSection() {
   const handleDelete = async (id: string) => {
     setIsLoading(true);
     try {
-      const endpoint = activeTab === "experience"
-        ? `/api/portfolio/experience?experienceId=${id}&userId=${userId}`
-        : `/api/portfolio/education?educationId=${id}&userId=${userId}`;
+      const endpoint =
+        activeTab === "experience"
+          ? `/api/portfolio/experience?experienceId=${id}&userId=${userId}`
+          : `/api/portfolio/education?educationId=${id}&userId=${userId}`;
 
       const response = await fetch(endpoint, { method: "DELETE" });
 
@@ -213,10 +213,10 @@ export default function ResumeSection() {
   };
 
   const handleTabChange = (value: string) => {
-    setActiveTab(value as 'experience' | 'education');
+    setActiveTab(value as "experience" | "education");
     setNewItem({
-      type: value as 'experience' | 'education',
-      data: {}
+      type: value as "experience" | "education",
+      data: {},
     });
   };
 
@@ -224,26 +224,38 @@ export default function ResumeSection() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor={activeTab === "experience" ? "company" : "institution"}>
+          <Label
+            htmlFor={activeTab === "experience" ? "company" : "institution"}
+          >
             {activeTab === "experience" ? "Company" : "Institution"}
           </Label>
           <Input
             id={activeTab === "experience" ? "company" : "institution"}
             value={
               activeTab === "experience"
-                ? newItem.type === "experience" ? newItem.data.company || "" : ""
-                : newItem.type === "education" ? newItem.data.institution || "" : ""
+                ? newItem.type === "experience"
+                  ? newItem.data.company || ""
+                  : ""
+                : newItem.type === "education"
+                ? newItem.data.institution || ""
+                : ""
             }
             onChange={(e) => {
               if (activeTab === "experience") {
                 setNewItem({
                   type: "experience",
-                  data: { ...newItem.type === "experience" ? newItem.data : {}, company: e.target.value }
+                  data: {
+                    ...(newItem.type === "experience" ? newItem.data : {}),
+                    company: e.target.value,
+                  },
                 });
               } else {
                 setNewItem({
                   type: "education",
-                  data: { ...newItem.type === "education" ? newItem.data : {}, institution: e.target.value }
+                  data: {
+                    ...(newItem.type === "education" ? newItem.data : {}),
+                    institution: e.target.value,
+                  },
                 });
               }
             }}
@@ -258,19 +270,29 @@ export default function ResumeSection() {
             id={activeTab === "experience" ? "position" : "degree"}
             value={
               activeTab === "experience"
-                ? newItem.type === "experience" ? newItem.data.position || "" : ""
-                : newItem.type === "education" ? newItem.data.degree || "" : ""
+                ? newItem.type === "experience"
+                  ? newItem.data.position || ""
+                  : ""
+                : newItem.type === "education"
+                ? newItem.data.degree || ""
+                : ""
             }
             onChange={(e) => {
               if (activeTab === "experience") {
                 setNewItem({
                   type: "experience",
-                  data: { ...newItem.type === "experience" ? newItem.data : {}, position: e.target.value }
+                  data: {
+                    ...(newItem.type === "experience" ? newItem.data : {}),
+                    position: e.target.value,
+                  },
                 });
               } else {
                 setNewItem({
                   type: "education",
-                  data: { ...newItem.type === "education" ? newItem.data : {}, degree: e.target.value }
+                  data: {
+                    ...(newItem.type === "education" ? newItem.data : {}),
+                    degree: e.target.value,
+                  },
                 });
               }
             }}
@@ -292,7 +314,7 @@ export default function ResumeSection() {
             onChange={(e) =>
               setNewItem({
                 ...newItem,
-                data: { ...newItem.data, startDate: new Date(e.target.value) }
+                data: { ...newItem.data, startDate: new Date(e.target.value) },
               })
             }
             required
@@ -311,7 +333,7 @@ export default function ResumeSection() {
             onChange={(e) =>
               setNewItem({
                 ...newItem,
-                data: { ...newItem.data, endDate: new Date(e.target.value) }
+                data: { ...newItem.data, endDate: new Date(e.target.value) },
               })
             }
           />
@@ -326,19 +348,20 @@ export default function ResumeSection() {
           onChange={(e) =>
             setNewItem({
               ...newItem,
-              data: { ...newItem.data, description: e.target.value }
+              data: { ...newItem.data, description: e.target.value },
             })
           }
         />
       </div>
       <Button variant="default" type="submit" disabled={isLoading}>
-        {editItem ? "Update" : "Add"} {activeTab === "experience" ? "Experience" : "Education"}
+        {editItem ? "Update" : "Add"}{" "}
+        {activeTab === "experience" ? "Experience" : "Education"}
       </Button>
     </form>
   );
 
   const renderList = (items: (Experience | Education)[]) => (
-    <ScrollArea className="h-[400px]">
+    <ScrollArea className="h-[700px]">
       {items.map((item) => (
         <Card key={item.id} className="mb-4">
           <CardHeader>
@@ -350,13 +373,13 @@ export default function ResumeSection() {
               </span>
               <div>
                 <Button
-                  variant="ghost"
+                  variant="default"
                   size="sm"
                   onClick={() => {
                     setEditItem(item);
                     setNewItem({
                       type: activeTab,
-                      data: { ...item }
+                      data: { ...item },
                     });
                     setIsDialogOpen(true);
                   }}
@@ -368,7 +391,7 @@ export default function ResumeSection() {
                   size="sm"
                   onClick={() => handleDelete(item.id)}
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-4 text-heading w-4" />
                 </Button>
               </div>
             </CardTitle>
@@ -404,14 +427,14 @@ export default function ResumeSection() {
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <DialogTrigger asChild>
                     <Button
-                      variant="outline"
+                      variant="default"
                       className="text-black"
                       onClick={() => {
                         setEditItem(null);
                         setNewItem({ type: activeTab, data: {} });
                       }}
                     >
-                      <Plus className="mr-2 text-heading h-4 w-4" /> Add{" "}
+                      <Plus className="mr-2 text-black h-4 w-4" /> Add{" "}
                       {activeTab === "experience" ? "Experience" : "Education"}
                     </Button>
                   </DialogTrigger>
@@ -419,7 +442,9 @@ export default function ResumeSection() {
                     <DialogHeader>
                       <DialogTitle>
                         {editItem ? "Edit" : "Add"}{" "}
-                        {activeTab === "experience" ? "Experience" : "Education"}
+                        {activeTab === "experience"
+                          ? "Experience"
+                          : "Education"}
                       </DialogTitle>
                     </DialogHeader>
                     {renderForm()}
@@ -449,7 +474,7 @@ export default function ResumeSection() {
 
           <div>
             <IPhoneFrame>
-              <ScrollArea className="h-[600px] p-4">
+              <ScrollArea className="h-[700px] p-4">
                 <h2 className="text-xl font-semibold mb-4">Experience</h2>
                 {experiences.map((exp) => (
                   <div key={exp.id} className="mb-4">
