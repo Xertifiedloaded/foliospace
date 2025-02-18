@@ -7,12 +7,15 @@ import { Footer } from "@/components/ui/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileSection from "@/sections/Profile";
-import { ChevronRight, ArrowRight, Check, CheckCircle, Loader2 } from "lucide-react";
+import {
+  ChevronRight,
+  ArrowRight,
+  Check,
+  CheckCircle,
+  Loader2,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { toast } from "@/hooks/use-toast";
 import Newsletter from "@/components/Newsletter";
 
 interface SubmitEmailResponse {
@@ -65,7 +68,6 @@ export default function HomePage() {
 }
 
 const Header = () => {
-
   return (
     <header className="container mx-auto py-6 px-4 flex justify-between items-center">
       <Link href="/" className="flex items-center space-x-2">
@@ -105,31 +107,39 @@ const Hero = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
- <div>
-      {session ? (
-        <Button
-          size="lg"
-          variant="default"
-          className="rounded-full bg-blue-500 text-white hover:bg-blue-600"
-        >
-          Create Portfolio
-          <ChevronRight className="ml-2 text-white h-4 w-4" />
-        </Button>
-      ) : (
-        <div className="space-x-4">
-          <Link href="/auth/register">
-            <Button size="lg" variant="default" className="rounded-full bg-blue-500 text-white hover:bg-blue-600">
-              Sign Up
+        <div>
+          {session ? (
+            <Button
+              size="lg"
+              variant="default"
+              className="rounded-full bg-blue-500 text-white hover:bg-blue-600"
+            >
+              <a href="/profile/dashboard">Dashboard</a>
+              <ChevronRight className="ml-2 text-white h-4 w-4" />
             </Button>
-          </Link>
-          <Link href="/auth/login">
-            <Button size="lg" variant="default" className="rounded-full bg-blue-500 text-white hover:bg-blue-600">
-              Log In
-            </Button>
-          </Link>
+          ) : (
+            <div className="space-x-4">
+              <Link href="/auth/register">
+                <Button
+                  size="lg"
+                  variant="default"
+                  className="rounded-full bg-blue-500 text-white hover:bg-blue-600"
+                >
+                  Sign Up
+                </Button>
+              </Link>
+              <Link href="/auth/login">
+                <Button
+                  size="lg"
+                  variant="default"
+                  className="rounded-full bg-blue-500 text-white hover:bg-blue-600"
+                >
+                  Log In
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
-      )}
-    </div>
       </motion.div>
     </section>
   );
@@ -205,10 +215,10 @@ interface SubmitEmailResponse {
 }
 const submitEmail = async (email: string): Promise<SubmitEmailResponse> => {
   try {
-    const response = await fetch('/api/waitlist', {
-      method: 'POST',
+    const response = await fetch("/api/waitlist", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ email }),
     });
@@ -216,18 +226,21 @@ const submitEmail = async (email: string): Promise<SubmitEmailResponse> => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || 'Failed to subscribe');
+      throw new Error(data.message || "Failed to subscribe");
     }
 
     return {
       success: true,
-      message: data.message || "You've successfully subscribed to our newsletter!"
+      message:
+        data.message || "You've successfully subscribed to our newsletter!",
     };
   } catch (error) {
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'An error occurred while subscribing'
+      message:
+        error instanceof Error
+          ? error.message
+          : "An error occurred while subscribing",
     };
   }
 };
-

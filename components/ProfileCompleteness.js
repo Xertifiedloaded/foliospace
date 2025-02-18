@@ -28,7 +28,6 @@ const ProfileCompleteness = ({ profile }) => {
   return (
   <>
     <div className="flex justify-between items-center">
-      <span className="text-sm text-neutral-400">Profile Completeness</span>
 
       <div className="flex-grow mx-2 relative">
         <div className="w-full bg-gray-200 rounded-full h-2">

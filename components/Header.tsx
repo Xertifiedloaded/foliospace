@@ -1,5 +1,14 @@
 "use client";
+
 import React from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Menubar,
   MenubarContent,
@@ -7,23 +16,28 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-
-import { MenuIcon} from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import { MenuIcon } from "lucide-react";
 import { RiCheckboxCircleLine } from "react-icons/ri";
 import { navItems } from "@/utils/data";
 
+// Define the shape of navigation items
+interface NavItem {
+  path: string;
+  title: string;
+  icon: React.ElementType;
+}
 
 const Header: React.FC = () => {
+  const router = useRouter();
 
-  const handleNavigation = (path: string): void => {
-    window.location.href = path;
+  const handleNavigation = (path: string) => {
+    router.push(path);
   };
 
   return (
-    <header className="sticky bg-background  top-0 z-50 shadow-md text-heading">
+    <header className="sticky bg-background top-0 z-50 shadow-md text-heading">
       <div className="px-4 py-3 flex justify-between items-center">
+        {/* Logo Section */}
         <div className="flex items-center space-x-4">
           <div className="flex items-center">
             <RiCheckboxCircleLine className="mr-2 text-2xl text-blue-600 dark:text-blue-400" />
@@ -31,8 +45,10 @@ const Header: React.FC = () => {
               FolioSpace
             </span>
           </div>
-          <Menubar className="hidden border-0 md:flex">
-            {navItems.map((item) => (
+
+          {/* Desktop Navigation */}
+          <Menubar className="hidden md:flex border-0">
+            {navItems.map((item: NavItem) => (
               <MenubarMenu key={item.path}>
                 <MenubarTrigger
                   onClick={() => handleNavigation(item.path)}
@@ -46,27 +62,27 @@ const Header: React.FC = () => {
           </Menubar>
         </div>
 
-        <Menubar className="flex md:hidden items-center space-x-4">
-          <MenubarMenu>
-            <MenubarTrigger className="border-0" asChild>
-              <Button variant="default" className="md:hidden bg-transparent text-heading">
-                <MenuIcon className="h-4 w-4" />
-              </Button>
-            </MenubarTrigger>
-            <MenubarContent className="md:hidden border-0">
-              {navItems.map((item) => (
-                <MenubarItem
-                  key={item.path}
-                  onClick={() => handleNavigation(item.path)}
-                  className="cursor-pointer py-1 bg-background"
-                >
-                  <item.icon className="mr-2 h-4 w-4" />
-                  {item.title}
-                </MenubarItem>
-              ))}
-            </MenubarContent>
-          </MenubarMenu>
-        </Menubar>
+        {/* Mobile Navigation Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="default" className="md:hidden bg-transparent text-heading">
+              <MenuIcon className="h-6 w-6" />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end" className="w-48 border-0 shadow-md rounded-md">
+            {navItems.map((item: NavItem) => (
+              <DropdownMenuItem
+                key={item.path}
+                onClick={() => handleNavigation(item.path)}
+                className="cursor-pointer flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              >
+                <item.icon className="h-4 w-4 text-gray-600" />
+                <span>{item.title}</span>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

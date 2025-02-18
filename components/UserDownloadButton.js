@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 
 const UserBackupButton = () => {
   const { data: session } = useSession();
@@ -33,9 +34,20 @@ const UserBackupButton = () => {
     <Button
       onClick={handleDownload}
       disabled={isLoading}
-      className={`text-xs rounded-lg space-x-2 mt-2 ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
+      size="sm"
+      variant="default"
+      className={`h-8 px-2 text-xs hover:bg-primary/10 ${
+        isLoading ? "opacity-70 cursor-not-allowed" : ""
+      }`}
     >
-      {isLoading ? "Generating..." : "Export Portfolio PDF"}
+      {isLoading ? (
+        "Generating..."
+      ) : (
+        <>
+          <Download className="w-4 h-4" />
+          Download
+        </>
+      )}
     </Button>
   );
 };

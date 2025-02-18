@@ -18,13 +18,10 @@ const fonts = {
   bold: "Times-Bold",
 };
 
-// And modify the createGradientHeader function to use regular font instead:
 
 const createGradientHeader = (doc, user) => {
-  // Create gradient background
   doc.rect(0, 0, doc.page.width, 150).fillColor(colors.primary).fill();
 
-  // Add user name and details in white
   doc
     .fontSize(28)
     .font(fonts.bold)
@@ -41,7 +38,6 @@ const createGradientHeader = (doc, user) => {
       .moveDown(0.3);
   }
 
-  // Contact information - changed from fonts.light to fonts.regular
   const contactInfo = [
     user.email,
     user.profile?.phoneNumber,
@@ -107,7 +103,7 @@ export default async function handler(req, res) {
       bufferPages: true,
     });
 
-    // Set response headers
+
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
@@ -118,7 +114,6 @@ export default async function handler(req, res) {
     doc.pipe(pdfStream);
     pdfStream.pipe(res);
 
-    // Create header with gradient
     createGradientHeader(doc, user);
 
     // Professional Summary
@@ -139,7 +134,7 @@ export default async function handler(req, res) {
       const skills = user.skills.map(
         (skill) => `${skill.name} (${skill.level})`
       );
-      const columns = 3; // Number of skills per row
+      const columns = 3; 
       const rows = Math.ceil(skills.length / columns);
 
       for (let i = 0; i < rows; i++) {
@@ -157,7 +152,6 @@ export default async function handler(req, res) {
     }
 
 
-    // Experience section with modern styling
     if (user.experiences.length > 0) {
       addSection(doc, "Professional Experience");
       user.experiences.forEach((exp) => {
@@ -181,7 +175,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // Education section with modern styling
     if (user.education.length > 0) {
       addSection(doc, "Education");
       user.education.forEach((edu) => {
@@ -202,7 +195,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // Footer with page numbers
     const pages = doc.bufferedPageRange();
     for (let i = 0; i < pages.count; i++) {
       doc.switchToPage(i);
