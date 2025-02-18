@@ -114,7 +114,7 @@ const Hero = () => {
               variant="default"
               className="rounded-full bg-blue-500 text-white hover:bg-blue-600"
             >
-              <a href="/profile/dashboard">Dashboard</a>
+              <Link href="/profile/dashboard">Dashboard</Link>
               <ChevronRight className="ml-2 text-white h-4 w-4" />
             </Button>
           ) : (
