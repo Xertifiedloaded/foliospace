@@ -18,12 +18,19 @@ const PortfolioAnalytic = ({ userName }) => {
           setLoading(false)
           return
         }
-
-        const response = await fetch(`/api/analytics/analytics?username=${userName}`)
+  
+        const response = await fetch(`/api/analytics/analytics?username=${userName}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+  
+          },
+        })
+        
         if (!response.ok) {
           throw new Error(`Failed to fetch analytics data: ${response.statusText}`)
         }
-
+  
         const data = await response.json()
         setAnalyticsData(data)
       } catch (error) {
@@ -32,23 +39,14 @@ const PortfolioAnalytic = ({ userName }) => {
         setLoading(false)
       }
     }
-
+  
     fetchAnalytics()
-  }, [ userName])
+  }, [userName])
 
   if (loading) {
     return <AnalyticsLoader />
   }
 
-  if (!analyticsData) {
-    return (
-      <Card className="p-4">
-        <CardContent>
-          <p className="text-red-600 dark:text-red-400">Failed to load analytics data.</p>
-        </CardContent>
-      </Card>
-    )
-  }
 
   return (
     <div className="space-y-8">

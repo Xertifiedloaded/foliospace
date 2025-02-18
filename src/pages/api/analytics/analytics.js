@@ -11,12 +11,18 @@ export default async function handler(req, res) {
   }
 
   try {
+    let username;
     const session = await getServerSession(req, res, authOptions);
-    if (!session || !session.user || !session.user.username) {
-      return res.status(401).json({ error: 'Unauthorized. User not logged in.' });
+
+    if (session && session.user && session.user.username) {
+      username = session.user.username;
+    } else if (req.query.username) {
+      username = req.query.username;
     }
 
-    const username = session.user.username;
+    if (!username) {
+      return res.status(401).json({ error: 'Unauthorized. Username is required.' });
+    }
 
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -76,7 +82,7 @@ export default async function handler(req, res) {
       prisma.visitLog.findMany({
         where: { portfolioOwner: username },
         orderBy: { timestamp: 'desc' },
-        take: 10,
+        take: 6,
       }),
     ]);
 
