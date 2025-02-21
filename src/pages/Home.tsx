@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { UserNavigation } from "@/components/UserNavigation";
@@ -57,6 +58,7 @@ export default function HomePage() {
       <main>
         <Hero />
         <Features />
+        <VideoSection />
         <Templates />
         <FAQ />
         <ProfileSection />
@@ -243,4 +245,47 @@ const submitEmail = async (email: string): Promise<SubmitEmailResponse> => {
           : "An error occurred while subscribing",
     };
   }
+};
+
+const VideoSection = () => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          if (videoRef.current) {
+            videoRef.current.play(); 
+          }
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section className="flex justify-center items-center py-10">
+      <video
+        ref={videoRef}
+        className="w-full max-w-5xl rounded-lg shadow-lg"
+        preload="none"
+        poster="/images/foliospace.png"
+        controls
+        playsInline
+        muted
+      >
+        <source src="/video/foliospace.mov" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </section>
+  );
 };

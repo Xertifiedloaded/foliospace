@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Search, Filter, Users, X } from "lucide-react";
-import { Button } from '@/components/ui/button';
-
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const UserSkillsDisplay = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSkills, setSelectedSkills] = useState([]);
@@ -44,22 +44,21 @@ const UserSkillsDisplay = () => {
       const name = user.name || "";
       const role = user.tagline || "";
       const skills = user.skills || [];
-  
+
       const searchMatch =
         name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         role.toLowerCase().includes(searchTerm.toLowerCase()) ||
         skills.some((skill) =>
           (skill.name || "").toLowerCase().includes(searchTerm.toLowerCase())
         );
-  
+
       const levelMatch =
         !selectedLevel ||
         (user.profile && user.profile.levelOfExperience === selectedLevel);
-  
+
       return searchMatch && levelMatch;
     });
   }, [searchTerm, selectedLevel, users]);
-  
 
   const handleSkillToggle = (skill) => {
     setSelectedSkills((prev) =>
@@ -130,16 +129,20 @@ const UserSkillsDisplay = () => {
           <div className="text-center py-12">
             <p>Loading users...</p>
           </div>
-        ) : filteredUsers.length >
-         0 ? (
+        ) : filteredUsers.length > 0 ? (
           filteredUsers.map((user) => (
             <Card key={user.id} className="hover:shadow-lg transition-shadow">
               <CardHeader className="flex flex-row items-center gap-4">
-                <img
-                  src={user?.profile?.picture ?? "/images/user.jpg"}
-                  alt={user.name}
-                  className="w-12 h-12 rounded-full"
-                />
+                <Avatar className="h-16 w-16 border-2 border-primary">
+                  <AvatarImage
+                    className="object-cover"
+                    src={user?.profile?.picture}
+                    alt={user.name}
+                  />
+                  <AvatarFallback className="text-4xl">
+                    {user.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
                 <div>
                   <CardTitle className="text-lg">{user.name}</CardTitle>
                   <p className="text-sm text-gray-500">

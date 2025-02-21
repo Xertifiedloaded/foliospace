@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       name: user?.name,
       username: user?.username,
       tagline: user?.profile?.tagline || "No tagline available",
-      picture: user?.profile?.picture ?? "/images/user.jpg",
+      picture: user?.profile?.picture ,
       skills: user?.skills.map((skill) => ({
         name: skill?.name,
         level: skill?.level,

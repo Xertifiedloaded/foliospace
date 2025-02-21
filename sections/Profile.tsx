@@ -3,7 +3,7 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface Profile {
   name: string;
   tagline: string;
@@ -31,18 +31,15 @@ const ProfileCard: React.FC<Profile> = ({
     >
       <div className="p-6">
         <div className="flex items-center space-x-4 mb-4">
-          <div className="relative">
-            <Image
-              width={100}
-              height={100}
-              src={picture}
-              alt={name}
-              className="w-16 h-16 rounded-full border-3 border-border dark:border-gray-600 group-hover:scale-110 transition-transform"
-            />
-          </div>
+          <Avatar className="h-16 w-16 border-2 border-primary">
+            <AvatarImage className="object-cover" src={picture} alt={name} />
+            <AvatarFallback className="text-4xl">
+              {name.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
           <div>
-            <h3 className="text-lg font-bold text-heading">{name}</h3>
-            <p className="text-sm text-paragraph">{tagline}</p>
+            <h3 className="text-lg font-semibold text-foreground">{name}</h3>
+            <p className="text-sm text-muted-foreground">{tagline}</p>
           </div>
         </div>
 

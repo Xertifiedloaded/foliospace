@@ -43,6 +43,7 @@ type SignupFormData = z.infer<typeof SignupSchema>;
 export default function SignupPage() {
   const { create, error } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const {
     register,
@@ -54,10 +55,13 @@ export default function SignupPage() {
 
   const onSubmit = async (data: SignupFormData) => {
     setIsLoading(true);
+    setFormError(null);
+    
     try {
       await create(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Signup failed", error);
+      setFormError(error.message || "Signup failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -76,6 +80,12 @@ export default function SignupPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {formError && (
+              <div className="bg-red-50 p-3 rounded mb-4 text-red-600 text-sm">
+                {formError}
+              </div>
+            )}
+            
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
                 <Label htmlFor="username">Username</Label>
@@ -157,7 +167,11 @@ export default function SignupPage() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full dark:text-black" disabled={isLoading}>
+              <Button 
+                type="submit" 
+                className="w-full dark:text-black" 
+                disabled={isLoading}
+              >
                 {isLoading ? "Creating Account..." : "Sign Up"}
               </Button>
             </form>

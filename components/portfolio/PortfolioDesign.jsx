@@ -1,5 +1,5 @@
 "use client";
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -29,6 +29,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const SocialIcon = ({ type }) => {
   const icons = {
     linkedin: LinkedinIcon,
+    Linkedin: LinkedinIcon,
     github: GithubIcon,
     twitter: TwitterIcon,
     facebook: FacebookIcon,
@@ -86,18 +87,17 @@ export default function PortfolioDesign({ portfolio }) {
           className="space-y-8"
         >
           {/* Profile Header */}
-          <div className="flex items-center gap-4">
-            {profile?.picture && (
-              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                <Image
-                  src={profile?.picture || "/placeholder.svg"}
-                  alt={username}
-                  width={60}
-                  height={60}
-                  className="object-cover w-20 h-20 rounded-full"
+          <div className="flex items-start gap-4">
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Avatar className="h-16 w-16 border-2 border-primary">
+                <AvatarImage
+                  src={profile?.picture}
+                  alt={name}
+                  className="object-cover"
                 />
-              </motion.div>
-            )}
+                <AvatarFallback className='text-4xl'>{name.charAt(0)}</AvatarFallback>
+              </Avatar>
+            </motion.div>
 
             <div>
               <motion.h1
@@ -163,25 +163,24 @@ export default function PortfolioDesign({ portfolio }) {
               className="flex gap-4"
             >
               {socials.map((social, index) => {
-                 console.log(`Social ${social.name} has URL: ${social.link}`);
-                return(
+                console.log(`Social ${social.name} has URL: ${social.link}`);
+                return (
                   <motion.a
-                  key={index}
-                  href={social.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`p-2 rounded-full ${
-                    socialColors[social?.name?.toLowerCase()] ||
-                    "text-gray-500 hover:text-gray-600"
-                  } transition-colors duration-200`}
-                  title={social.name || "Social Link"}
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  
-                  <SocialIcon type={social.name} className="w-4 h-4" />
-                </motion.a>
-                )
+                    key={index}
+                    href={social.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`p-2 rounded-full ${
+                      socialColors[social?.name?.toLowerCase()] ||
+                      "text-gray-500 hover:text-gray-600"
+                    } transition-colors duration-200`}
+                    title={social.name || "Social Link"}
+                    whileHover={{ scale: 1.2, rotate: 5 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <SocialIcon type={social.name} className="w-4 h-4" />
+                  </motion.a>
+                );
               })}
             </motion.div>
           )}

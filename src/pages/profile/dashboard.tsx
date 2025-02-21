@@ -172,13 +172,12 @@ const Dashboard: React.FC = () => {
             </div>
 
             <Separator />
-
-            {/* Dashboard section */}
             <div className="p-6">
               <DashBoardHeading />
             </div>
           </CardContent>
         </Card>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Card className="overflow-hidden shadow-lg">
             <CardHeader>
@@ -257,6 +256,10 @@ const Dashboard: React.FC = () => {
                     ))}
                 </div>
               )}
+
+              <div className="mt-6">
+                <DashBoardSkills />
+              </div>
             </CardContent>
           </Card>
 
@@ -297,8 +300,6 @@ const Dashboard: React.FC = () => {
                 </ul>
               </CardContent>
             </Card>
-
-            <DashBoardSkills />
           </div>
         </div>
       </div>

@@ -1,80 +1,70 @@
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { 
-  RiDashboardLine, 
-  RiLogoutBoxLine, 
-  RiUserLine, 
-  RiSettingsLine, 
-  RiMoreFill 
-} from "react-icons/ri";
-import { useRouter } from "next/router";
-import { signOut, useSession } from "next-auth/react";
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { signOut, useSession } from "next-auth/react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { User, Settings, LayoutDashboard, LogOut } from "lucide-react"
 
 export function UserNavigation() {
-  const router = useRouter();
-  const { data: session } = useSession();
-  const user = session?.user;
+  const router = useRouter()
+  const { data: session } = useSession()
+  const user = session?.user
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleLogout = () => {
-    signOut({ redirect: true, callbackUrl: "/auth/login" });
-  };
+    signOut({ redirect: true, callbackUrl: "/auth/login" })
+  }
 
-  if (!user) return null;
+  if (!user) return null
 
   return (
-    <div className="relative">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button className="flex items-center space-x-3 p-3 rounded-lg cursor-pointer hover:bg-white/5 transition-colors border-b border-borderColor">
-            <Avatar className="h-10 w-10 md:h-12 md:w-12 ring-1 ring-white/10">
-              <AvatarFallback className="bg-gradient-to-br from-blue-900 to-blue-800 text-white">
-                {user?.name?.charAt(0)?.toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="hidden md:flex flex-col">
-              <p className="text-sm font-medium text-heading">{user?.name}</p>
-              <p className="text-xs text-paragraph">{user?.email}</p>
-            </div>
-            <RiMoreFill className="w-5 h-5 text-gray-400 md:hidden" />
-          </button>
-        </DropdownMenuTrigger>
-
-        <DropdownMenuContent className="w-56  border-borderColor border-0 shadow-md rounded-md mt-2" align="end">
-          <DropdownMenuLabel className="font-semibold text-heading">My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem onClick={() => router.push("/profile/dashboard")}>
-            <RiDashboardLine className="mr-2 h-4 w-4 text-gray-500" />
-            Dashboard
-          </DropdownMenuItem>
-
-          <DropdownMenuItem onClick={() => router.push("/profile/details")}>
-            <RiUserLine className="mr-2 h-4 w-4 text-gray-500" />
-            Profile
-          </DropdownMenuItem>
-
-          <DropdownMenuItem onClick={() => router.push("/settings")}>
-            <RiSettingsLine className="mr-2 h-4 w-4 text-gray-500" />
-            Settings
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem onClick={handleLogout} className="text-red-500">
-            <RiLogoutBoxLine className="mr-2 h-4 w-4" />
-            Log out
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  );
+    <DropdownMenu  open={isOpen} onOpenChange={setIsOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Avatar className="h-8 w-8 text-heading">
+            <AvatarImage src={user.image || undefined} alt={user.name || ""} />
+            <AvatarFallback>{user.name?.charAt(0).toUpperCase()}</AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56 border-0" align="end" forceMount>
+        <div className="flex items-center justify-start gap-2 p-2">
+          <div className="flex flex-col space-y-1 leading-none">
+            {user.name && <p className="font-medium">{user.name}</p>}
+            {user.email && <p className="w-[200px] truncate text-sm text-muted-foreground">{user.email}</p>}
+          </div>
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => router.push("/profile/dashboard")}>
+          <LayoutDashboard className="mr-2 h-4 w-4" />
+          <span>Dashboard</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/profile/details")}>
+          <User className="mr-2 h-4 w-4" />
+          <span>Profile</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/settings")}>
+          <Settings className="mr-2 h-4 w-4" />
+          <span>Settings</span>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="text-red-600 focus:text-red-600" onClick={handleLogout}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Log out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
 
-export default UserNavigation;
+export default UserNavigation
+

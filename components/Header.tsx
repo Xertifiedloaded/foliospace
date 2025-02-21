@@ -1,91 +1,80 @@
-"use client";
+"use client"
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
-import { MenuIcon } from "lucide-react";
-import { RiCheckboxCircleLine } from "react-icons/ri";
-import { navItems } from "@/utils/data";
+import type React from "react"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { RiCheckboxCircleLine } from "react-icons/ri"
+import { navItems } from "@/utils/data"
+import { Menu } from "lucide-react"
 
-// Define the shape of navigation items
 interface NavItem {
-  path: string;
-  title: string;
-  icon: React.ElementType;
+  path: string
+  title: string
+  icon: React.ElementType
 }
 
 const Header: React.FC = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   const handleNavigation = (path: string) => {
-    router.push(path);
-  };
+    router.push(path)
+  }
 
   return (
-    <header className="sticky bg-background top-0 z-50 shadow-md text-heading">
-      <div className="px-4 py-3 flex justify-between items-center">
-        {/* Logo Section */}
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center">
-            <RiCheckboxCircleLine className="mr-2 text-2xl text-blue-600 dark:text-blue-400" />
-            <span className="lg:text-xl text-sm font-black text-neutral-900 dark:text-white tracking-tight">
-              FolioSpace
-            </span>
-          </div>
-
-          {/* Desktop Navigation */}
-          <Menubar className="hidden md:flex border-0">
-            {navItems.map((item: NavItem) => (
-              <MenubarMenu key={item.path}>
-                <MenubarTrigger
-                  onClick={() => handleNavigation(item.path)}
-                  className="cursor-pointer border-0 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                >
-                  <item.icon className="mr-2 h-4 w-4" />
-                  {item.title}
-                </MenubarTrigger>
-              </MenubarMenu>
-            ))}
-          </Menubar>
+    <header className="sticky top-0 z-50 w-full border-0  bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 max-w-screen-2xl items-center">
+        <div className="mr-4 flex">
+          <a className="mr-6 flex items-center space-x-2" href="/">
+            <RiCheckboxCircleLine className="h-6 w-6 text-primary" />
+            <span className="font-bold">FolioSpace</span>
+          </a>
         </div>
-
-        {/* Mobile Navigation Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="default" className="md:hidden bg-transparent text-heading">
-              <MenuIcon className="h-6 w-6" />
-            </Button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent align="end" className="w-48 border-0 shadow-md rounded-md">
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <nav className="flex items-center text-sm font-medium">
             {navItems.map((item: NavItem) => (
-              <DropdownMenuItem
+              <Button
                 key={item.path}
+                variant="ghost"
+                className="hidden  text-heading md:inline-flex"
                 onClick={() => handleNavigation(item.path)}
-                className="cursor-pointer flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <item.icon className="h-4 w-4 text-gray-600" />
-                <span>{item.title}</span>
-              </DropdownMenuItem>
+                <item.icon className="mr-2 h-4 w-4" />
+                {item.title}
+              </Button>
             ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </nav>
+          <Sheet >
+            <SheetTrigger asChild>
+              <Button
+                variant="default"
+                className="px-4  text-base  focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
+              >
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="pr-0">
+              <nav className="flex  flex-col space-y-4">
+                {navItems.map((item: NavItem) => (
+                  <Button
+                    key={item.path}
+                    variant="ghost"
+                    className="w-full text-heading justify-start"
+                    onClick={() => handleNavigation(item.path)}
+                  >
+                    <item.icon className="mr-2 h-4 w-4" />
+                    {item.title}
+                  </Button>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
+
