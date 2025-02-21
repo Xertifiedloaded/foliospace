@@ -1,5 +1,5 @@
 
-import HomePage from "./Home";
+import HomePage from "./Home"
 
 
 export default function Home() {
