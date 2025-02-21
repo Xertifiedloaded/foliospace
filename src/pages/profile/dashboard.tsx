@@ -159,14 +159,9 @@ const Dashboard: React.FC = () => {
               </div>
 
               <div className="grow">
-                <div className="bg-muted/30 p-4 rounded-lg">
-                  <h3 className="text-sm font-medium mb-3">
-                    Profile Completeness
-                  </h3>
+                <div className="bg-muted/30  rounded-lg">
+        
                   <ProfileCompleteness profile={profile} />
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Complete your profile to unlock all features
-                  </p>
                 </div>
               </div>
             </div>
