@@ -58,7 +58,7 @@ export default function HomePage() {
       <main>
         <Hero />
         <Features />
-        <VideoSection />
+        {/* <VideoSection /> */}
         <Templates />
         <FAQ />
         <ProfileSection />
