@@ -7,8 +7,8 @@ import {
   BiLogoYoutube,
 } from "react-icons/bi";
 import { useState } from "react";
-import { Input } from "./input";
-import { Button } from "./button";
+import Link from "next/link";
+import { CheckCircle } from "lucide-react";
 
 type ImageProps = {
   url?: string;
@@ -47,42 +47,31 @@ type Props = {
   footerLinks: FooterLink[];
 };
 
-export type FooterProps = React.ComponentPropsWithoutRef<"section"> & Partial<Props>;
+export type FooterProps = React.ComponentPropsWithoutRef<"section"> &
+  Partial<Props>;
 
 export const Footer = (props: FooterProps) => {
-  const {
-    logo,
-    newsletterDescription,
-    inputPlaceholder,
-    button,
-    termsAndConditions,
-    columnLinks,
-    footerText,
-    footerLinks,
-  } = {
+  const { columnLinks, footerText, footerLinks } = {
     ...FooterDefaults,
     ...props,
   };
 
-  const [emailInput, setEmailInput] = useState<string>("");
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log({ emailInput });
-  };
+
 
   return (
     <footer className="px-[5%] py-12 md:py-18 lg:py-20">
-      <div className="container">
-        <div className="grid grid-cols-1 gap-x-[8vw] gap-y-12 pb-12 md:gap-y-16 md:pb-18 lg:grid-cols-[0.75fr_1fr] lg:gap-y-4 lg:pb-20">
-          <div className="flex flex-col">
-            <a href={logo.url} className="mb-5 md:mb-6">
-              <img src={logo.src} alt={logo.alt} className="inline-block" />
-            </a>
-
-          </div>
-          <div className="grid grid-cols-1 items-start gap-y-10 sm:grid-cols-3 sm:gap-x-6 md:gap-x-8 md:gap-y-4">
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1  gap-y-12 pb-12 md:gap-y-16 md:pb-18 lg:grid-cols-[0.75fr_1fr] lg:gap-y-4 lg:pb-20">
+          <Link href="/" className="flex items-start space-x-2">
+            <CheckCircle className="text-blue-600" />
+            <span className="text-xl font-bold">FolioSpace</span>
+          </Link>
+          <div className="grid grid-cols-2 items-start gap-y-10 sm:grid-cols-2 sm:gap-x-6 md:gap-x-8 md:gap-y-4">
             {columnLinks.map((column, index) => (
-              <div key={index} className="flex flex-col items-start justify-start">
+              <div
+                key={index}
+                className="flex flex-col items-start justify-start"
+              >
                 <h2 className="mb-3 font-semibold md:mb-4">{column.title}</h2>
                 <ul>
                   {column.links.map((link, linkIndex) => (
@@ -120,7 +109,8 @@ export const FooterDefaults: Props = {
     src: "/images/logo.svg",
     alt: "Logo image",
   },
-  newsletterDescription: "Join our newsletter to stay up to date on features and releases.",
+  newsletterDescription:
+    "Join our newsletter to stay up to date on features and releases.",
   inputPlaceholder: "Enter your email",
   button: {
     title: "Subscribe",
@@ -138,6 +128,7 @@ export const FooterDefaults: Props = {
       links: [
         { title: "About", url: "/about-us" },
         { title: "Contact", url: "" },
+        { title: "Buy Us Coffee", url: "/donate" },
         { title: "Developers", url: "/developers" },
         { title: "Terms of Use", url: "#" },
         { title: "Privacy Policy", url: "#" },
@@ -146,11 +137,27 @@ export const FooterDefaults: Props = {
     {
       title: "Follow us",
       links: [
-        { title: "Facebook", url: "#", icon: <BiLogoFacebookCircle className="size-6" /> },
-        { title: "Instagram", url: "#", icon: <BiLogoInstagram className="size-6" /> },
+        {
+          title: "Facebook",
+          url: "#",
+          icon: <BiLogoFacebookCircle className="size-6" />,
+        },
+        {
+          title: "Instagram",
+          url: "#",
+          icon: <BiLogoInstagram className="size-6" />,
+        },
         { title: "X", url: "#", icon: <FaXTwitter className="size-6 p-0.5" /> },
-        { title: "LinkedIn", url: "#", icon: <BiLogoLinkedinSquare className="size-6" /> },
-        { title: "Youtube", url: "#", icon: <BiLogoYoutube className="size-6" /> },
+        {
+          title: "LinkedIn",
+          url: "#",
+          icon: <BiLogoLinkedinSquare className="size-6" />,
+        },
+        {
+          title: "Youtube",
+          url: "#",
+          icon: <BiLogoYoutube className="size-6" />,
+        },
       ],
     },
   ],

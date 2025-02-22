@@ -11,9 +11,7 @@ import ProfileSection from "@/sections/Profile";
 import {
   ChevronRight,
   ArrowRight,
-  Check,
   CheckCircle,
-  Loader2,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 
@@ -58,7 +56,7 @@ export default function HomePage() {
       <main>
         <Hero />
         <Features />
-        {/* <VideoSection /> */}
+        <VideoSection />
         <Templates />
         <FAQ />
         <ProfileSection />
@@ -283,7 +281,7 @@ const VideoSection = () => {
         playsInline
         muted
       >
-        <source src="/video/foliospace.mov" type="video/mp4" />
+        <source src="/video/foliospace.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
     </section>

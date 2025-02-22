@@ -13,12 +13,15 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  BiLogoFacebookCircle,
+  BiLogoInstagram,
+  BiLogoLinkedinSquare,
+  BiLogoYoutube,
+} from "react-icons/bi";
+import { FaXTwitter } from "react-icons/fa6";
+import {
   LinkedinIcon,
   GithubIcon,
-  TwitterIcon,
-  FacebookIcon,
-  InstagramIcon,
-  YoutubeIcon,
   LinkIcon,
 } from "lucide-react";
 import { FaDiscord, FaTiktok, FaTwitch } from "react-icons/fa";
@@ -28,21 +31,22 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const SocialIcon = ({ type }) => {
   const icons = {
-    linkedin: LinkedinIcon,
-    Linkedin: LinkedinIcon,
+    linkedin: BiLogoLinkedinSquare,
     github: GithubIcon,
-    twitter: TwitterIcon,
-    facebook: FacebookIcon,
+    twitter: FaXTwitter,
+    x: FaXTwitter,
+    facebook: BiLogoFacebookCircle,
     twitch: FaTwitch,
     discord: FaDiscord,
     tiktok: FaTiktok,
-    instagram: InstagramIcon,
-    youtube: YoutubeIcon,
+    instagram: BiLogoInstagram,
+    youtube: BiLogoYoutube,
   };
 
   const Icon = icons[type?.toLowerCase()] || LinkIcon;
   return <Icon className="w-5 h-5" />;
 };
+
 
 const socialColors = {
   linkedin: "text-[#0077B5] hover:text-[#004d77]",
@@ -95,7 +99,9 @@ export default function PortfolioDesign({ portfolio }) {
                   alt={name}
                   className="object-cover"
                 />
-                <AvatarFallback className='text-4xl'>{name.charAt(0)}</AvatarFallback>
+                <AvatarFallback className="text-4xl">
+                  {name.charAt(0)}
+                </AvatarFallback>
               </Avatar>
             </motion.div>
 
