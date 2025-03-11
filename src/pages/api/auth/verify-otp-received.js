@@ -33,7 +33,7 @@ export default async function handler(req, res) {
           isVerified: true,
         },
       })
-
+      
       res
         .status(200)
         .json({ message: `${updatedUser} OTP verified successfully `})
