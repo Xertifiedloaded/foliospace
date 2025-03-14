@@ -35,16 +35,12 @@ export default function MyDocument() {
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:locale" content="en_US" />
-
-        {/* Twitter Card Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@foliospace" />
         <meta name="twitter:creator" content="@foliospace" />
         <meta name="twitter:title" content="FolioSpace - Digital Portfolio Builder" />
         <meta name="twitter:description" content="Elevate your career with a compelling digital portfolio that showcases your unique skills, achievements, and potential to global opportunities." />
         <meta name="twitter:image" content="/creatify-og-image.jpg" />
-
-        {/* PWA Meta Tags */}
         <meta name="application-name" content="FolioSpace" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -53,16 +49,12 @@ export default function MyDocument() {
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="msapplication-tap-highlight" content="no" />
-
-        {/* Link Tags for SEO */}
         <link rel="canonical" href="https://foliospace.org.ng" />
         <link rel="alternate" hrefLang="en" href="https://foliospace.org.ng" />
 
-        {/* Preconnect to External Resources */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
-        {/* Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -81,14 +73,12 @@ export default function MyDocument() {
           }}
         />
 
-        {/* Security Headers */}
         <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:;" />
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
         <meta httpEquiv="X-Frame-Options" content="SAMEORIGIN" />
         <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
         <meta httpEquiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-        
-        {/* Performance Optimization */}
+      
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
       </Head>
       <body>
