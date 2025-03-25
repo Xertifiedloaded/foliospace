@@ -1,4 +1,4 @@
-import { Home, Grid, User, Share2, FileText, Palette, Eye, FilePlus, MenuIcon, Settings, Search } from "lucide-react";
+import { Home, Grid, User, Share2, FileText, Palette, Eye, FilePlus, MenuIcon, Settings, Search, Award } from "lucide-react";
 import { LucideIcon } from "lucide-react"; 
 type FAQItem = {
     question: string;
@@ -84,5 +84,6 @@ type FAQItem = {
     { path: "/profile/resume", title: "Resume", icon: FileText }, 
     { path: "/profile/portfolio", title: "Portfolio", icon: Palette }, 
     { path: "/settings", title: "Settings", icon: Settings }, 
+    { path: "/profile/award-certificate", title: "Award & Certificate", icon: Award }, 
     { path: "/profile/collaboration", title: "Collaborate", icon: Search }, 
   ];
