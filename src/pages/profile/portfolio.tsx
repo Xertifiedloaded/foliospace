@@ -424,7 +424,7 @@ export default function PortfolioSection() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ScrollArea className="h-[400px] pr-4">
+                <ScrollArea className="h-[800px] pr-4">
                   {loadingProjects ? (
                     <div className="space-y-4">
                       {[...Array(3)].map((_, index) => (
@@ -483,8 +483,8 @@ export default function PortfolioSection() {
               </TabsList>
               <TabsContent value="preview" className="mt-4">
               <IPhoneFrame>
-                      <ScrollArea className="h-[500px]">
-                        <div className="p-4 space-y-6">
+                      <ScrollArea className="h-[800px]">
+                        <div className=" space-y-6">
                           <h2 className="text-2xl font-bold">My Projects</h2>
                           {projects.map((project) => (
                             <Card key={project.id} className="overflow-hidden">

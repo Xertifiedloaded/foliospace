@@ -83,7 +83,7 @@ const Header: React.FC = () => {
     return (
       <header
         className={`
-          w-full top-0 left-0 right-0 z-50 
+          w-full  top-0 left-0 right-0 z-50 
           transition-all duration-300 ease-in-out
           ${isScrolled ? "bg-white/90 shadow-md backdrop-blur-md" : "bg-black text-white"}
         `}
@@ -124,7 +124,7 @@ const Header: React.FC = () => {
   return (
     <header
       className={`
-        w-full top-0 left-0 right-0 z-50 overflow-hidden
+        w-full  top-0 left-0 right-0 z-50 overflow-hidden
         transition-all duration-300 ease-in-out
         ${isScrolled ? "bg-white/90 shadow-md backdrop-blur-md" : "bg-black text-white"}
       `}
@@ -142,7 +142,7 @@ const Header: React.FC = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center">
+          <div className="hidden  md:flex items-center">
             <nav className="flex items-center space-x-1 mr-2 lg:mr-4">
               {navItems.map((item) => (
                 <Link

@@ -19,11 +19,7 @@ import {
   BiLogoYoutube,
 } from "react-icons/bi";
 import { FaXTwitter } from "react-icons/fa6";
-import {
-  LinkedinIcon,
-  GithubIcon,
-  LinkIcon,
-} from "lucide-react";
+import { LinkedinIcon, GithubIcon, LinkIcon } from "lucide-react";
 import { FaDiscord, FaTiktok, FaTwitch } from "react-icons/fa";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -46,7 +42,6 @@ const SocialIcon = ({ type }) => {
   const Icon = icons[type?.toLowerCase()] || LinkIcon;
   return <Icon className="w-5 h-5" />;
 };
-
 
 const socialColors = {
   linkedin: "text-[#0077B5] hover:text-[#004d77]",
@@ -74,6 +69,8 @@ export default function PortfolioDesign({ portfolio }) {
     name,
     username,
     education,
+    awards,
+    certifications,
   } = portfolio || {};
   console.log(portfolio);
   return (
@@ -400,8 +397,8 @@ export default function PortfolioDesign({ portfolio }) {
               </AnimatePresence>
             </motion.section>
           )}
-
-          {/* Contact and Clients Sections */}
+          <Awards awards={awards} />
+          <Certification certifications={certifications} />
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -504,6 +501,7 @@ export default function PortfolioDesign({ portfolio }) {
           </motion.div>
         </motion.div>
       </div>
+
       <motion.footer
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -565,3 +563,87 @@ const ProjectDisclaimer = () => {
     </motion.div>
   );
 };
+
+export function Awards({ awards }) {
+  return (
+    <section className="awards-section">
+      <h2 className="text-2xl">Awards</h2>
+      {awards.length === 0 ? (
+        <p>No awards to display</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {awards.map((award) => (
+            <div key={award.id} className="achievement-card">
+              {award.image && (
+                <img
+                  src={award.image}
+                  alt={`${award.title} award`}
+                  className="achievement-image w-full h-14 object-cover"
+                />
+              )}
+              <div className="achievement-details">
+                <h3>{award.title}</h3>
+                <p className="issuer">{award.issuer}</p>
+                {award.url && (
+                  <a
+                    href={award.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="achievement-link italic"
+                  >
+                    View Details
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+export function Certification({ certifications }) {
+  return (
+    <section className="certifications-section">
+      <h2 className="text-2xl">Certifications</h2>
+      {certifications.length === 0 ? (
+        <p>No certifications to display</p>
+      ) : (
+        <div className="certifications-grid">
+          {certifications.map((cert) => (
+            <div key={cert.id} className="achievement-card">
+              {cert.image && (
+                <img
+                  src={cert.image}
+                  alt={`${cert.title} certification`}
+                  className="achievement-image"
+                />
+              )}
+              <div className="achievement-details">
+                <h3>{cert.title}</h3>
+                <p className="issuer">{cert.issuer}</p>
+                {cert.credentialId && (
+                  <p className="credential-id">
+                    Credential ID: {cert.credentialId}
+                  </p>
+                )}
+                {cert.description && <p>{cert.description}</p>}
+                {cert.url && (
+                  <a
+                    href={cert.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="achievement-link"
+                  >
+                    Verify Certification
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}

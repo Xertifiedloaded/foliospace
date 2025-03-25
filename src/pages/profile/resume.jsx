@@ -271,7 +271,7 @@ export default function ResumeSection() {
   )
 
   const renderList = (items) => (
-    <ScrollArea className="h-[400px]">
+    <ScrollArea className="h-[700px]">
       {isLoading
         ? renderLoadingState()
         : items.map((item) => (
@@ -387,7 +387,7 @@ export default function ResumeSection() {
             </CardHeader>
             <CardContent>
               <IPhoneFrame>
-                <ScrollArea className="h-[600px] p-4">
+                <ScrollArea className="h-[800px] ">
                   <h2 className="text-xl font-semibold mb-4">Experience</h2>
                   {experiences.map((exp) => (
                     <div key={exp.id} className="mb-4">

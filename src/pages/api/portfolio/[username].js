@@ -13,19 +13,17 @@ export default async function handler(req, res) {
           profile: true,
           socials: true,
           links: true,
-          experiences: { 
-            orderBy: { startDate: 'desc' } 
-          },
+          experiences: { orderBy: { startDate: "desc" } },
           projects: true,
-          education: { 
-            orderBy: { startDate: 'desc' } 
-          },
-          skills: true, 
+          education: { orderBy: { startDate: "desc" } },
+          skills: true,
+          awards: { orderBy: { date: "desc" } }, 
+          certifications: { orderBy: { issueDate: "desc" } }, // Include certifications
         },
       });
 
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ error: "User not found" });
       }
 
       const { password, ...safeUserData } = user;
@@ -38,20 +36,19 @@ export default async function handler(req, res) {
         links: user.links || [],
         experiences: user.experiences || [],
         education: user.education || [],
-        skills: user.skills || [], 
+        skills: user.skills || [],
+        awards: user.awards || [],
+        certifications: user.certifications || [], 
       };
 
       return res.status(200).json(sanitizedUserData);
     } catch (error) {
-      console.error('Error fetching user data:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
+      console.error("Error fetching user data:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
     } finally {
       await prisma.$disconnect();
     }
   } else {
-    return res.status(405).json({ message: 'Method Not Allowed' });
+    return res.status(405).json({ message: "Method Not Allowed" });
   }
 }
-
-
-

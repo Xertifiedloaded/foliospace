@@ -152,7 +152,7 @@ export default function CertificationsPage() {
     setFormData({
       title: certification.title,
       issuer: certification.issuer,
-      issueDate: certification.issueDate.split("T")[0], // Format date for input
+      issueDate: certification.issueDate.split("T")[0], 
       expiryDate: certification.expiryDate ? certification.expiryDate.split("T")[0] : "",
       credentialId: certification.credentialId || "",
       url: certification.url || "",
