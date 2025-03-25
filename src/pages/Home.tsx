@@ -2,7 +2,6 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { UserNavigation } from "@/components/UserNavigation";
 import { FAQ } from "@/components/Faq";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

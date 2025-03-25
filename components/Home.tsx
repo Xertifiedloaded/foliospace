@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { UserNavigation } from "./UserNavigation";
 import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from '@/components/ui/progress';
+
 import { ThemeToggle } from './ThemeToggle';
 
 interface FeatureSection {
@@ -145,7 +145,7 @@ export default function ProfessionalHomePage() {
                 </span>
                 <span className="text-sm font-semibold text-primary dark:text-primary">85%</span>
               </div>
-              <Progress value={85} className="w-full" />
+              {/* <Progress value={85} className="w-full" /> */}
               <div className="grid grid-cols-3 gap-6 pt-4">
                 <div className="text-center">
                   <div className="text-sm font-semibold text-gray-900 dark:text-white">12</div>
