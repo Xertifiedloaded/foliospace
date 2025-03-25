@@ -142,3 +142,61 @@ body {
 
 
 
+
+.awards-section, .certifications-section {
+  margin-bottom: 40px;
+}
+
+.awards-grid, .certifications-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.achievement-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.achievement-card:hover {
+  transform: scale(1.03);
+}
+
+.achievement-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.achievement-details {
+  padding: 15px;
+}
+
+.achievement-details h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.issuer {
+  color: #666;
+  font-style: italic;
+}
+
+.date {
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.achievement-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.achievement-link:hover {
+  text-decoration: underline;
+}
