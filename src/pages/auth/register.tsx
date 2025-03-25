@@ -167,13 +167,13 @@ export default function SignupPage() {
                 )}
               </div>
 
-              <Button 
+              <button 
                 type="submit" 
-                className="w-full dark:text-black" 
+                className="w-full border p-2 rounded-lg text-black text-bold bg-white dark:text-black" 
                 disabled={isLoading}
               >
                 {isLoading ? "Creating Account..." : "Sign Up"}
-              </Button>
+              </button>
             </form>
 
             <Separator className="my-6" />

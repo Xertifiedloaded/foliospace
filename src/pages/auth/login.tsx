@@ -131,14 +131,15 @@ export default function LoginPage() {
                 )}
               </div>
 
-              <Button 
+              <button 
+              
                 type="submit" 
-                className="w-full dark:text-black" 
+                className="w-full border p-2 rounded-lg text-black text-bold bg-white dark:text-black" 
                 disabled={isLoading}
               >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isLoading ? "Signing in..." : "Sign in"}
-              </Button>
+              </button>
             </form>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">

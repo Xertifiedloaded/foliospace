@@ -52,7 +52,6 @@ const features = [
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
-      <Header />
       <main>
         <Hero />
         <Features />
@@ -67,17 +66,7 @@ export default function HomePage() {
   );
 }
 
-const Header = () => {
-  return (
-    <header className="container mx-auto py-6 px-4 flex justify-between items-center">
-      <Link href="/" className="flex items-center space-x-2">
-        <CheckCircle className="text-blue-600" />
-        <span className="text-xl font-bold">FolioSpace</span>
-      </Link>
-      <UserNavigation />
-    </header>
-  );
-};
+
 
 const Hero = () => {
   const { data: session } = useSession();

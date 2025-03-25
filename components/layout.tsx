@@ -33,8 +33,8 @@ const ProfileLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   return (
     <div className="space-y-6 wrapper">
-      <Header />
-      {children}
+      {/* <Header /> */}
+      <div className="pt-20">{children}</div>
     </div>
   );
 };

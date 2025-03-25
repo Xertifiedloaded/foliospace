@@ -32,8 +32,39 @@ model User {
   skills                  Skill[]      @relation("UserSkills")
   template                Template     @default(BASIC)
   sessions                Session[]
+    awards                  Award[]         // Add this line
+  certifications          Certification[]
 }
 
+
+model Award {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  issuer      String
+  date        DateTime
+  description String?
+  url         String?
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String   @db.ObjectId
+}
+
+model Certification {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  issuer       String
+  issueDate    DateTime
+  expiryDate   DateTime?
+  credentialId String?
+  url          String?
+  image        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String   @db.ObjectId
+}
 model Session {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
