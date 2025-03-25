@@ -1,4 +1,4 @@
 module.exports = {
-  siteUrl: 'https://foliospace.vercel.app',
+  siteUrl: 'https://www.foliospace.org.ng',
   generateRobotsTxt: true,
 };
