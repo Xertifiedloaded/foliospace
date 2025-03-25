@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 
-import Layout from "@/components/layout" // Adjust based on your project structure
+import Layout from "@/components/layout" 
 import { toast } from "@/hooks/use-toast"
 
 interface AwardType {
@@ -149,7 +149,7 @@ export default function AwardsPage() {
     setFormData({
       title: award.title,
       issuer: award.issuer,
-      date: award.date.split("T")[0], // Format date for input
+      date: award.date.split("T")[0], 
       description: award.description || "",
       url: award.url || "",
       image: award.image || "",

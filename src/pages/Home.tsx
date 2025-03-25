@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { UserNavigation } from "@/components/UserNavigation";
 import { FAQ } from "@/components/Faq";
-import { Footer } from "@/components/ui/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileSection from "@/sections/Profile";
@@ -16,6 +15,9 @@ import {
 import { useSession } from "next-auth/react";
 
 import Newsletter from "@/components/Newsletter";
+import { Footer } from "@/components/Footer";
+
+
 
 interface SubmitEmailResponse {
   success: boolean;

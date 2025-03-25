@@ -10,6 +10,7 @@ import { format } from "date-fns"
 import Head from "next/head"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+
 import {
   Dialog,
   DialogContent,
@@ -23,7 +24,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "@/hooks/use-toast"
-import Layout from "@/components/layout" // Import Layout from your components folder
+import Layout from "@/components/layout" 
+
 
 interface CertificationType {
   id: string
