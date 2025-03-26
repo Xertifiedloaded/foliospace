@@ -22,22 +22,18 @@ export default function ForgetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const response = await axios.post("/api/auth/forget-password", payload);
-
       toast({
         title: "Success!",
         description: "Password reset link has been sent to your email.",
         className: "bg-green-50",
       });
-
       setTimeout(() => {
       }, 2000);
     } catch (err) {
       const errorMessage =
         err.response?.data?.message || "An error occurred. Please try again.";
-
       toast({
         variant: "destructive",
         title: "Error",

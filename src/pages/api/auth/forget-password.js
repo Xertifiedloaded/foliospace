@@ -36,14 +36,90 @@ export default async function handler(req, res) {
 
       const resetLink = `https://www.foliospace.org.ng/auth/${resetToken}`;
       const emailContent = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-        <h1 style="color: #4caf50;">Password Reset Request</h1>
-        <p>Hi ${user.name},</p>
-        <p>You requested to reset your password. Please click the link below to reset it:</p>
-        <a href="${resetLink}" style="display: inline-block; margin: 10px 0; padding: 10px 15px; color: white; background-color: #4caf50; border-radius: 5px; text-decoration: none;">Reset Password</a>
-        <p>If you didn't request this, please ignore this email. This link is valid for 10 minutes.</p>
-      </div>
-    `;
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Password Reset Request</title>
+          <style>
+              body {
+                  font-family: 'Arial', sans-serif;
+                  line-height: 1.6;
+                  color: #333;
+                  background-color: #f4f4f4;
+                  margin: 0;
+                  padding: 0;
+              }
+              .email-container {
+                  max-width: 600px;
+                  margin: 20px auto;
+                  background-color: #ffffff;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                  overflow: hidden;
+              }
+              .email-header {
+                  background-color: #007bff;
+                  color: white;
+                  padding: 20px;
+                  text-align: center;
+              }
+              .email-body {
+                  padding: 30px;
+                  text-align: center;
+              }
+              .reset-button {
+                  display: inline-block;
+                  margin: 20px 0;
+                  padding: 12px 24px;
+                  background-color: #007bff;
+                  color: white;
+                  text-decoration: none;
+                  border-radius: 6px;
+                  font-weight: bold;
+                  transition: background-color 0.3s ease;
+              }
+              .reset-button:hover {
+                  background-color: #0056b3;
+              }
+              .warning {
+                  font-size: 12px;
+                  color: #6c757d;
+                  margin-top: 20px;
+              }
+              .footer {
+                  background-color: #f4f4f4;
+                  color: #6c757d;
+                  text-align: center;
+                  padding: 15px;
+                  font-size: 12px;
+              }
+          </style>
+      </head>
+      <body>
+          <div class="email-container">
+              <div class="email-header">
+                  <h1>Password Reset Request</h1>
+              </div>
+              <div class="email-body">
+                  <p>Hi ${user.name},</p>
+                  <p>You requested to reset your password. Click the button below to proceed:</p>
+                  
+                  <a href="${resetLink}" class="reset-button">Reset Password</a>
+                  
+                  <p class="warning">
+                      This link is valid for 10 minutes. If you did not request this password reset, 
+                      please ignore this email or contact our support team immediately.
+                  </p>
+              </div>
+              <div class="footer">
+                  © ${new Date().getFullYear()} Foliospace. All rights reserved.
+              </div>
+          </div>
+      </body>
+      </html>
+      `;
 
       await transporter.sendMail({
         from: "noreply@foliospace.com",
@@ -64,3 +140,5 @@ export default async function handler(req, res) {
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
+
+
