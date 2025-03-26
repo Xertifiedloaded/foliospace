@@ -3,7 +3,6 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import {
   User,
-  Briefcase,
   Globe,
   Heart,
   TrendingUp,
@@ -13,7 +12,9 @@ import {
   MapPin,
   Mail,
   Layers,
+  Link2,
 } from "lucide-react";
+
 
 import { Separator } from "@/components/ui/separator";
 import DashBoardSkills from "@/sections/DashBoardSkills";
@@ -24,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import UserBackupButton from "../../../components/UserDownloadButton";
+import PortfolioLinks from "../portfolio/Links";
 
 interface Profile {
   id: string;
@@ -42,16 +44,16 @@ interface Profile {
   [key: string]: any;
 }
 
-const ProfileSection = ({ 
-  icon: Icon, 
-  title, 
-  children, 
-  editLink 
-}: { 
-  icon: React.ElementType, 
-  title: string, 
-  children: React.ReactNode, 
-  editLink?: string 
+const ProfileSection = ({
+  icon: Icon,
+  title,
+  children,
+  editLink,
+}: {
+  icon: React.ElementType;
+  title: string;
+  children: React.ReactNode;
+  editLink?: string;
 }) => (
   <div className="bg-white shadow-md rounded-xl p-6 space-y-4">
     <div className="flex justify-between items-center">
@@ -108,9 +110,17 @@ const Dashboard: React.FC = () => {
 
   const renderProfileDetails = () => {
     const excludedFields: string[] = [
-      "id", "userId", "createdAt", "updatedAt", 
-      "picture", "name", "email", "tagline",
-      "hobbies", "languages", "skills"
+      "id",
+      "userId",
+      "createdAt",
+      "updatedAt",
+      "picture",
+      "name",
+      "email",
+      "tagline",
+      "hobbies",
+      "languages",
+      "skills",
     ];
 
     return Object.keys(profile || {})
@@ -120,7 +130,10 @@ const Dashboard: React.FC = () => {
         if (!value) return null;
 
         return (
-          <div key={key} className="flex justify-between py-2 border-b last:border-b-0">
+          <div
+            key={key}
+            className="flex justify-between py-2 border-b last:border-b-0"
+          >
             <span className="text-gray-600 capitalize">
               {key.replace(/([A-Z])/g, " $1")}
             </span>
@@ -161,7 +174,7 @@ const Dashboard: React.FC = () => {
                   </Button>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-800">
+                  <h1 className="text-xl md:text-2xl font-bold text-gray-800">
                     {session?.user?.name}
                   </h1>
                   <p className="text-sm text-gray-600">
@@ -181,11 +194,14 @@ const Dashboard: React.FC = () => {
                       </div>
                     )}
                   </div>
+                  {/* @ts-gnore */}
+                  <h1 className="text-black flex items-center gap-2 text-xs mt-2"> <Link2 className="text-xs"/> Your Links that direct you to your CV/Portfolio</h1>
+                  <PortfolioLinks username={session?.user?.username} />
                 </div>
               </div>
               <div className="flex space-x-4">
-                <Button 
-                  variant="default" 
+                <Button
+                  variant="default"
                   className="bg-indigo-600 hover:bg-indigo-700"
                   asChild
                 >
@@ -210,31 +226,30 @@ const Dashboard: React.FC = () => {
           <div className="md:col-span-2 space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[
-                { 
-                  key: 'hobbies', 
-                  icon: Heart, 
-                  title: 'Hobbies',
-                  editLink: '/profile/details' 
+                {
+                  key: "hobbies",
+                  icon: Heart,
+                  title: "Hobbies",
+                  editLink: "/profile/details",
                 },
-                { 
-                  key: 'languages', 
-                  icon: Globe, 
-                  title: 'Languages',
-                  editLink: '/profile/details' 
+                {
+                  key: "languages",
+                  icon: Globe,
+                  title: "Languages",
+                  editLink: "/profile/details",
                 },
-     
               ].map(({ key, icon, title, editLink }) => (
-                <ProfileSection 
-                  key={key} 
-                  icon={icon} 
+                <ProfileSection
+                  key={key}
+                  icon={icon}
                   title={title}
                   editLink={editLink}
                 >
                   {profile?.[key]?.length ? (
                     <div className="flex flex-wrap gap-2">
                       {profile[key].map((item: string, index: number) => (
-                        <span 
-                          key={index} 
+                        <span
+                          key={index}
                           className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs"
                         >
                           {item}
@@ -242,16 +257,20 @@ const Dashboard: React.FC = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500 text-sm">No {title.toLowerCase()} added</p>
+                    <p className="text-gray-500 text-sm">
+                      No {title.toLowerCase()} added
+                    </p>
                   )}
                 </ProfileSection>
               ))}
             </div>
 
-            <ProfileSection icon={Layers} title="Additional Details" editLink="/profile/details">
-              <div className="space-y-2">
-                {renderProfileDetails()}
-              </div>
+            <ProfileSection
+              icon={Layers}
+              title="Additional Details"
+              editLink="/profile/details"
+            >
+              <div className="space-y-2">{renderProfileDetails()}</div>
             </ProfileSection>
 
             <div className="bg-white text-black shadow-md rounded-xl p-6">
@@ -285,10 +304,10 @@ const Dashboard: React.FC = () => {
                   {[
                     { title: "Top Contributor", color: "text-yellow-500" },
                     { title: "Skill Master", color: "text-blue-500" },
-                    { title: "Project Completer", color: "text-green-500" }
+                    { title: "Project Completer", color: "text-green-500" },
                   ].map(({ title, color }, index) => (
-                    <li 
-                      key={index} 
+                    <li
+                      key={index}
                       className="flex items-center justify-between bg-gray-50 p-3 rounded-lg"
                     >
                       <div className="flex items-center space-x-3">
