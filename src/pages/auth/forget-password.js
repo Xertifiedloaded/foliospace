@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/router";
 import { useToast } from "@/hooks/use-toast";
 import AuthLayout from "../../../components/AuthLayout";
+import Link from "next/link";
 
 export default function ForgetPassword() {
   const [payload, setPayload] = useState({
     email: "",
   });
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const { toast } = useToast();
 
   const handleChange = (e) => {
@@ -96,12 +95,12 @@ export default function ForgetPassword() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-500">
               Remember your password?{" "}
-              <a
+              <Link
                 href="/auth/login"
                 className="text-blue-600 hover:underline transition-colors"
               >
                 Sign in
-              </a>
+              </Link>
             </p>
           </div>
         </div>
