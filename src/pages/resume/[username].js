@@ -142,9 +142,7 @@ export default function ResumePage() {
               <span className="font-bold mr-2 text-gray-700 dark:text-gray-300">
                 {skill?.name}
               </span>
-              <span className="text-xs text-gray-500 mt-1 dark:text-gray-400">
-                {skill?.level}
-              </span>
+
             </span>
           ))}
         </div>
