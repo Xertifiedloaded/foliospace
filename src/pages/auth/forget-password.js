@@ -3,8 +3,8 @@ import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import AuthLayout from "../../../components/AuthLayout";
 import Link from "next/link";
-
 export default function ForgetPassword() {
+  
   const [payload, setPayload] = useState({
     email: "",
   });
@@ -27,7 +27,6 @@ export default function ForgetPassword() {
       toast({
         title: "Success!",
         description: "Password reset link has been sent to your email.",
-        className: "bg-green-50",
       });
       setTimeout(() => {
       }, 2000);
@@ -52,9 +51,9 @@ export default function ForgetPassword() {
   return (
     <AuthLayout>
       <section className="min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white  shadow-lg rounded-lg p-8">
+        <div className="w-full max-w-md bg-background   shadow-lg rounded-lg p-8">
           <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-3xl font-bold text-heading">
               Forgot Password
             </h2>
             <p className="text-gray-500 mt-2">
