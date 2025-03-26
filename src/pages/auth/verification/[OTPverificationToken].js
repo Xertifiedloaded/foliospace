@@ -22,8 +22,7 @@ export default function TokenVerificationPage() {
         const data = await response.json();
 
         if (response.ok) {
-          // Redirect to OTP input page
-          router.push("/auth/verification/otp");
+          router.push("/auth/auth/login");
         } else {
           toast({
             variant: "destructive",

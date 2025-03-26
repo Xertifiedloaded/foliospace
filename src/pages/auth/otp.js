@@ -2,8 +2,13 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from '@/hooks/use-toast';
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import { toast } from "@/hooks/use-toast";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -11,6 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
+import OTPResend from "../../../components/ResendOtp";
 
 export default function OtpVerificationPage() {
   const router = useRouter();
@@ -74,7 +80,7 @@ export default function OtpVerificationPage() {
   };
 
   const handleKeyDown = (index, e) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
       document.getElementById(`otp-${index - 1}`).focus();
     }
   };
@@ -118,12 +124,7 @@ export default function OtpVerificationPage() {
           </form>
         </CardContent>
         <CardFooter className="justify-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Didn't receive the code?{" "}
-            <Button variant="link" className="p-0 dark:text-black">
-              Resend
-            </Button>
-          </p>
+          <OTPResend />
         </CardFooter>
       </Card>
 

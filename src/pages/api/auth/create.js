@@ -78,7 +78,7 @@ export default async function handler(req, res) {
 
     console.log(user);
     return res.status(201).json({
-      message: "Account created successfully. Verification email sent.",
+      message: "Account created successfully! A verification email has been sent—be sure to check your spam folder if you don't see it in your inbox.",
       data: {
         user,
         verificationLink,

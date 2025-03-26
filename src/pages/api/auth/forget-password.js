@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import { v4 as uuidv4 } from "uuid";
 import { transporter } from "../../../../lib/nodemailer";
+import databaseConnection from '../../../../lib/database';
 
 export default async function handler(req, res) {
   await databaseConnection();
