@@ -9,7 +9,6 @@ import ProfileSection from "@/sections/Profile";
 import {
   ChevronRight,
   ArrowRight,
-  CheckCircle,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 

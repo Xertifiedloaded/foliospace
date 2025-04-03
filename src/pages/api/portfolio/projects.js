@@ -119,7 +119,7 @@ export default async function handler(req, res) {
 
       if (projectToDelete?.image) {
         const publicId = projectToDelete.image.split("/").pop().split(".")[0];
-        await cloudinary.v2.uploader.destroy(`projects/${publicId}`); // Delete the image from Cloudinary
+        await cloudinary.v2.uploader.destroy(`projects/${publicId}`); 
       }
 
       const deletedProject = await prisma.project.delete({

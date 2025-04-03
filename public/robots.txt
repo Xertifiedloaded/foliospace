@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://foliospace.vercel.app
+Host: https://www.foliospace.org.ng
 
 # Sitemaps
-Sitemap: https://foliospace.vercel.app/sitemap.xml
+Sitemap: https://www.foliospace.org.ng/sitemap.xml

@@ -42,24 +42,8 @@ const ProfileCard: React.FC<Profile> = ({
             <p className="text-sm text-muted-foreground">{tagline}</p>
           </div>
         </div>
-
-        <div className="mt-4">
-          <ul className="mt-2 text-sm text-paragraph">
-            {skills.length > 0 ? (
-              <ul className="flex flex-wrap gap-2">
-                {skills.map((skill, index) => (
-                  <span
-                    key={index}
-                    className="px-2 py-1 bg-heading text-background  rounded-full text-xs "
-                  >
-                    <span>{skill.name}</span>
-                  </span>
-                ))}
-              </ul>
-            ) : (
-              <li className="text-xs">No skills available</li>
-            )}
-          </ul>
+        <div onClick={(e) => e.stopPropagation()}>
+          <RotatingSkills skills={skills} />
         </div>
       </div>
     </Link>
@@ -95,7 +79,7 @@ const ProfileSection: React.FC = () => {
   }
 
   return (
-    <section className="wrapper">
+    <section className="wrapper relative overflow-hidden bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-5 text-white">
       <div className="">
         <div className="flex flex-col items-center justify-center md:text-left max-w-3xl mx-auto">
           <Button
@@ -161,3 +145,84 @@ const SkeletonLoader: React.FC = () => (
       ))}
   </div>
 );
+
+// @ts-ignore
+function RotatingSkills({ skills }) {
+  const [startIndex, setStartIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStartIndex((prev) => (prev + 3) % Math.max(skills.length, 1));
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, [skills.length]);
+
+  const visibleSkills =
+    skills.length > 0
+      ? [...skills.slice(startIndex), ...skills.slice(0, startIndex)].slice(
+          0,
+          3
+        )
+      : [];
+  // @ts-ignore
+  const handleNextClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setStartIndex((startIndex + 3) % Math.max(skills.length, 1));
+  };
+
+  return (
+    <div className="skill-container" onClick={(e) => e.stopPropagation()}>
+      <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500 opacity-20 rounded-full -mr-10 -mt-10"></div>
+      <h3 className="text-lg font-bold mb-4 relative z-10">Technical Skills</h3>
+
+      {visibleSkills.length > 0 ? (
+        <div className="flex flex-wrap gap-2 relative z-10">
+          {visibleSkills.map((skill, index) => (
+            <div key={`${skill.name}-${index}`} className="group relative">
+              <div className="max-w-[120px] px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-md border border-white/20 hover:bg-white/20 transition-all">
+                <p className="text-sm font-medium truncate" title={skill.name}>
+                  {skill.name.length > 12
+                    ? `${skill.name.substring(0, 12)}...`
+                    : skill.name}
+                </p>
+              </div>
+              <div className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-500 text-xs font-bold">
+                  +
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-sm text-gray-300 italic relative z-10">
+          No skills available
+        </p>
+      )}
+
+      <div className="flex justify-between items-center mt-4 relative z-10">
+        <span className="text-xs text-gray-400">
+          {Math.ceil(startIndex / 3) + 1} of {Math.ceil(skills.length / 3)}
+        </span>
+        <div className="h-1 flex-1 mx-4 bg-gray-700 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-indigo-500 transition-all duration-300"
+            style={{
+              width: `${
+                (startIndex / 3 / Math.ceil(skills.length / 3)) * 100
+              }%`,
+            }}
+          ></div>
+        </div>
+        <button
+          onClick={handleNextClick}
+          className="text-xs bg-indigo-600 hover:bg-indigo-700 py-1 px-2 rounded transition-colors"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
