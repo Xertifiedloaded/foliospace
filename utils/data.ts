@@ -83,7 +83,6 @@ type FAQItem = {
     { path: "/profile/socials", title: "Socials", icon: Share2 }, 
     { path: "/profile/resume", title: "Resume", icon: FileText }, 
     { path: "/profile/portfolio", title: "Portfolio", icon: Palette }, 
-    { path: "/settings", title: "Settings", icon: Settings }, 
-    { path: "/profile/award-certificate", title: "Award & Certificate", icon: Award }, 
+    // { path: "/profile/award-certificate", title: "Award & Certificate", icon: Award }, 
     { path: "/profile/collaboration", title: "Collaborate", icon: Search }, 
   ];
